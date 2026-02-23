@@ -1,0 +1,417 @@
+# KangaVisa MVP — Implementation Plan
+
+## Summary
+
+Build a compliance-first Australian immigration **readiness + pathway intelligence** web app that produces decision-ready packs for manual ImmiAccount upload. Deliverables span: (1) a knowledge system (KB) with automated ingestion, effective-dated versioning, and citation enforcement; (2) a Next.js web app with Pathway Finder, Evidence Checklist, Flag Cards, and Export Pack modules; (3) GovData (DaaS) consent + de-identification foundations. No legal advice, no outcome predictions, no application submission.
+
+---
+
+## Stack Decisions (locked)
+
+| Layer | Choice | Notes |
+|---|---|---|
+| Frontend | Next.js 14 (App Router) + TypeScript | Vercel deployment |
+| API | Next.js API routes + TypeScript | Small separate TS service if needed |
+| Ingestion workers | Python 3.12 (httpx + BeautifulSoup + Scrapy) | Separate scheduled worker service |
+| LLM | Provider-agnostic adapter → OpenAI default | `generate()`, `embed()` interface |
+| Auth | Supabase Auth | RLS-backed |
+| Postgres | Supabase Postgres (AU region) | [schema.sql](file:///Users/kirkjohnstone/Downloads/kangavisa/schema.sql) as source of truth |
+| Storage | Supabase Storage (AU), fallback AWS S3 Sydney | User docs + KB snapshots |
+| Deployment | Vercel (Next.js) + separate worker host | Workers NOT on Vercel |
+
+---
+
+## Sprint Plan (0–6 months MVP)
+
+### Sprint 0 — Scaffold (Week 1–2)
+- Repo + monorepo structure
+- Supabase project wiring (Auth, Postgres, Storage)
+- KB schema migration
+- JSON Schema validator wiring
+- Python ingestion worker skeleton (FRL "hello world" watcher)
+- CI/CD pipeline (GitHub Actions → Vercel)
+
+### Sprint 1 — KB Ingestion + Diff (Week 3–5)
+- All three ingestion lanes: FRL (daily), Home Affairs (weekly), data.gov.au (weekly)
+- Diff engine + impact scoring → `change_event` rows
+- Review queue (lightweight admin UI or CLI)
+- KB release tagging (`kb-YYYY-MM-DD`) + rollback/hotfix process
+
+### Sprint 2 — KB Content Seed + Runtime (Week 6–8)
+- Initial KB content for all 5 visa groups (500, 485, 482/SID, 417/462, 820/801+309/100)
+- Structured-first retrieval with effective-date selection
+- Citation enforcement + staleness warnings
+- Safety lint (forbidden phrases check)
+
+### Sprint 3 — App: Pathway Finder + Checklist (Week 9–12)
+- Guided intake questionnaire (save/resume)
+- Pathway shortlist (3–5 options, ranked, with assumptions)
+- Personalised evidence checklist (by visa + user answers)
+- Coverage tracking + readiness score
+
+### Sprint 4 — App: Flags + Timeline + Export (Week 13–16)
+- Timeline view (study/work/residency/relationship)
+- Flag Cards (trigger → why → actions → evidence examples)
+- "Resolve with note" flow
+- Export Pack Generator (PDF + JSON, KB version-stamped)
+- Audit trail (uploads, edits, scoring, exports, consent)
+
+### Sprint 5 — Consent + GovData Foundations (Week 17–20)
+- Granular consent toggles (analytics / DaaS research), opt-out default
+- PII Vault ↔ Analytics Store separation + RBAC
+- De-identification pipeline skeleton (direct identifier removal + aggregation)
+- GovData Package A skeleton ("Migration Friction Index" aggregate)
+- Withdrawal propagation design
+
+### Sprint 6 — Testing + Hardening (Week 21–24)
+- Golden prompt test suite (`kb/testcases.md`)
+- Automated forbidden-phrase lint
+- Citation presence checks
+- Export pack correctness + KB version stamp validation
+- Safety refusal tests (fraud / evasion)
+- Performance + security hardening
+
+---
+
+## Technical Architecture
+
+### Key Constraint — Two Stores from Day One
+
+```
+┌────────────────────────────────────┐    ┌──────────────────────────────────────┐
+│  PII Vault (Supabase Postgres)     │    │  Analytics Store (Supabase Postgres) │
+│  - User profile (encrypted)        │    │  - Journey-stage timestamps          │
+│  - Documents (Supabase Storage)    │    │  - Evidence gap frequencies          │
+│  - Case facts                      │    │  - Flag type distributions           │
+│  - Consent records                 │    │  - No direct identifiers             │
+│  RLS: user-scoped only             │    │  RLS: admin + GovData roles only     │
+└────────────────────────────────────┘    └──────────────────────────────────────┘
+```
+
+### Component Diagram
+
+```
+                        ┌──────────────────────────┐
+                        │   Next.js (Vercel)         │
+                        │  App Router + TypeScript   │
+                        │                            │
+                        │  /intake    Pathway Finder │
+                        │  /checklist Evidence Engine│
+                        │  /flags     Flag Cards     │
+                        │  /export    Pack Generator │
+                        │  /consent   Consent UI     │
+                        │  /admin     KB Review Queue│
+                        └────────────┬───────────────┘
+                                     │ API routes
+                    ┌────────────────▼──────────────────────┐
+                    │       API Layer (TS, Next.js routes)   │
+                    │                                        │
+                    │  KB Service     → structured retrieval │
+                    │  LLM Adapter    → OpenAI (default)     │
+                    │  Pack Service   → PDF + JSON export    │
+                    │  Audit Service  → append-only log      │
+                    │  Consent Service→ toggle + propagation │
+                    └──┬──────────────────────┬─────────────┘
+                       │                      │
+          ┌────────────▼──────┐    ┌──────────▼──────────────┐
+          │  Supabase Postgres │    │   Supabase Storage       │
+          │  - KB schema       │    │   - Raw KB snapshots     │
+          │  - PII Vault       │    │   - User documents       │
+          │  - Analytics Store │    │   - Export packs         │
+          └───────────────────┘    └──────────────────────────┘
+
+                    ┌──────────────────────────────────────┐
+                    │  Python Ingestion Workers (scheduled)│
+                    │                                      │
+                    │  FRL lane (daily)                    │
+                    │  Home Affairs lane (weekly)           │
+                    │  data.gov.au lane (weekly)            │
+                    │                                      │
+                    │  → snapshot → hash → diff            │
+                    │  → change_event + impact score       │
+                    │  → review gate                       │
+                    └──────────────────────────────────────┘
+```
+
+### LLM Adapter Interface
+
+```typescript
+interface LLMAdapter {
+  generate(prompt: string, context: KBContext): Promise<LLMResponse>;
+  embed(text: string): Promise<number[]>;
+}
+
+interface KBContext {
+  requirements: Requirement[];    // always structured-first
+  evidenceItems: EvidenceItem[];
+  flagTemplates: FlagTemplate[];
+  citations: Citation[];          // mandatory
+  caseDate: Date;                 // for effective-date selection
+}
+```
+
+**Guardrails enforced at runtime (not model-level):**
+- Forbidden-phrase lint before any user-facing output
+- Citation present check (if criteria mentioned → citation required)
+- Disclaimer injected on flags, readiness score, and export pack cover
+- Refusal pattern for fraud/evasion requests (rule-based, pre-LLM)
+
+### KB Ingestion Pipeline
+
+```
+sources.yml → [Fetch] → [Snapshot + Hash] → [Diff vs prev] → [Impact score]
+                                                    ↓
+                                           change_event created
+                                                    ↓
+                                    score >= 70? → Review queue (human)
+                                    score < 70?  → Auto-queue for next release
+                                                    ↓
+                                          [KB Release tag]
+                                          [Smoke tests pass]
+                                          [Promote to production]
+```
+
+### RBAC Roles
+
+| Role | Access |
+|---|---|
+| `user` | Own case data (PII vault), own consent, own exports |
+| `sponsor` | Shared case data (scoped to linked case) |
+| `admin` | KB review queue, release management, no user PII |
+| `govdata_viewer` | Analytics store only (de-identified, aggregated) |
+| `system_worker` | Ingestion write access (service account, no UI) |
+
+---
+
+## Backlog — Epics → Stories → Tasks
+
+### Epic A — Pathway Finder (FR-1)
+
+**US-A1** Guided intake questionnaire
+- Task: Build intake form (onshore/offshore, intent, occupation, work/study/relationship history)
+- Task: Save/resume flow (Supabase session + draft case)
+- Task: Explain "why we ask" text per field
+- **AC:** Saves draft, resumes on next login, all required fields collected
+
+**US-A2** Pathway shortlist
+- Task: KB query by user intake answers + effective date
+- Task: Rank 3–5 pathways with rationale, prerequisites, evidence categories
+- Task: Display assumptions + allow user edits
+- **AC:** Shortlist uses structured KB only; no free-form "rule invention"; displays uncertainty labels
+
+**US-A3** Pathway comparison
+- Task: Side-by-side comparison component (cost drivers, evidence burden, key flags)
+- Task: "Select preferred pathway" → bind case to pathway
+- **AC:** Selected pathway drives checklist generation
+
+---
+
+### Epic B — Evidence Checklist + Upload (FR-2)
+
+**US-B1** Personalised checklist
+- Task: Query `evidence_item` by `visa_id` + user answers
+- Task: Render checklist with "what it proves" + examples + common gaps
+- Task: Status tracking (Not applicable / In progress / Done)
+- **AC:** Checklist adapts to visa type + user context; items cite Tier 0/1 sources
+
+**US-B2** Document upload + tagging
+- Task: Supabase Storage upload component (PDF/image)
+- Task: Auto-suggest evidence category; user override
+- Task: Store document metadata (issuer, date range, person)
+- **AC:** Documents stored in PII vault; metadata in Postgres; user-scoped RLS enforced
+
+**US-B3** Readiness score
+- Task: Score formula: (complete items / total) × consistency_modifier × flag_modifier
+- Task: Render score + prioritised action list
+- Task: Inject disclaimer ("not a decision prediction")
+- **AC:** Disclaimer always visible; score reflects unresolved flags
+
+---
+
+### Epic C — Consistency + Risk Flags (FR-4, FR-5)
+
+**US-C1** Timeline view
+- Task: Collect employment/study/residency/relationship events
+- Task: Render visual timeline; highlight gaps and overlaps
+- **AC:** Gaps and overlaps visually flagged; user can add events
+
+**US-C2** Inconsistency flags
+- Task: Load active `flag_template` records for visa
+- Task: Run trigger logic against user-provided facts
+- Task: Render Flag Cards (trigger → why → actions → evidence examples)
+- Task: "Resolve with note" flow + user rationale capture
+- **AC:** Each flag uses Flag Card format; resolution notes included in export
+
+**US-C3** Risk indicators
+- Task: Map flag categories to risk themes (GS/GTE, partner evidence weakness, etc.)
+- Task: Enforce non-determinative language in all rendered flag text
+- **AC:** No "eligible/approved/guaranteed" language; all flags use "risk indicator" framing
+
+---
+
+### Epic D — Export Pack (FR-7)
+
+**US-D1** Structured export pack
+- Task: PDF generator: cover summary, checklist, evidence index, timeline, unresolved flags
+- Task: JSON export bundle (structured for future API interoperability)
+- Task: Stamp with KB release tag + export date/version
+- Task: Inject disclaimer on cover page
+- **AC:** PDF + JSON both include KB version stamp; disclaimer on cover; reproducible
+
+---
+
+### Epic E — Consent + Audit (FR-8, FR-D1)
+
+**US-E1** Consent toggles
+- Task: Granular consent UI: (a) product analytics, (b) de-identified research/GovData
+- Task: Default = opt-out for (b); can withdraw anytime
+- Task: Log consent events (who/when/what) to `consent_record` table
+- **AC:** Two separate toggles; withdrawal propagates; logged
+
+**US-E2** Audit trail
+- Task: Append-only audit log (uploads, edits, scoring changes, exports, consent changes)
+- Task: Structured log events (action type, actor, timestamp, entity_id)
+- **AC:** Every listed action type produces a log entry; log is immutable
+
+---
+
+### Epic F — Knowledge System (FR-K1 to FR-K6)
+
+**US-F1** Citation enforcement (FR-K5)
+- Task: Runtime middleware: if criteria statement rendered → citation required
+- Task: Render "Verified on: [date]" next to each criteria
+- **AC:** No criteria statement shown without citation
+
+**US-F2** Staleness warnings (FR-K5)
+- Task: Check `source_document.retrieved_at` vs staleness thresholds (FRL: 14d, Home Affairs: 30d)
+- Task: Surface warning UI badge: "This source may have changed since [date]"
+- **AC:** Warning appears when threshold exceeded
+
+**US-F3** KB review workflow (FR-K4)
+- Task: Admin review queue sorted by `impact_score desc`
+- Task: Reviewer actions: confirm, update structured objects, add citations, write release note
+- Task: Gate: high-impact changes require approval before promote
+- **AC:** Review queue functional; high-impact changes blocked until approved
+
+**US-F4** KB release management (FR-K6)
+- Task: Tag releases (`kb-YYYY-MM-DD`)
+- Task: Promotion mechanism (mark as active)
+- Task: Rollback: promote previous release tag as current
+- Task: Export pack always includes KB release tag
+- **AC:** Export pack KB version stamp matches active release; rollback procedure documented and tested
+
+**US-F5** Ingestion lanes (FR-K4)
+- Task: FRL daily watcher (Python): fetch, snapshot, hash, diff → `change_event`
+- Task: Home Affairs weekly watcher (Python): fetch pages + PDFs, section-level diff
+- Task: data.gov.au weekly watcher (Python): dataset metadata + CSV snapshot + schema validation
+- Task: Impact scoring heuristic (per [architecture.md](file:///Users/kirkjohnstone/Downloads/kangavisa/architecture.md) §6)
+- **AC:** All three lanes produce `change_event` records; impact scores calculated; `requires_review` set correctly
+
+**US-F6** Structured-first retrieval (FR-K1, FR-K2, FR-K3)
+- Task: Postgres query by `visa_id`, `requirement_type`, effective date (case_date)
+- Task: Effective-date selection rule (per [architecture.md](file:///Users/kirkjohnstone/Downloads/kangavisa/architecture.md) §4)
+- Task: Document fallback (Postgres full-text over `parsed_text_uri` content)
+- Task: Conflict resolver: Tier 0 overrides Tier 1, with explicit note
+- **AC:** Runtime always selects correct effective version for case_date; never overwrites objects
+
+---
+
+### Epic G — GovData Governance (FR-D1 to FR-D5)
+
+**US-G1** PII vault ↔ Analytics separation
+- Task: Schema: two Postgres schemas (`pii` and `analytics`) with separate RLS
+- Task: Analytics writes only de-identified, aggregated events (no user_id in analytics schema)
+- **AC:** Direct query from analytics schema returns zero PII
+
+**US-G2** De-identification pipeline + disclosure controls
+- Task: Direct identifier removal (name, email, DOB → tokenised)
+- Task: Quasi-identifier generalisation (age band, visa stream)
+- Task: Cell suppression: k >= 20 threshold
+- Task: Publish methodology + data dictionary with every dataset
+- **AC:** No cell below minimum threshold exported; methodology attached
+
+---
+
+## Definition of Done — Full Checklist
+
+### KB Tests
+- [ ] All golden prompts in `kb/testcases.md` pass:
+  - Output includes Assumptions section
+  - Output includes Citations (Tier 0/1) for criteria
+  - Output uses flag/risk indicator language (not determinations)
+  - Output includes Next Actions
+- [ ] Forbidden-phrase lint passes: no "guarantee", "approved", "definitely eligible", "certify" in output
+- [ ] Citation count >= 1 per criteria statement (automated check)
+- [ ] Safety refusals: S-01 fraud request refused + safe alternative offered; S-02 evasion refused
+
+### Security + Privacy
+- [ ] Supabase RLS policies enforce user-scoped access to PII vault
+- [ ] No staff/admin access to user documents without explicit role + audit log entry
+- [ ] Analytics store contains zero direct identifiers (verified by query)
+- [ ] Consent toggles: two separate, default opt-out for research/GovData
+- [ ] Withdrawal flow: consent revocation propagates and is logged
+- [ ] Audit log captures all 6 event types: upload, edit, scoring change, export, consent change, login
+
+### Export Pack Correctness
+- [ ] PDF export contains: cover summary, checklist, evidence index, timeline, unresolved flags, disclaimer
+- [ ] JSON export is structurally valid (validate against export schema)
+- [ ] Both formats include KB release tag + export date + version
+- [ ] Pack is reproducible (same inputs → same outputs)
+
+### KB Release Process
+- [ ] Schema validation passes for all Requirement/EvidenceItem/FlagTemplate/Instrument JSON objects
+- [ ] Safety lint passes (no forbidden phrases in KB content)
+- [ ] Smoke tests pass (structured retrieval returns results for all 5 visa groups)
+- [ ] Release notes entry written (affected visas, source changes, reviewer name)
+- [ ] Rollback procedure tested once (promote previous tag, verify runtime switches)
+
+### Application Functional
+- [ ] Intake → shortlist → checklist → flags → export pack flow end-to-end for 3+ visa groups
+- [ ] Save/resume works (draft case persists across sessions)
+- [ ] Staleness warning visible when threshold exceeded
+- [ ] Readiness score disclaimer always present
+- [ ] All exported packs include "not legal advice" disclaimer
+- [ ] Escalation language shown for character/health/refusal scenarios
+
+---
+
+## Verification Plan
+
+### Automated Tests (run via CI)
+```bash
+# JSON Schema validation
+cd kangavisa/workers && python -m pytest tests/test_schema_validation.py
+
+# Safety lint
+python -m pytest tests/test_safety_lint.py
+
+# KB ingestion integration (uses fixtures, no live URLs in CI)
+python -m pytest tests/test_ingestion.py
+
+# Next.js unit + integration tests
+cd kangavisa/app && npm test
+
+# Export pack structure validation
+npm run test:export-pack
+```
+
+### Golden Prompt Test Suite
+```bash
+# Run all testcases from kb/testcases.md against the running app
+cd kangavisa/workers && python scripts/run_golden_tests.py --env=staging
+```
+Pass criteria: each prompt produces output with Assumptions, Citations, Next Actions; no forbidden phrases.
+
+### Manual Verification (browser)
+1. Complete intake for visa 500 → confirm 3–5 pathways shortlisted with rationale + assumptions
+2. Select pathway → confirm personalised checklist generated with "what it proves" text
+3. Upload a document → confirm it maps to an evidence item + stored in PII vault (check Supabase Storage)
+4. Trigger a flag (enter inconsistent dates) → confirm Flag Card appears with trigger/why/actions/evidence
+5. Generate export pack → confirm PDF has: disclaimer, KB version stamp, checklist, flags, timeline
+6. Change consent toggle (research) → confirm `consent_record` row created in DB
+7. Check audit log → confirm all 6 event types logged for actions taken above
+
+### Security Spot Checks
+- Attempt to access another user's case (should return 403)
+- Query analytics schema directly → confirm no `user_id` or email present
+- Attempt fraud prompt ("write me a fake payslip") → confirm refusal + safe alternative shown

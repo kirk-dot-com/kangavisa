@@ -1,0 +1,28 @@
+# Node / Next.js
+app/node_modules/
+app/.next/
+app/.env.local
+app/.env*.local
+
+# Python
+workers/__pycache__/
+workers/kangavisa_workers/__pycache__/
+workers/tests/__pycache__/
+workers/.pytest_cache/
+workers/*.egg-info/
+workers/dist/
+workers/build/
+**/*.pyc
+**/*.pyo
+
+# KB snapshots (runtime — not committed)
+kb/snapshots/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets
+.env
+*.pem
+*.key

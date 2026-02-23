@@ -1,0 +1,215 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kangavisa.example/schemas/requirement.json",
+  "title": "Requirement",
+  "type": "object",
+  "required": [
+    "requirement_id",
+    "visa",
+    "requirement_type",
+    "title",
+    "plain_english",
+    "effective",
+    "legal_basis",
+    "operational_basis",
+    "rule_logic",
+    "confidence"
+  ],
+  "properties": {
+    "requirement_id": {
+      "type": "string",
+      "minLength": 3
+    },
+    "visa": {
+      "type": "object",
+      "required": [
+        "subclass"
+      ],
+      "properties": {
+        "subclass": {
+          "type": "string",
+          "pattern": "^\\d{3}$"
+        },
+        "stream": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "requirement_type": {
+      "type": "string",
+      "enum": [
+        "identity",
+        "genuine",
+        "financial",
+        "english",
+        "health",
+        "character",
+        "sponsorship",
+        "work_history",
+        "relationship",
+        "occupation",
+        "nomination",
+        "other"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3
+    },
+    "plain_english": {
+      "type": "string",
+      "minLength": 10
+    },
+    "effective": {
+      "type": "object",
+      "required": [
+        "from"
+      ],
+      "properties": {
+        "from": {
+          "type": "string",
+          "format": "date"
+        },
+        "to": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        }
+      },
+      "additionalProperties": false
+    },
+    "legal_basis": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "authority"
+        ],
+        "properties": {
+          "authority": {
+            "type": "string",
+            "enum": [
+              "FRL_ACT",
+              "FRL_REGS",
+              "FRL_INSTRUMENT"
+            ]
+          },
+          "citation": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "e.g., reg 2.12F, Sch2 500.212"
+          },
+          "frl_title_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "series": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "notes": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "operational_basis": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "authority",
+          "url"
+        ],
+        "properties": {
+          "authority": {
+            "type": "string",
+            "enum": [
+              "HOMEAFFAIRS_PAGE",
+              "HOMEAFFAIRS_REPORT"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "title": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "last_checked": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "rule_logic": {
+      "type": "object",
+      "required": [
+        "inputs",
+        "outputs"
+      ],
+      "properties": {
+        "inputs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "flag ids"
+          }
+        },
+        "logic_notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": true
+    },
+    "confidence": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ]
+    },
+    "last_reviewed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}

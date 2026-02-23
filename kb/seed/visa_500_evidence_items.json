@@ -1,0 +1,62 @@
+[
+    {
+        "evidence_id": "EV-500-GS-COE-001",
+        "requirement_id": "REQ-500-GS-001",
+        "label": "Confirmation of Enrolment (CoE)",
+        "what_it_proves": "Demonstrates that you are enrolled in a registered course with a current CRICOS-registered provider, which is a pre-condition for the Student visa and supports your genuine student intent by anchoring you to a specific, approved course.",
+        "examples": [
+            "CoE letter issued by the university or college listing your course name, CRICOS code, commencement date, and duration",
+            "CoE from PRISMS portal (government-issued confirmation)"
+        ],
+        "common_gaps": [
+            "CoE issued before course has been formally confirmed — reissue required if course details change",
+            "CoE for a different course than the one being applied for",
+            "CoE issued more than 12 months before application submission without explanation",
+            "No CRICOS code visible on the document"
+        ],
+        "priority": 1,
+        "effective": {
+            "from": "2016-11-19",
+            "to": null
+        },
+        "legal_basis": [
+            {
+                "frl_title_id": "F2022C00125",
+                "series": "Migration Regulations 1994",
+                "citation": "Schedule 2, clause 500.215 — ESOS Act enrolment requirement"
+            }
+        ]
+    },
+    {
+        "evidence_id": "EV-500-ENG-TEST-001",
+        "requirement_id": "REQ-500-ENG-001",
+        "label": "Approved English Language Test Result",
+        "what_it_proves": "Demonstrates you meet the English proficiency threshold for your course type and provider. Accepted tests include IELTS Academic, TOEFL iBT, PTE Academic, Cambridge C1 Advanced / C2 Proficiency, and OET.",
+        "examples": [
+            "IELTS Academic Test Report Form (TRF) with overall band score and all sub-scores visible",
+            "TOEFL iBT score report from ETS with My Best Scores or single-sitting scores",
+            "PTE Academic Score Report from Pearson",
+            "Cambridge C1 Advanced or C2 Proficiency Certificate of Results",
+            "OET Result Letter (for health professions pathway)"
+        ],
+        "common_gaps": [
+            "Test result more than 3 years old at the expected date of decision — rebook required",
+            "Using IELTS General Training instead of IELTS Academic",
+            "Sub-band score below minimum even when overall score passes — all bands must individually meet threshold",
+            "No test booking made yet — creates timeline risk if result takes 2–4 weeks",
+            "PTE or TOEFL scores not meeting all sub-score minimums (listening, reading, writing, speaking treated separately)"
+        ],
+        "priority": 1,
+        "effective": {
+            "from": "2019-07-01",
+            "to": null
+        },
+        "legal_basis": [
+            {
+                "frl_title_id": "F2019L01030",
+                "series": "Migration (LIN 19/051 — English Language Requirements for the Student Visa) Instrument 2019",
+                "citation": "LIN 19/051 — approved test types and minimum scores"
+            }
+        ]
+    }
+]

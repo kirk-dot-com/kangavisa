@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kangavisa.example/schemas/instrument.json",
+  "title": "Instrument",
+  "type": "object",
+  "required": [
+    "frl_title_id",
+    "name",
+    "effective",
+    "status",
+    "source"
+  ],
+  "properties": {
+    "frl_title_id": {
+      "type": "string",
+      "pattern": "^[A-Z]\\d{4}[A-Z]\\d{5}$"
+    },
+    "series": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "e.g., LIN 24/022"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 3
+    },
+    "enabling_authority": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "effective": {
+      "type": "object",
+      "required": [
+        "from"
+      ],
+      "properties": {
+        "from": {
+          "type": "string",
+          "format": "date"
+        },
+        "to": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        }
+      },
+      "additionalProperties": false
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "in_force",
+        "repealed",
+        "superseded"
+      ]
+    },
+    "supersedes": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "frl_title_id of instrument superseded"
+    },
+    "repealed_by": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "frl_title_id of repealing instrument"
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "canonical_url",
+        "retrieved_at"
+      ],
+      "properties": {
+        "canonical_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "retrieved_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "content_hash": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_doc_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

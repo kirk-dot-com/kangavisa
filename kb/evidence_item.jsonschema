@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kangavisa.example/schemas/evidence_item.json",
+  "title": "EvidenceItem",
+  "type": "object",
+  "required": [
+    "evidence_id",
+    "requirement_id",
+    "label",
+    "what_it_proves",
+    "examples",
+    "common_gaps",
+    "priority",
+    "effective"
+  ],
+  "properties": {
+    "evidence_id": {
+      "type": "string",
+      "minLength": 3
+    },
+    "requirement_id": {
+      "type": "string",
+      "minLength": 3
+    },
+    "label": {
+      "type": "string",
+      "minLength": 3
+    },
+    "what_it_proves": {
+      "type": "string",
+      "minLength": 10
+    },
+    "examples": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "common_gaps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "priority": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "effective": {
+      "type": "object",
+      "required": [
+        "from"
+      ],
+      "properties": {
+        "from": {
+          "type": "string",
+          "format": "date"
+        },
+        "to": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        }
+      },
+      "additionalProperties": false
+    },
+    "legal_basis": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "frl_title_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "series": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "citation": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "default": []
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,56 @@
+# kb/sources.yml
+# Initial watch list for KangaVisa KB ingestion (MVP 5: 500, 485, 482/SID, Partner 820/801+309/100, WHM 417/462)
+# Notes:
+# - Keep this list curated; do not crawl the entire web.
+# - Prefer Tier 0 (FRL) for controlling rules, Tier 1 (Home Affairs) for operational guidance.
+# - data.gov.au feeds support GovData (DaaS) metrics.
+
+tiers:
+  tier0_frl:
+    description: "Authoritative legal sources (Act/Regs/Instruments) from legislation.gov.au"
+    urls:
+      # Core framework (add exact Act/Regs URLs your team standardises on)
+      - https://www.legislation.gov.au/Details/C2004A01381   # Migration Act 1958 (may redirect to latest compilation)
+      - https://www.legislation.gov.au/F1996B03551/latest/details  # Migration Regulations 1994 (latest)
+      # Student (500) instruments (examples; extend with successors as detected)
+      - https://www.legislation.gov.au/Details/F2023C00940         # LIN 19/198 financial capacity (500/590) compilation
+      - https://www.legislation.gov.au/F2024L00366/latest/details  # LIN 24/022 (Student English tests/exemptions) (example; track successors)
+      # Temporary Graduate (485) English instrument (example; track successors)
+      - https://www.legislation.gov.au/F2024L00364/latest/details  # LIN 24/021 (485 English tests/exemptions)
+      # WHM (417/462) specified work/areas instrument (example; track successors)
+      - https://www.legislation.gov.au/F2024L00135                 # Specified work/areas (WHM) (example; track successors)
+
+  tier1_home_affairs:
+    description: "Operational guidance pages and program reporting (change often)"
+    urls:
+      # Study / Graduate stats hub (reports linked)
+      - https://www.homeaffairs.gov.au/research-and-statistics/statistics/visa-statistics/study
+      # Skilled temporary program report series (482/SID reporting)
+      - https://www.homeaffairs.gov.au/research-and-stats/files/temp-res-skilled-report-summary-30-jun-2025.pdf
+      # Migration Program / Trends reporting (broad context + GovData narratives)
+      - https://www.homeaffairs.gov.au/research-and-stats/files/report-migration-program-2024-25.pdf
+      - https://www.homeaffairs.gov.au/research-and-stats/files/migration-trends-2024-25.pdf
+      # Legislative instruments page (occupation instrument pointers)
+      - https://immi.homeaffairs.gov.au/work-in-australia/Pages/Legislative-instruments.aspx/1000
+      # Data requests (optional, for understanding extra releases)
+      - https://www.homeaffairs.gov.au/access-and-accountability/freedom-of-information/data-requests
+
+  tier1_datagov:
+    description: "Public datasets for GovData (DaaS) and monitoring"
+    urls:
+      - https://data.gov.au/data/dataset/student-visas
+      - https://data.gov.au/data/en/dataset/temporary-graduate-visas
+      - https://www.data.gov.au/data/dataset/visa-working-holiday-maker
+
+polling:
+  frl_daily: true
+  homeaffairs_weekly: true
+  datagov_weekly: true
+
+review_gates:
+  high_impact_instrument_keywords:
+    - english
+    - financial
+    - occupation
+    - specified work
+    - exemptions

@@ -1,0 +1,114 @@
+[
+    {
+        "requirement_id": "REQ-500-GS-001",
+        "visa": {
+            "subclass": "500",
+            "stream": null
+        },
+        "requirement_type": "genuine",
+        "title": "Genuine Student Requirement",
+        "plain_english": "You must intend to stay in Australia temporarily and genuinely engage with your studies. Decision makers assess this by weighing your circumstances, including your immigration and compliance history, ties to home country, economic situation, and course consistency with your future plans.",
+        "effective": {
+            "from": "2016-11-19",
+            "to": null
+        },
+        "legal_basis": [
+            {
+                "authority": "FRL_REGS",
+                "citation": "Schedule 2, clause 500.212",
+                "frl_title_id": "F2022C00125",
+                "series": "Migration Regulations 1994",
+                "notes": "Genuine Student condition introduced 2016. Previously 'Genuine Temporary Entrant' (GTE)."
+            },
+            {
+                "authority": "FRL_ACT",
+                "citation": null,
+                "frl_title_id": "C2024C00195",
+                "series": "Migration Act 1958",
+                "notes": null
+            }
+        ],
+        "operational_basis": [
+            {
+                "authority": "HOMEAFFAIRS_PAGE",
+                "url": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500/temporary-student",
+                "title": "Student visa (subclass 500) — applying from outside Australia",
+                "last_checked": "2025-02-01"
+            }
+        ],
+        "rule_logic": {
+            "inputs": [
+                "immigration_history",
+                "compliance_record",
+                "home_country_ties",
+                "financial_circumstances",
+                "course_relevance_to_career",
+                "previous_study_completed"
+            ],
+            "outputs": [
+                "FLAG-500-GS-TIES",
+                "FLAG-500-GS-COURSE-MISMATCH",
+                "FLAG-500-GS-COMPLIANCE"
+            ],
+            "logic_notes": "Balance-of-factors test. No single factor is determinative. Officers must consider the totality. KangaVisa must NOT frame this as a pass/fail threshold."
+        },
+        "confidence": "high",
+        "last_reviewed_at": "2025-02-01T00:00:00Z"
+    },
+    {
+        "requirement_id": "REQ-500-ENG-001",
+        "visa": {
+            "subclass": "500",
+            "stream": null
+        },
+        "requirement_type": "english",
+        "title": "English Language Proficiency",
+        "plain_english": "You must demonstrate sufficient English language ability to undertake your chosen course. Acceptable evidence includes an approved English test (IELTS, TOEFL iBT, PTE Academic, Cambridge C1/C2, OET), or study in an approved English-speaking country within the last two years. Minimum scores vary by course and provider type.",
+        "effective": {
+            "from": "2019-07-01",
+            "to": null
+        },
+        "legal_basis": [
+            {
+                "authority": "FRL_REGS",
+                "citation": "Schedule 2, clause 500.213; Schedule 8, clause 8517",
+                "frl_title_id": "F2022C00125",
+                "series": "Migration Regulations 1994",
+                "notes": "Score thresholds set by instrument. Instrument details captured in instrument.jsonschema objects."
+            },
+            {
+                "authority": "FRL_INSTRUMENT",
+                "citation": "LIN 19/051",
+                "frl_title_id": "F2019L01030",
+                "series": "Migration (LIN 19/051 — English Language Requirements for the Student Visa) Instrument 2019",
+                "notes": null
+            }
+        ],
+        "operational_basis": [
+            {
+                "authority": "HOMEAFFAIRS_PAGE",
+                "url": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500/temporary-student#Eligibility",
+                "title": "Student visa 500 — Eligibility — English language",
+                "last_checked": "2025-02-01"
+            }
+        ],
+        "rule_logic": {
+            "inputs": [
+                "english_test_type",
+                "english_test_score",
+                "english_test_date",
+                "course_type",
+                "provider_type",
+                "previous_study_english_country"
+            ],
+            "outputs": [
+                "FLAG-500-ENG-SCORE-LOW",
+                "FLAG-500-ENG-EXPIRED",
+                "FLAG-500-ENG-EXEMPTION"
+            ],
+            "logic_notes": "Test results must be no more than 3 years old at time of decision. Minimum band scores vary by provider and course level — see Instrument LIN 19/051."
+        },
+        "confidence": "high",
+        "last_reviewed_at": "2025-02-01T00:00:00Z"
+    }
+]
