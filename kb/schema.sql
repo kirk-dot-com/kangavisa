@@ -99,10 +99,12 @@ CREATE TABLE IF NOT EXISTS visa_subclass (
   stream               TEXT NULL,
   audience             kb_audience NOT NULL DEFAULT 'B2C',
   canonical_info_url   TEXT NULL,
-  last_verified_at     TIMESTAMPTZ NULL,
-
-  CONSTRAINT visa_subclass_code_stream_uk UNIQUE (subclass_code, COALESCE(stream,''))
+  last_verified_at     TIMESTAMPTZ NULL
 );
+
+-- COALESCE in a UNIQUE constraint isn't valid in Postgres; use a unique index instead
+CREATE UNIQUE INDEX IF NOT EXISTS visa_subclass_code_stream_uk
+  ON visa_subclass(subclass_code, COALESCE(stream, ''));
 
 CREATE INDEX IF NOT EXISTS idx_visa_subclass_code ON visa_subclass(subclass_code);
 
