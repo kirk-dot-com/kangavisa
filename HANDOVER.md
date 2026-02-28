@@ -32,34 +32,55 @@
 
 ---
 
+## Session: 2026-03-01
+
+### What we achieved
+
+#### 1. Supabase project wired up (Sprint 0 remainder — complete)
+
+| Area | Status |
+|---|---|
+| Supabase project created (AU region, RLS enabled by default) | ✅ |
+| `kb/schema.sql` fixed (COALESCE in UNIQUE → unique index) + applied | ✅ |
+| All KB tables confirmed live (`source_document`, `instrument`, `visa_subclass`, `requirement`, `evidence_item`, `change_event`, `flag_template`, `kb_release`) | ✅ |
+| `app/.env.local` populated (URL + publishable key + secret key) | ✅ |
+| `@supabase/supabase-js` installed | ✅ |
+| `app/lib/supabase.ts` — browser client (publishable key, RLS enforced) | ✅ |
+| `app/lib/supabase-admin.ts` — server client (secret key, bypasses RLS) | ✅ |
+| `tsc --noEmit` — zero errors | ✅ |
+| Smoke test: all tables reachable via live Supabase connection | ✅ |
+
+#### 2. Decisions made this session
+
+- Supabase now uses new key naming: **Publishable key** (≈ anon) and **Secret key** (≈ service_role)
+- `supabase-admin.ts` is server-only — must never be imported in Client Components
+
+---
+
 ### Next session — where to pick up
 
-**Priority 1 — Supabase project (Sprint 0 remainder)**
-1. Create Supabase project (AU region) — Auth, Postgres, Storage
-2. Copy `app/.env.local.example` → `app/.env.local` and fill in Supabase + OpenAI keys
-3. Run `kb/schema.sql` against dev Postgres (Supabase SQL Editor)
-4. Confirm `@supabase/supabase-js` auth flow works in `app/`
-
-**Priority 2 — Sprint 1: Real ingestion lanes**
+**Priority 1 — Sprint 1: Real ingestion lanes**
 - Upgrade FRL watcher: write `change_event` rows to Supabase (not just stub dicts)
+  - Add `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` to workers environment
+  - Update `frl_watcher.py` to use `httpx` + Supabase REST/client to insert rows
 - Add Home Affairs weekly watcher (fetch pages + PDFs, section-level diff)
 - Add data.gov.au weekly watcher (dataset metadata + CSV snapshot)
 - Impact scoring heuristic (per `kb/architecture.md` §6)
 
-**Priority 3 — CI green on GitHub**
-- Verify GitHub Actions CI ran green on first push (check Actions tab)
+**Priority 2 — CI green on GitHub**
+- Verify GitHub Actions CI ran green (check Actions tab on GitHub)
 - Fix any lint/tsc issues surfaced by CI
 
 ---
 
 ### Open questions / decisions pending
-- None — stack locked, Sprint 0 complete. All decisions captured above.
+- None — Supabase fully wired. Sprint 1 is next.
 
 ---
 
 ### How to use this file
 At the end of each working session, update this file:
-1. Replace the date header with today's date
+1. Add a new session block with today's date
 2. Update "What we achieved" with session outcomes
 3. Update "Next session — where to pick up" with revised priorities
 4. Note any new open questions or decisions made
