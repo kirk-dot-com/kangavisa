@@ -157,3 +157,78 @@ print(result)
 ---
 
 *Next sprint walkthrough will be added here when Sprint 2 completes.*
+
+---
+
+## Sprint 2 — KB Content Seed + Runtime Retrieval + Safety Lint
+**Completed:** 2026-03-01  
+**Commits:** `31a4071`, `03f7602`, `f2c1f04` on `main`
+
+### User stories delivered
+
+| Story | Description | Status |
+|---|---|---|
+| US-F6 | Structured-first retrieval — requirements, evidence, flags | ✅ |
+| US-C3 | Safety lint — forbidden phrases + fraud/evasion refusal | ✅ |
+| FR-K1 | Requirement objects for all 5 visa groups | ✅ |
+| FR-K2 | Evidence items for all 5 visa groups | ✅ |
+| FR-K3 | Flag templates for visa 500 | ✅ |
+| FR-K5 | Citation enforcement + staleness warnings | ✅ |
+
+### What was built
+
+#### KB Seed (`kb/seed/`)
+
+| File | Visa | Content |
+|---|---|---|
+| `visa_500_requirements_extra.json` | 500 | Financial, health, character requirements |
+| `visa_500_flags.json` | 500 | 3 flag templates (GS-TIES, COURSE-MISMATCH, ENG-SCORE-LOW) |
+| `visa_485_requirements.json` + `evidence_items.json` | 485 | GTE, qualification 6-month rule, English |
+| `visa_482_requirements.json` + `evidence_items.json` | 482 SID | Nomination (TSMIT), sponsorship (SAF levy), occupation (ANZSCO list) |
+| `visa_417_requirements.json` + `evidence_items.json` | 417 | Genuine intention, specified work (88/179 days), financial |
+| `visa_820_requirements.json` + `evidence_items.json` | 820/309 | Relationship (4 pillars), sponsor, health, character |
+
+All seed objects carry `effective_from`, `legal_basis` (Tier 0/1), and `rule_logic`.
+**Totals:** 15 requirements · 20 evidence items · 3 flag templates
+
+#### `workers/kangavisa_workers/seed_loader.py`
+Idempotent upsert: `visa_subclass → requirement → evidence_item → flag_template`. Supports `--dry-run`.
+
+#### `app/lib/kb-service.ts`
+TypeScript retrieval service with architecture.md §4.2 effective-date selection.
+`getRequirements()` · `getEvidenceItems()` · `getFlagTemplates()` · `getKBPackage()`
+
+#### `app/lib/safety-lint.ts`
+- **Forbidden phrases:** 15 patterns (no determinative/guarantee language)
+- **Fraud/evasion:** 13 patterns → returns `FRAUD_REFUSAL_TEXT` (S-01, S-02)
+- **Citation enforcement:** criteria statements must have non-empty citation
+
+#### `app/lib/staleness-checker.ts`
+FRL = 14 days · Home Affairs / data.gov.au = 30 days → `StalenessWarning[]` for UI banners.
+
+### Tests
+```
+Python (pytest):   62 / 62  (+14 test_seed_loader.py)
+Jest (TypeScript): 19 / 19  (__tests__/safety-lint.test.ts)
+tsc --noEmit:       0 errors
+```
+
+### How to verify
+```bash
+cd workers && python3 -m pytest tests/ -v            # 62 passed
+cd app    && npx tsc --noEmit                        # 0 errors
+cd app    && npm test                                # 19 passed
+
+# Dry-run seed loader (no Supabase needed)
+cd workers && python3 -m kangavisa_workers.seed_loader --dry-run
+```
+
+### Key decisions
+- **`_extra` suffix** for supplementary visa 500 requirements — preserves existing seed files already validated by schema tests
+- **`__tests__/` excluded from tsconfig** — ts-jest handles typing at Jest runtime; avoids Next.js tsconfig conflicts with Jest globals
+- **`kb-service.ts` is server-only** — service role key; never import in Client Components
+- **`staleness-checker.ts` is pure** — no DB calls; takes `SourceDocumentStub[]` for easy unit testing
+
+---
+
+*Next sprint walkthrough will be added here when Sprint 3 completes.*
