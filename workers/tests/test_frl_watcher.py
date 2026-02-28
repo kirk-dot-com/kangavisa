@@ -140,15 +140,16 @@ class TestCreateChangeEvent:
                     "snapshot_path", "requires_review", "impact_score", "detected_at"):
             assert key in event, f"Missing key: {key}"
 
-    def test_requires_review_is_false_in_skeleton(self):
-        """Sprint 0 skeleton — requires_review must be False (impact scoring not yet built)."""
+    def test_requires_review_is_a_bool(self):
+        """Sprint 1: requires_review is now set by impact scoring (bool, not always False)."""
         h1 = hash_content(FRL_FIXTURE_HTML)
         h2 = hash_content(FRL_FIXTURE_HTML_CHANGED)
         event = create_change_event("frl_act", prev_hash=h1, curr_hash=h2, snapshot_path="/snap.bin")
-        assert event["requires_review"] is False
+        assert isinstance(event["requires_review"], bool)
 
-    def test_impact_score_is_none_in_skeleton(self):
-        """Sprint 0 skeleton — impact_score must be None (heuristic not yet implemented)."""
+    def test_impact_score_is_none_in_base_change_event(self):
+        """create_change_event() is a pure struct builder; impact_score stays None here.
+        Scoring is done by impact_scorer.score() in run_frl_watch_and_persist()."""
         h1 = hash_content(FRL_FIXTURE_HTML)
         h2 = hash_content(FRL_FIXTURE_HTML_CHANGED)
         event = create_change_event("frl_act", prev_hash=h1, curr_hash=h2, snapshot_path="/snap.bin")
