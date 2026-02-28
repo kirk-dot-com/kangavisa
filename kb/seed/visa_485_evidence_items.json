@@ -1,0 +1,72 @@
+[
+    {
+        "evidence_id": "EV-485-QUAL-DEGREE",
+        "requirement_id": "REQ-485-QUAL-001",
+        "label": "Award certificate or testamur",
+        "description": "Official award certificate or testamur from your Australian education provider confirming completion of your CRICOS-registered qualification.",
+        "priority": 1,
+        "what_it_proves": "Confirms completion of an eligible qualification at an Australian institution.",
+        "common_gaps": [
+            "Certificate not yet issued — use official completion letter with expected award date",
+            "Name on certificate differs from passport name",
+            "Qualification not CRICOS registered"
+        ],
+        "format_notes": "Original or certified copy. If name differs from passport, include a name change document.",
+        "effective": {
+            "from": "2013-11-16",
+            "to": null
+        }
+    },
+    {
+        "evidence_id": "EV-485-QUAL-TRANSCRIPT",
+        "requirement_id": "REQ-485-QUAL-001",
+        "label": "Official academic transcript",
+        "description": "Official academic transcript issued by your Australian education provider showing all subjects completed and final grades.",
+        "priority": 1,
+        "what_it_proves": "Provides detailed evidence of course completion and study duration to meet the 2-year minimum study requirement.",
+        "common_gaps": [
+            "Unofficial transcript printed from student portal — must be official sealed copy",
+            "Credits from overseas transferred — must show Australian study periods clearly"
+        ],
+        "format_notes": "Must be an official sealed or stamped copy. Electronic versions may be accepted if issued by the institution directly.",
+        "effective": {
+            "from": "2013-11-16",
+            "to": null
+        }
+    },
+    {
+        "evidence_id": "EV-485-ENG-TEST",
+        "requirement_id": "REQ-485-ENG-001",
+        "label": "English language test result",
+        "description": "Test report form from an approved English language test (IELTS, TOEFL iBT, PTE Academic, Cambridge C1/C2, or OET) showing minimum competent English scores.",
+        "priority": 1,
+        "what_it_proves": "Demonstrates the applicant meets the English language requirement for subclass 485.",
+        "common_gaps": [
+            "Test result more than 3 years old at time of decision",
+            "One or more band scores below the minimum threshold",
+            "Test type not approved for migration purposes"
+        ],
+        "format_notes": "Must be the original test report form. Check the current instrument for minimum band scores applicable to 485.",
+        "effective": {
+            "from": "2020-07-01",
+            "to": null
+        }
+    },
+    {
+        "evidence_id": "EV-485-ECOEI",
+        "requirement_id": "REQ-485-QUAL-001",
+        "label": "eCoE (Electronic Confirmation of Enrolment)",
+        "description": "Electronic Confirmation of Enrolment from your CRICOS-registered education provider confirming your course details and study period.",
+        "priority": 2,
+        "what_it_proves": "Confirms your enrolment in a CRICOS-registered course — used to verify eligibility period and course duration.",
+        "common_gaps": [
+            "eCoE expired or cancelled — request an updated eCoE from your provider",
+            "Course listed on eCoE is not CRICOS registered"
+        ],
+        "format_notes": "Issued by education provider electronically. Applicant should have a copy from their student portal.",
+        "effective": {
+            "from": "2013-11-16",
+            "to": null
+        }
+    }
+]

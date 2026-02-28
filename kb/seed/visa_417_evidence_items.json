@@ -1,0 +1,72 @@
+[
+    {
+        "evidence_id": "EV-417-PAYSLIPS",
+        "requirement_id": "REQ-417-WORK-001",
+        "label": "Payslips from regional employer",
+        "description": "Payslips from each regional employer for the period of specified work, showing employer name, ABN, pay period, gross pay, and work location.",
+        "priority": 1,
+        "what_it_proves": "Primary evidence that specified work was performed for an eligible employer in a regional area during the required period.",
+        "common_gaps": [
+            "Employer ABN missing from payslip",
+            "Cash-in-hand work with no payslip — significant risk indicator",
+            "Work location cannot be verified as regional from payslip alone"
+        ],
+        "format_notes": "Electronic payslips accepted. Keep PDF copies. If paid by cash, obtain a statutory declaration and supplementary evidence.",
+        "effective": {
+            "from": "2015-07-01",
+            "to": null
+        }
+    },
+    {
+        "evidence_id": "EV-417-TAX",
+        "requirement_id": "REQ-417-WORK-001",
+        "label": "Tax file number (TFN) statement or tax return",
+        "description": "ATO tax statement, income tax return, or payment summary (PAYG) confirming income earned from regional employers during the specified work period.",
+        "priority": 1,
+        "what_it_proves": "Independent corroboration of specified work income and employer relationship, cross-checking payslips.",
+        "common_gaps": [
+            "Payments not declared to ATO — consistency risk between payslips and tax records",
+            "Multiple employers listed but work period dates overlap inconsistently"
+        ],
+        "format_notes": "Download from myGov/ATO portal if original records lost. PAYG summary or income statement acceptable.",
+        "effective": {
+            "from": "2015-07-01",
+            "to": null
+        }
+    },
+    {
+        "evidence_id": "EV-417-EMPLOYERLETTER",
+        "requirement_id": "REQ-417-WORK-001",
+        "label": "Employer reference letter",
+        "description": "Letter from regional employer on company letterhead confirming dates of employment, nature of work performed, ABN, and eligible postcode/location.",
+        "priority": 2,
+        "what_it_proves": "Confirms details of specified work engagement including regional eligibility and work category.",
+        "common_gaps": [
+            "Letter not on letterhead or missing ABN",
+            "Work category listed does not match eligible specified work categories",
+            "Dates conflict with other evidence"
+        ],
+        "format_notes": "Request letter while still employed or immediately on finishing. Retrospective letters may raise credibility questions without corroboration.",
+        "effective": {
+            "from": "2015-07-01",
+            "to": null
+        }
+    },
+    {
+        "evidence_id": "EV-417-FIN-SAVINGS",
+        "requirement_id": "REQ-417-FIN-001",
+        "label": "Bank statements showing minimum savings",
+        "description": "Bank statements from the 3 months prior to application showing accessible savings meeting the minimum financial threshold (approximately AUD $5,000 — verify current figure).",
+        "priority": 1,
+        "what_it_proves": "Demonstrates financial capacity to fund the initial period of the working holiday.",
+        "common_gaps": [
+            "Savings balance fluctuates significantly — large deposits immediately before application may raise questions",
+            "Account is in a third party's name — funds must be in the applicant's name or clearly accessible"
+        ],
+        "format_notes": "3 months of statements. Include account holder name and BSB/account number. International bank accounts accepted but may need currency conversion note.",
+        "effective": {
+            "from": "2015-07-01",
+            "to": null
+        }
+    }
+]

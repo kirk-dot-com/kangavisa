@@ -1,0 +1,193 @@
+[
+    {
+        "requirement_id": "REQ-820-REL-001",
+        "visa": {
+            "subclass": "820",
+            "stream": null
+        },
+        "requirement_type": "relationship",
+        "title": "Genuine and Continuing Relationship",
+        "plain_english": "You must be in a genuine and continuing relationship with an Australian citizen, permanent resident, or eligible New Zealand citizen. The relationship is assessed across four evidence pillars: financial aspects, nature of household, social aspects, and commitment to each other. There is no single type of evidence that is sufficient on its own.",
+        "effective": {
+            "from": "2009-07-01",
+            "to": null
+        },
+        "legal_basis": [
+            {
+                "authority": "FRL_REGS",
+                "citation": "Schedule 2, clauses 820.211–820.221; reg 1.15A",
+                "frl_title_id": "F2022C00125",
+                "series": "Migration Regulations 1994",
+                "notes": "Definition of de facto and married relationships. Regulation 1.15A defines de facto relationships."
+            },
+            {
+                "authority": "FRL_ACT",
+                "citation": "Section 5F (spouse); Section 5CB (de facto partner)",
+                "frl_title_id": "C2024C00195",
+                "series": "Migration Act 1958",
+                "notes": "Statutory definitions of spouse and de facto partner."
+            }
+        ],
+        "operational_basis": [
+            {
+                "authority": "HOMEAFFAIRS_PAGE",
+                "url": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/partner-onshore-820-801",
+                "title": "Partner visa (820/801) — relationship evidence",
+                "last_checked": "2025-02-01"
+            }
+        ],
+        "rule_logic": {
+            "inputs": [
+                "relationship_type",
+                "cohabitation_duration",
+                "financial_pillar_evidence",
+                "household_pillar_evidence",
+                "social_pillar_evidence",
+                "commitment_pillar_evidence"
+            ],
+            "outputs": [
+                "FLAG-820-REL-PILLAR-WEAK",
+                "FLAG-820-REL-TIMELINE-GAP",
+                "FLAG-820-REL-ADDRESS-MISMATCH",
+                "FLAG-820-REL-SEPARATION"
+            ],
+            "logic_notes": "Relationship must have existed for 12 months (de facto) unless registered. Evidence must span all four pillars. Imbalanced pillar coverage is a primary risk indicator."
+        },
+        "confidence": "high",
+        "last_reviewed_at": "2025-02-01T00:00:00Z"
+    },
+    {
+        "requirement_id": "REQ-820-SPONS-001",
+        "visa": {
+            "subclass": "820",
+            "stream": null
+        },
+        "requirement_type": "sponsorship",
+        "title": "Eligible Sponsor",
+        "plain_english": "Your sponsoring partner must be an Australian citizen, Australian permanent resident, or eligible New Zealand citizen, and must not have previously sponsored two partners for a partner visa. The sponsor must also meet any character requirements.",
+        "effective": {
+            "from": "2009-07-01",
+            "to": null
+        },
+        "legal_basis": [
+            {
+                "authority": "FRL_REGS",
+                "citation": "Schedule 2, clause 820.211(c); reg 1.20J",
+                "frl_title_id": "F2022C00125",
+                "series": "Migration Regulations 1994",
+                "notes": "Sponsor eligibility including the 2-sponsor limit."
+            }
+        ],
+        "operational_basis": [
+            {
+                "authority": "HOMEAFFAIRS_PAGE",
+                "url": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/partner-onshore-820-801",
+                "title": "Partner visa (820/801) — sponsor requirements",
+                "last_checked": "2025-02-01"
+            }
+        ],
+        "rule_logic": {
+            "inputs": [
+                "sponsor_citizenship_status",
+                "sponsor_prior_sponsorships",
+                "sponsor_character"
+            ],
+            "outputs": [
+                "FLAG-820-SPONS-INELIGIBLE",
+                "FLAG-820-SPONS-LIMIT"
+            ],
+            "logic_notes": "If sponsor has already sponsored 2 partner visa holders, they are generally ineligible unless granted a waiver. Sponsor character issues are separately assessed."
+        },
+        "confidence": "high",
+        "last_reviewed_at": "2025-02-01T00:00:00Z"
+    },
+    {
+        "requirement_id": "REQ-820-HLTH-001",
+        "visa": {
+            "subclass": "820",
+            "stream": null
+        },
+        "requirement_type": "health",
+        "title": "Health Requirement",
+        "plain_english": "You and any dependent children included in the application must meet the health requirement (PIC 4005). This typically requires an immigration medical examination with an approved panel physician. Results are lodged electronically by the physician.",
+        "effective": {
+            "from": "2009-07-01",
+            "to": null
+        },
+        "legal_basis": [
+            {
+                "authority": "FRL_REGS",
+                "citation": "Schedule 4, Public Interest Criterion 4005",
+                "frl_title_id": "F2022C00125",
+                "series": "Migration Regulations 1994",
+                "notes": "PIC 4005 applies to partner visa onshore (820/801)."
+            }
+        ],
+        "operational_basis": [
+            {
+                "authority": "HOMEAFFAIRS_PAGE",
+                "url": "https://immi.homeaffairs.gov.au/entering-and-leaving-australia/entering-australia/health-examinations",
+                "title": "Health examinations",
+                "last_checked": "2025-02-01"
+            }
+        ],
+        "rule_logic": {
+            "inputs": [
+                "medical_exam_completed",
+                "medical_exam_date"
+            ],
+            "outputs": [
+                "FLAG-820-HLTH-REQUIRED",
+                "FLAG-820-HLTH-EXPIRED"
+            ],
+            "logic_notes": "Medicals expire 12 months after completion. If processing is long, a second medical may be required."
+        },
+        "confidence": "high",
+        "last_reviewed_at": "2025-02-01T00:00:00Z"
+    },
+    {
+        "requirement_id": "REQ-820-CHAR-001",
+        "visa": {
+            "subclass": "820",
+            "stream": null
+        },
+        "requirement_type": "character",
+        "title": "Character Requirement",
+        "plain_english": "You must satisfy the character requirement (PIC 4001 — s.501 Migration Act 1958). This generally requires providing police clearance certificates from all countries where you have lived for 12+ months in the past 10 years (from age 16). Family violence provisions may be relevant in some circumstances.",
+        "effective": {
+            "from": "2009-07-01",
+            "to": null
+        },
+        "legal_basis": [
+            {
+                "authority": "FRL_ACT",
+                "citation": "Section 501; Schedule 4, PIC 4001",
+                "frl_title_id": "C2024C00195",
+                "series": "Migration Act 1958",
+                "notes": "Character test provisions. Family violence provisions under s.501A-s.501G also relevant."
+            }
+        ],
+        "operational_basis": [
+            {
+                "authority": "HOMEAFFAIRS_PAGE",
+                "url": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/partner-onshore-820-801",
+                "title": "Partner visa (820/801) — character requirement",
+                "last_checked": "2025-02-01"
+            }
+        ],
+        "rule_logic": {
+            "inputs": [
+                "criminal_history",
+                "countries_lived_12mo",
+                "police_clearance_obtained"
+            ],
+            "outputs": [
+                "FLAG-820-CHAR-POLICE-MISSING",
+                "FLAG-820-CHAR-HISTORY"
+            ],
+            "logic_notes": "Family violence provisions may exempt domestic violence victims from certain character requirements — specialist RMA advice warranted."
+        },
+        "confidence": "high",
+        "last_reviewed_at": "2025-02-01T00:00:00Z"
+    }
+]

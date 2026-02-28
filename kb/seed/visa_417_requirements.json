@@ -1,0 +1,145 @@
+[
+    {
+        "requirement_id": "REQ-417-GEN-001",
+        "visa": {
+            "subclass": "417",
+            "stream": null
+        },
+        "requirement_type": "genuine",
+        "title": "Genuine Working Holiday Intention",
+        "plain_english": "You must be coming to Australia for a working holiday — primarily for tourism, with work as a secondary activity to support yourself during your stay. You must be a citizen of an eligible country and meet age requirements (typically 18–30 or 18–35 depending on country of origin).",
+        "effective": {
+            "from": "2015-07-01",
+            "to": null
+        },
+        "legal_basis": [
+            {
+                "authority": "FRL_REGS",
+                "citation": "Schedule 2, clause 417.212",
+                "frl_title_id": "F2022C00125",
+                "series": "Migration Regulations 1994",
+                "notes": "Eligibility criteria for WHM 417. Age limit extended to 35 for some nationalities via instrument."
+            }
+        ],
+        "operational_basis": [
+            {
+                "authority": "HOMEAFFAIRS_PAGE",
+                "url": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-417",
+                "title": "Working Holiday visa (417)",
+                "last_checked": "2025-02-01"
+            }
+        ],
+        "rule_logic": {
+            "inputs": [
+                "citizenship_country",
+                "age_at_application",
+                "prior_417_held"
+            ],
+            "outputs": [
+                "FLAG-417-AGE-INELIGIBLE",
+                "FLAG-417-COUNTRY-INELIGIBLE",
+                "FLAG-417-REPEAT-APPLICATION"
+            ],
+            "logic_notes": "417 is a once-in-a-lifetime visa for most nationalities unless second/third grant criteria fulfilled via specified work."
+        },
+        "confidence": "high",
+        "last_reviewed_at": "2025-02-01T00:00:00Z"
+    },
+    {
+        "requirement_id": "REQ-417-WORK-001",
+        "visa": {
+            "subclass": "417",
+            "stream": null
+        },
+        "requirement_type": "work_history",
+        "title": "Specified Work for Second/Third Grant",
+        "plain_english": "To be eligible for a second or third Working Holiday visa (417), you must have completed a specified number of days of specified work in a regional area of Australia during your first/second visa. Specified work categories and eligible regional areas are defined by legislative instrument.",
+        "effective": {
+            "from": "2015-07-01",
+            "to": null
+        },
+        "legal_basis": [
+            {
+                "authority": "FRL_INSTRUMENT",
+                "citation": "Current specified work and regional area instrument",
+                "frl_title_id": null,
+                "series": "Migration (Specified Activities for Working Holiday) Instrument",
+                "notes": "Instrument defines eligible industries (agriculture, construction, mining, etc.) and regional postcodes. Check FRL for current in-force version."
+            },
+            {
+                "authority": "FRL_REGS",
+                "citation": "Schedule 2, clause 417.211(b)",
+                "frl_title_id": "F2022C00125",
+                "series": "Migration Regulations 1994",
+                "notes": "Second grant condition — specified work requirement."
+            }
+        ],
+        "operational_basis": [
+            {
+                "authority": "HOMEAFFAIRS_PAGE",
+                "url": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-417/specified-work",
+                "title": "Working Holiday 417 — Specified work",
+                "last_checked": "2025-02-01"
+            }
+        ],
+        "rule_logic": {
+            "inputs": [
+                "specified_work_days_completed",
+                "work_region_eligible",
+                "employer_abn_provided",
+                "payslips_available"
+            ],
+            "outputs": [
+                "FLAG-417-WORK-DAYS-SHORT",
+                "FLAG-417-WORK-REGION",
+                "FLAG-417-WORK-EVIDENCE-GAP"
+            ],
+            "logic_notes": "88 days (first grant); 179 days (second grant). Days must be verifiable. Employer ABN + payslips are essential evidence. Cash-in-hand work without records is a significant risk."
+        },
+        "confidence": "high",
+        "last_reviewed_at": "2025-02-01T00:00:00Z"
+    },
+    {
+        "requirement_id": "REQ-417-FIN-001",
+        "visa": {
+            "subclass": "417",
+            "stream": null
+        },
+        "requirement_type": "financial",
+        "title": "Financial Threshold",
+        "plain_english": "You must demonstrate sufficient funds to support yourself at the start of your working holiday. The minimum threshold is set by instrument. Having evidence of accessible savings at the time of application reduces financial risk indicators.",
+        "effective": {
+            "from": "2015-07-01",
+            "to": null
+        },
+        "legal_basis": [
+            {
+                "authority": "FRL_REGS",
+                "citation": "Schedule 2, clause 417.213",
+                "frl_title_id": "F2022C00125",
+                "series": "Migration Regulations 1994",
+                "notes": "Financial capacity requirement for 417."
+            }
+        ],
+        "operational_basis": [
+            {
+                "authority": "HOMEAFFAIRS_PAGE",
+                "url": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-417",
+                "title": "Working Holiday 417 — financial requirement",
+                "last_checked": "2025-02-01"
+            }
+        ],
+        "rule_logic": {
+            "inputs": [
+                "savings_aud",
+                "return_flight_evidence"
+            ],
+            "outputs": [
+                "FLAG-417-FIN-INSUFFICIENT"
+            ],
+            "logic_notes": "Minimum threshold is approximately AUD $5,000 (verify current figure). Evidence of a return flight or sufficient funds for one is also expected."
+        },
+        "confidence": "medium",
+        "last_reviewed_at": "2025-02-01T00:00:00Z"
+    }
+]

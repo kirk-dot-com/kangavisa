@@ -1,0 +1,145 @@
+[
+    {
+        "requirement_id": "REQ-500-FIN-001",
+        "visa": {
+            "subclass": "500",
+            "stream": null
+        },
+        "requirement_type": "financial",
+        "title": "Financial Capacity",
+        "plain_english": "You must demonstrate sufficient funds to cover tuition fees, living expenses, and return travel for yourself and any accompanying family members. The threshold is set by legislative instrument and is assessed at the time of application.",
+        "effective": {
+            "from": "2019-07-01",
+            "to": null
+        },
+        "legal_basis": [
+            {
+                "authority": "FRL_REGS",
+                "citation": "Schedule 2, clause 500.211",
+                "frl_title_id": "F2022C00125",
+                "series": "Migration Regulations 1994",
+                "notes": "Financial capacity is a Schedule 2 criterion for subclass 500."
+            },
+            {
+                "authority": "FRL_INSTRUMENT",
+                "citation": "LIN 18/036",
+                "frl_title_id": "F2018L00898",
+                "series": "Migration (LIN 18/036 — Student Financial Capacity) Instrument 2018",
+                "notes": "Sets minimum financial thresholds. Check for superseding instruments."
+            }
+        ],
+        "operational_basis": [
+            {
+                "authority": "HOMEAFFAIRS_PAGE",
+                "url": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500/temporary-student#Eligibility",
+                "title": "Student visa 500 — Financial capacity",
+                "last_checked": "2025-02-01"
+            }
+        ],
+        "rule_logic": {
+            "inputs": [
+                "annual_tuition_aud",
+                "living_expenses_aud",
+                "dependants_count",
+                "savings_evidence_type"
+            ],
+            "outputs": [
+                "FLAG-500-FIN-INSUFFICIENT",
+                "FLAG-500-FIN-SOURCE-UNCLEAR"
+            ],
+            "logic_notes": "Funds must be accessible and genuinely available. Unexplained deposits or inconsistent account history are risk indicators."
+        },
+        "confidence": "high",
+        "last_reviewed_at": "2025-02-01T00:00:00Z"
+    },
+    {
+        "requirement_id": "REQ-500-HLTH-001",
+        "visa": {
+            "subclass": "500",
+            "stream": null
+        },
+        "requirement_type": "health",
+        "title": "Health Requirement",
+        "plain_english": "You and all family members included on your application must meet the health requirement. This typically requires completing an immigration medical examination with an approved panel physician. Some applicants may be exempt based on their country of origin and length of stay.",
+        "effective": {
+            "from": "2016-11-19",
+            "to": null
+        },
+        "legal_basis": [
+            {
+                "authority": "FRL_REGS",
+                "citation": "Schedule 4, Public Interest Criterion 4005",
+                "frl_title_id": "F2022C00125",
+                "series": "Migration Regulations 1994",
+                "notes": "PIC 4005 — health requirement applicable to student visa."
+            }
+        ],
+        "operational_basis": [
+            {
+                "authority": "HOMEAFFAIRS_PAGE",
+                "url": "https://immi.homeaffairs.gov.au/entering-and-leaving-australia/entering-australia/health-examinations",
+                "title": "Health examinations",
+                "last_checked": "2025-02-01"
+            }
+        ],
+        "rule_logic": {
+            "inputs": [
+                "country_of_origin",
+                "intended_stay_months",
+                "medical_exam_completed"
+            ],
+            "outputs": [
+                "FLAG-500-HLTH-EXAM-REQUIRED",
+                "FLAG-500-HLTH-EXEMPT"
+            ],
+            "logic_notes": "Applicants from high-risk countries or planning stays >12 months are typically required to complete a medical."
+        },
+        "confidence": "high",
+        "last_reviewed_at": "2025-02-01T00:00:00Z"
+    },
+    {
+        "requirement_id": "REQ-500-CHAR-001",
+        "visa": {
+            "subclass": "500",
+            "stream": null
+        },
+        "requirement_type": "character",
+        "title": "Character Requirement",
+        "plain_english": "You must satisfy the character requirement under section 501 of the Migration Act 1958. This includes not having a substantial criminal record and not posing a risk to the Australian community. Most applicants will need to provide police clearance certificates from countries where they have lived for 12 months or more in the past 10 years (from age 16).",
+        "effective": {
+            "from": "2016-11-19",
+            "to": null
+        },
+        "legal_basis": [
+            {
+                "authority": "FRL_ACT",
+                "citation": "Section 501; Schedule 4, Public Interest Criterion 4001",
+                "frl_title_id": "C2024C00195",
+                "series": "Migration Act 1958",
+                "notes": "Character test provisions under s.501 apply to all visa grants."
+            }
+        ],
+        "operational_basis": [
+            {
+                "authority": "HOMEAFFAIRS_PAGE",
+                "url": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500",
+                "title": "Student visa 500 — character requirement",
+                "last_checked": "2025-02-01"
+            }
+        ],
+        "rule_logic": {
+            "inputs": [
+                "criminal_history",
+                "countries_lived_12mo",
+                "police_clearance_obtained"
+            ],
+            "outputs": [
+                "FLAG-500-CHAR-POLICE-MISSING",
+                "FLAG-500-CHAR-HISTORY"
+            ],
+            "logic_notes": "Police clearances required per country of residence. Timing: must be recent at lodgement. Character concerns are ministerial discretion — escalate with RMA."
+        },
+        "confidence": "high",
+        "last_reviewed_at": "2025-02-01T00:00:00Z"
+    }
+]

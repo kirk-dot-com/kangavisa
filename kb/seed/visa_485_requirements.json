@@ -1,0 +1,141 @@
+[
+    {
+        "requirement_id": "REQ-485-GTE-001",
+        "visa": {
+            "subclass": "485",
+            "stream": null
+        },
+        "requirement_type": "genuine",
+        "title": "Genuine Temporary Entrant",
+        "plain_english": "You must intend to stay temporarily in Australia. Decision makers assess your circumstances including home-country ties, economic situation, immigration history, and compliance record. This is a balance-of-factors test.",
+        "effective": {
+            "from": "2013-11-16",
+            "to": null
+        },
+        "legal_basis": [
+            {
+                "authority": "FRL_REGS",
+                "citation": "Schedule 2, clause 485.213",
+                "frl_title_id": "F2022C00125",
+                "series": "Migration Regulations 1994",
+                "notes": "GTE applies to Temporary Graduate visa subclass 485."
+            }
+        ],
+        "operational_basis": [
+            {
+                "authority": "HOMEAFFAIRS_PAGE",
+                "url": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-graduate-485",
+                "title": "Temporary Graduate visa (subclass 485)",
+                "last_checked": "2025-02-01"
+            }
+        ],
+        "rule_logic": {
+            "inputs": [
+                "home_country_ties",
+                "immigration_history",
+                "compliance_record",
+                "economic_circumstances"
+            ],
+            "outputs": [
+                "FLAG-485-GTE-WEAK-TIES",
+                "FLAG-485-GTE-COMPLIANCE"
+            ],
+            "logic_notes": "Same balance-of-factors test as 500 GTE. KangaVisa must not frame as pass/fail."
+        },
+        "confidence": "high",
+        "last_reviewed_at": "2025-02-01T00:00:00Z"
+    },
+    {
+        "requirement_id": "REQ-485-QUAL-001",
+        "visa": {
+            "subclass": "485",
+            "stream": null
+        },
+        "requirement_type": "other",
+        "title": "Australian Qualification Requirement",
+        "plain_english": "You must have completed a qualification that required at least 2 years of full-time study in Australia. The course must have been registered with CRICOS and completed within 6 months of lodging your 485 application.",
+        "effective": {
+            "from": "2013-11-16",
+            "to": null
+        },
+        "legal_basis": [
+            {
+                "authority": "FRL_REGS",
+                "citation": "Schedule 2, clause 485.211; clause 485.212",
+                "frl_title_id": "F2022C00125",
+                "series": "Migration Regulations 1994",
+                "notes": "Graduate stream — completed within 6 months of application."
+            }
+        ],
+        "operational_basis": [
+            {
+                "authority": "HOMEAFFAIRS_PAGE",
+                "url": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-graduate-485/graduate-stream",
+                "title": "Temporary Graduate visa 485 — Graduate stream",
+                "last_checked": "2025-02-01"
+            }
+        ],
+        "rule_logic": {
+            "inputs": [
+                "course_cricos_registered",
+                "study_duration_years",
+                "completion_date",
+                "lodgement_date"
+            ],
+            "outputs": [
+                "FLAG-485-QUAL-TIMING",
+                "FLAG-485-QUAL-DURATION"
+            ],
+            "logic_notes": "6-month window is strict. If completion date + 6 months < lodgement date, applicant is ineligible. Timing risk is a primary refusal cause."
+        },
+        "confidence": "high",
+        "last_reviewed_at": "2025-02-01T00:00:00Z"
+    },
+    {
+        "requirement_id": "REQ-485-ENG-001",
+        "visa": {
+            "subclass": "485",
+            "stream": null
+        },
+        "requirement_type": "english",
+        "title": "English Language Proficiency",
+        "plain_english": "You must demonstrate competent English. Acceptable tests include IELTS (minimum 6.0 each band), TOEFL iBT, PTE Academic, Cambridge C1/C2, or OET. Exemptions may apply based on citizenship of certain countries.",
+        "effective": {
+            "from": "2020-07-01",
+            "to": null
+        },
+        "legal_basis": [
+            {
+                "authority": "FRL_REGS",
+                "citation": "Schedule 2, clause 485.221",
+                "frl_title_id": "F2022C00125",
+                "series": "Migration Regulations 1994",
+                "notes": "English requirement for 485. Minimum scores may differ from 500 — check current instrument."
+            }
+        ],
+        "operational_basis": [
+            {
+                "authority": "HOMEAFFAIRS_PAGE",
+                "url": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-graduate-485",
+                "title": "Temporary Graduate visa 485 — English requirements",
+                "last_checked": "2025-02-01"
+            }
+        ],
+        "rule_logic": {
+            "inputs": [
+                "english_test_type",
+                "english_test_score",
+                "english_test_date",
+                "citizenship_country"
+            ],
+            "outputs": [
+                "FLAG-485-ENG-SCORE",
+                "FLAG-485-ENG-EXPIRED",
+                "FLAG-485-ENG-EXEMPT"
+            ],
+            "logic_notes": "Test results must not be more than 3 years old at time of decision. Exemptions exist for citizens of UK, USA, Canada, NZ, Ireland."
+        },
+        "confidence": "high",
+        "last_reviewed_at": "2025-02-01T00:00:00Z"
+    }
+]

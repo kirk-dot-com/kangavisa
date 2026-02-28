@@ -1,0 +1,146 @@
+[
+    {
+        "flag_id": "FLAG-500-GS-TIES",
+        "visa": {
+            "subclass": "500",
+            "stream": null
+        },
+        "title": "Weak ties to home country",
+        "trigger_schema": {
+            "conditions": [
+                "home_country_ties_evidence = none OR weak",
+                "immigration_history_concerns = true"
+            ]
+        },
+        "why_it_matters": "Decision makers assess genuine student intention by weighing circumstances including ties to home country (property, family, employment prospects). Weak or unexplained ties may indicate the applicant does not intend to return, which is a risk indicator under the Genuine Student requirement (clause 500.212).",
+        "actions": [
+            "Document family members, assets, or employment prospects in home country",
+            "Explain how the study aligns with your career goals at home",
+            "Provide a personal statement addressing your intention to return",
+            "Gather any supporting evidence: property, family responsibilities, business interests"
+        ],
+        "evidence_examples": [
+            "Bank statements or property ownership documents in home country",
+            "Family situation statement (dependants, spouse, parents)",
+            "Employer letter from home country confirming re-employment post-study",
+            "Career plan showing connection between course and home-country goals"
+        ],
+        "severity": "warning",
+        "effective": {
+            "from": "2016-11-19",
+            "to": null
+        },
+        "sources": {
+            "legal": [
+                {
+                    "authority": "FRL_REGS",
+                    "citation": "Schedule 2, clause 500.212",
+                    "frl_title_id": "F2022C00125"
+                }
+            ],
+            "operational": [
+                {
+                    "authority": "HOMEAFFAIRS_PAGE",
+                    "url": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500/temporary-student"
+                }
+            ]
+        }
+    },
+    {
+        "flag_id": "FLAG-500-GS-COURSE-MISMATCH",
+        "visa": {
+            "subclass": "500",
+            "stream": null
+        },
+        "title": "Course inconsistent with prior study or career path",
+        "trigger_schema": {
+            "conditions": [
+                "course_relevance_to_career = low OR none",
+                "previous_study_unrelated = true"
+            ]
+        },
+        "why_it_matters": "The Genuine Student test includes an assessment of whether the course is consistent with your stated career goals. A mismatch between your academic background, work experience, and enrolled course is a known risk indicator.",
+        "actions": [
+            "Write a clear course choice statement explaining why this course suits your goals",
+            "Highlight any transferable skills or prior learning connecting past and present study",
+            "Obtain a letter from your education provider if course counselling was involved",
+            "If changing fields, document your career pivoting rationale clearly"
+        ],
+        "evidence_examples": [
+            "Personal statement linking course to career plan",
+            "Letter from current or prospective employer in target field",
+            "Transcript or certificate showing relevant prior knowledge",
+            "Skills assessment or industry report supporting field transition"
+        ],
+        "severity": "warning",
+        "effective": {
+            "from": "2016-11-19",
+            "to": null
+        },
+        "sources": {
+            "legal": [
+                {
+                    "authority": "FRL_REGS",
+                    "citation": "Schedule 2, clause 500.212",
+                    "frl_title_id": "F2022C00125"
+                }
+            ],
+            "operational": [
+                {
+                    "authority": "HOMEAFFAIRS_PAGE",
+                    "url": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500/temporary-student"
+                }
+            ]
+        }
+    },
+    {
+        "flag_id": "FLAG-500-ENG-SCORE-LOW",
+        "visa": {
+            "subclass": "500",
+            "stream": null
+        },
+        "title": "English test score below typical threshold for course type",
+        "trigger_schema": {
+            "conditions": [
+                "english_test_score < minimum_for_course_level"
+            ]
+        },
+        "why_it_matters": "The Migration Regulations require English proficiency suited to your enrolled course. Minimum scores are set by instrument (LIN 19/051) and vary by provider type and course level. Submitting a score below the required threshold will result in the application being refused.",
+        "actions": [
+            "Check the exact minimum score for your course provider type (ELICOS, higher ed, VET, school)",
+            "Retake the English test if your score is below the required minimum",
+            "Ensure your test result is not more than 3 years old at the time of decision",
+            "Confirm if an exemption applies (e.g., prior study in an approved English-speaking country)"
+        ],
+        "evidence_examples": [
+            "IELTS, TOEFL iBT, PTE Academic, Cambridge C1/C2, or OET test report form",
+            "Evidence of prior study in an approved English-speaking country (transcripts + enrolment confirmation)",
+            "Confirmation of exemption from education provider if applicable"
+        ],
+        "severity": "risk",
+        "effective": {
+            "from": "2019-07-01",
+            "to": null
+        },
+        "sources": {
+            "legal": [
+                {
+                    "authority": "FRL_REGS",
+                    "citation": "Schedule 2, clause 500.213; Schedule 8, clause 8517",
+                    "frl_title_id": "F2022C00125"
+                },
+                {
+                    "authority": "FRL_INSTRUMENT",
+                    "citation": "LIN 19/051",
+                    "frl_title_id": "F2019L01030"
+                }
+            ],
+            "operational": [
+                {
+                    "authority": "HOMEAFFAIRS_PAGE",
+                    "url": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500/temporary-student#Eligibility"
+                }
+            ]
+        }
+    }
+]

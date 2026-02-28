@@ -1,0 +1,138 @@
+[
+    {
+        "requirement_id": "REQ-482-NOM-001",
+        "visa": {
+            "subclass": "482",
+            "stream": "SID"
+        },
+        "requirement_type": "nomination",
+        "title": "Approved Nomination",
+        "plain_english": "Your employer must have an approved nomination for the position you are being sponsored for. The nomination must specify the occupation from the relevant occupation list and the terms and conditions of employment, including salary, must meet the Temporary Skilled Migration Income Threshold (TSMIT) and be no less favourable than those for Australian workers performing equivalent work.",
+        "effective": {
+            "from": "2018-03-18",
+            "to": null
+        },
+        "legal_basis": [
+            {
+                "authority": "FRL_REGS",
+                "citation": "Regulation 2.72; Schedule 2, clause 482.231",
+                "frl_title_id": "F2022C00125",
+                "series": "Migration Regulations 1994",
+                "notes": "Nomination criteria under reg 2.72. TSMIT is set by instrument and updated periodically."
+            }
+        ],
+        "operational_basis": [
+            {
+                "authority": "HOMEAFFAIRS_PAGE",
+                "url": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-skill-shortage-482",
+                "title": "Temporary Skill Shortage visa (482)",
+                "last_checked": "2025-02-01"
+            }
+        ],
+        "rule_logic": {
+            "inputs": [
+                "nomination_approved",
+                "tsmit_salary_met",
+                "occupation_on_list",
+                "employment_conditions_comparable"
+            ],
+            "outputs": [
+                "FLAG-482-NOM-SALARY",
+                "FLAG-482-NOM-CONDITIONS",
+                "FLAG-482-NOM-OCC"
+            ],
+            "logic_notes": "TSMIT threshold changes periodically — always verify current instrument. Salary must be at or above TSMIT and market rate."
+        },
+        "confidence": "high",
+        "last_reviewed_at": "2025-02-01T00:00:00Z"
+    },
+    {
+        "requirement_id": "REQ-482-SPONS-001",
+        "visa": {
+            "subclass": "482",
+            "stream": "SID"
+        },
+        "requirement_type": "sponsorship",
+        "title": "Approved Standard Business Sponsor",
+        "plain_english": "Your employer must be an approved standard business sponsor (or be seeking approval as part of the nomination). Standard business sponsors must demonstrate a genuine need for the position, meet training obligations, and not have any relevant adverse information.",
+        "effective": {
+            "from": "2018-03-18",
+            "to": null
+        },
+        "legal_basis": [
+            {
+                "authority": "FRL_REGS",
+                "citation": "Regulation 2.67A; Schedule 2, clause 482.211",
+                "frl_title_id": "F2022C00125",
+                "series": "Migration Regulations 1994",
+                "notes": "Sponsorship approval criteria. Training levy obligations apply."
+            }
+        ],
+        "operational_basis": [
+            {
+                "authority": "HOMEAFFAIRS_PAGE",
+                "url": "https://immi.homeaffairs.gov.au/visas/working-in-australia/temporary-skill-shortage-visa/standard-business-sponsorship",
+                "title": "Standard Business Sponsorship",
+                "last_checked": "2025-02-01"
+            }
+        ],
+        "rule_logic": {
+            "inputs": [
+                "sponsor_approval_status",
+                "sponsor_adverse_info",
+                "training_levy_paid"
+            ],
+            "outputs": [
+                "FLAG-482-SPONS-APPROVAL",
+                "FLAG-482-SPONS-LEVY"
+            ],
+            "logic_notes": "Employer must pay the Skilling Australians Fund (SAF) levy as part of nomination. Amount depends on employer size and visa period."
+        },
+        "confidence": "high",
+        "last_reviewed_at": "2025-02-01T00:00:00Z"
+    },
+    {
+        "requirement_id": "REQ-482-OCC-001",
+        "visa": {
+            "subclass": "482",
+            "stream": "SID"
+        },
+        "requirement_type": "occupation",
+        "title": "Occupation on Eligible List",
+        "plain_english": "The nominated occupation must appear on the Medium and Long-term Strategic Skills List (MLTSSL) or Short-term Skilled Occupation List (STSOL) for the stream being applied under. Occupation lists are set by legislative instrument and updated periodically.",
+        "effective": {
+            "from": "2018-03-18",
+            "to": null
+        },
+        "legal_basis": [
+            {
+                "authority": "FRL_INSTRUMENT",
+                "citation": "IMMI 19/051 (or current superseding instrument)",
+                "frl_title_id": null,
+                "series": "Migration (Skilling Australians Fund) Amendment Act + relevant occupation list instrument",
+                "notes": "Check FRL for the current in-force occupation list instrument — updated periodically. frl_title_id must be verified against current instrument."
+            }
+        ],
+        "operational_basis": [
+            {
+                "authority": "HOMEAFFAIRS_PAGE",
+                "url": "https://immi.homeaffairs.gov.au/visas/working-in-australia/skill-occupation-list",
+                "title": "Skilled occupation list",
+                "last_checked": "2025-02-01"
+            }
+        ],
+        "rule_logic": {
+            "inputs": [
+                "nominated_occupation_anzsco",
+                "stream_applied"
+            ],
+            "outputs": [
+                "FLAG-482-OCC-NOT-LISTED",
+                "FLAG-482-OCC-STREAM-MISMATCH"
+            ],
+            "logic_notes": "ANZSCO code must match a current list entry for the stream. List changes frequently — always check the current in-force instrument."
+        },
+        "confidence": "medium",
+        "last_reviewed_at": "2025-02-01T00:00:00Z"
+    }
+]

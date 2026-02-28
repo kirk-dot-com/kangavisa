@@ -1,0 +1,91 @@
+[
+    {
+        "evidence_id": "EV-820-FIN-JOINTACCOUNT",
+        "requirement_id": "REQ-820-REL-001",
+        "label": "Joint bank account statements",
+        "description": "Statements from a bank account held jointly by both partners showing regular shared transactions.",
+        "priority": 1,
+        "what_it_proves": "Demonstrates the financial pillar of relationship evidence — shared finances and financial interdependence.",
+        "common_gaps": [
+            "Account opened recently — only a few months of statements",
+            "Both names on account but transactions show only one person using it",
+            "No regularity of shared expenses (rent, bills, groceries)"
+        ],
+        "format_notes": "3–12 months of statements. Highlight shared recurring expenses. Include joint loans, joint insurance, or co-signed leases as supplementary evidence.",
+        "effective": {
+            "from": "2009-07-01",
+            "to": null
+        }
+    },
+    {
+        "evidence_id": "EV-820-HOUSE-LEASE",
+        "requirement_id": "REQ-820-REL-001",
+        "label": "Shared lease or property documents",
+        "description": "Rental agreement, mortgage documents, or property ownership records listing both partners as co-tenants or co-owners at shared address(es).",
+        "priority": 1,
+        "what_it_proves": "Demonstrates the household pillar — cohabitation and shared domestic arrangements.",
+        "common_gaps": [
+            "Only one partner's name on the lease",
+            "Multiple addresses during relationship with unexplained gaps in cohabitation",
+            "Lease for a property where both partners are not listed as tenants"
+        ],
+        "format_notes": "Include any lease renewals to show continuity. If only one partner is on the lease, supplement with utility bills at the same address for both partners.",
+        "effective": {
+            "from": "2009-07-01",
+            "to": null
+        }
+    },
+    {
+        "evidence_id": "EV-820-SOCIAL-PHOTOS",
+        "requirement_id": "REQ-820-REL-001",
+        "label": "Photographs together across multiple events and dates",
+        "description": "Collection of dated photographs showing the couple together across different events, locations, and time periods during their relationship.",
+        "priority": 2,
+        "what_it_proves": "Contributes to the social pillar — demonstrates a genuine shared life and ongoing relationship.",
+        "common_gaps": [
+            "All photos from a single event or period — lacks temporal spread",
+            "Photos are screenshots without metadata or dates",
+            "No photos with friends or family who can corroborate the relationship"
+        ],
+        "format_notes": "Select a curated, chronological set rather than hundreds of undifferentiated images. Include captions with date and location. Print or digital both accepted.",
+        "effective": {
+            "from": "2009-07-01",
+            "to": null
+        }
+    },
+    {
+        "evidence_id": "EV-820-COMMIT-STATUTORY",
+        "requirement_id": "REQ-820-REL-001",
+        "label": "Statutory declarations from third parties",
+        "description": "Statutory declarations from people who know both partners well (friends, family, colleagues) confirming knowledge of the relationship, its duration, and its genuine nature.",
+        "priority": 1,
+        "what_it_proves": "Contributes to both social and commitment pillars — third-party corroboration is a strong indicator of genuine relationship.",
+        "common_gaps": [
+            "Statutory declarations are identical in wording — suggests template was used by multiple declarants",
+            "Declarants have only met one partner — must know both",
+            "Declaration not properly witnessed or signed"
+        ],
+        "format_notes": "Each declarant must be a separate person and must have witnessed the relationship. Include declarant's contact details, relationship to the couple, and how long they have known both partners.",
+        "effective": {
+            "from": "2009-07-01",
+            "to": null
+        }
+    },
+    {
+        "evidence_id": "EV-820-SPONS-CITIZENSHIP",
+        "requirement_id": "REQ-820-SPONS-001",
+        "label": "Sponsor's citizenship or residency evidence",
+        "description": "Australian passport, citizenship certificate, ImmiCard, or permanent visa grant letter confirming the sponsor's eligible status.",
+        "priority": 1,
+        "what_it_proves": "Confirms the sponsoring partner is an eligible Australian citizen, permanent resident, or eligible NZ citizen.",
+        "common_gaps": [
+            "Sponsor's permanent visa has expired or been cancelled",
+            "NZ citizen sponsor may need to check specific eligibility — not all NZ citizens qualify"
+        ],
+        "format_notes": "Certified copy or original. For permanent visa holders, include the visa grant notice or VEVO confirmation.",
+        "effective": {
+            "from": "2009-07-01",
+            "to": null
+        }
+    }
+]

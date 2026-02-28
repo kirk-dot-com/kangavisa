@@ -1,0 +1,74 @@
+[
+    {
+        "evidence_id": "EV-482-NOM-CONTRACT",
+        "requirement_id": "REQ-482-NOM-001",
+        "label": "Signed employment contract",
+        "description": "Signed employment contract specifying position title, salary, hours, employment terms, and ANZSCO code. Must match the details in the approved nomination.",
+        "priority": 1,
+        "what_it_proves": "Demonstrates the employment offer is genuine and terms (including salary) meet TSMIT and are no less favourable than Australian workers.",
+        "common_gaps": [
+            "Salary stated is below current TSMIT — check current threshold before lodging",
+            "ANZSCO code on contract differs from nomination",
+            "Contract not signed by both parties"
+        ],
+        "format_notes": "Full contract including all annexures. If salary is base + super, confirm whether TSMIT is inclusive or exclusive of super.",
+        "effective": {
+            "from": "2018-03-18",
+            "to": null
+        }
+    },
+    {
+        "evidence_id": "EV-482-NOM-MARKETRATE",
+        "requirement_id": "REQ-482-NOM-001",
+        "label": "Market salary rate evidence",
+        "description": "Evidence that the proposed salary is at or above the market rate for the occupation in the location. Can include SEEK/LinkedIn salary data, industry awards, or comparable Australian employee salaries.",
+        "priority": 1,
+        "what_it_proves": "Confirms the nominee is not being paid below market rate, meeting the 'equivalent terms' requirement for nomination.",
+        "common_gaps": [
+            "Market rate evidence not location-specific (cost of living varies by state/city)",
+            "Data source more than 12 months old",
+            "No comparison with Australian workers in equivalent roles"
+        ],
+        "format_notes": "Print/screenshot of salary comparison tool with date accessed. Include methodology notes.",
+        "effective": {
+            "from": "2018-03-18",
+            "to": null
+        }
+    },
+    {
+        "evidence_id": "EV-482-SPONS-REGDOCS",
+        "requirement_id": "REQ-482-SPONS-001",
+        "label": "Business registration documents",
+        "description": "ASIC extract, ABN registration, and any licensing documents confirming the sponsor is a lawfully operating business in Australia.",
+        "priority": 1,
+        "what_it_proves": "Confirms the employer is an eligible and lawfully operating business for standard business sponsorship purposes.",
+        "common_gaps": [
+            "Business structure changed since sponsorship approval",
+            "ABN cancelled or not active",
+            "ASIC registration expired"
+        ],
+        "format_notes": "Include current ASIC extract (dated within 3 months). Download from ASIC Connect.",
+        "effective": {
+            "from": "2018-03-18",
+            "to": null
+        }
+    },
+    {
+        "evidence_id": "EV-482-OCC-DUTIES",
+        "requirement_id": "REQ-482-OCC-001",
+        "label": "Detailed position description",
+        "description": "A detailed description of the duties and responsibilities of the nominated position, cross-referenced to the ANZSCO classification and unit group description.",
+        "priority": 1,
+        "what_it_proves": "Demonstrates the nominated position genuinely corresponds to the claimed ANZSCO occupation on the eligible list.",
+        "common_gaps": [
+            "Duties listed are generic — must match ANZSCO unit group specifics",
+            "Position is multi-occupation — primary occupation must be the dominant activity",
+            "ANZSCO code does not appear on the current eligible occupation list"
+        ],
+        "format_notes": "Reference the ANZSCO classification directly. Include percentage of time per duty where duties span multiple categories.",
+        "effective": {
+            "from": "2018-03-18",
+            "to": null
+        }
+    }
+]
