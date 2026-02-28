@@ -8,17 +8,18 @@ No live network or real Supabase project required.
 from __future__ import annotations
 
 import os
+import re
 import pytest
+import httpx
 
-# Set dummy env vars before importing db so the module doesn't raise on import
-os.environ.setdefault("SUPABASE_URL", "https://test.supabase.co")
-os.environ.setdefault("SUPABASE_SERVICE_ROLE_KEY", "sb_secret_test_key")
+# Set dummy env vars before importing db
+os.environ["SUPABASE_URL"] = "https://test.supabase.co"
+os.environ["SUPABASE_SERVICE_ROLE_KEY"] = "sb_secret_test_key"
 
-import kangavisa_workers.db as db_module
 from kangavisa_workers import db
 
 # ---------------------------------------------------------------------------
-# Fixtures
+# Test data
 # ---------------------------------------------------------------------------
 
 FAKE_SOURCE_DOC_ID = "11111111-1111-1111-1111-111111111111"
@@ -43,6 +44,9 @@ SAMPLE_CHANGE_EVENT = {
     "summary": "Initial snapshot of Migration Act 1958",
 }
 
+SOURCE_DOC_URL = re.compile(r".*source_document.*")
+CHANGE_EVENT_URL = re.compile(r".*change_event.*")
+
 
 # ---------------------------------------------------------------------------
 # get_latest_source_doc
@@ -51,10 +55,7 @@ SAMPLE_CHANGE_EVENT = {
 class TestGetLatestSourceDoc:
     def test_returns_none_when_no_rows(self, httpx_mock):
         """US-G1: Returns None when no previous source_document for this URL."""
-        httpx_mock.add_response(
-            url__regex=r".*source_document.*",
-            json=[],
-        )
+        httpx_mock.add_response(url=SOURCE_DOC_URL, json=[])
         result = db.get_latest_source_doc("https://example.com/page")
         assert result is None
 
@@ -66,10 +67,7 @@ class TestGetLatestSourceDoc:
             "retrieved_at": "2026-03-01T00:00:00+00:00",
             "status": "current",
         }
-        httpx_mock.add_response(
-            url__regex=r".*source_document.*",
-            json=[row],
-        )
+        httpx_mock.add_response(url=SOURCE_DOC_URL, json=[row])
         result = db.get_latest_source_doc("https://example.com/page")
         assert result is not None
         assert result["content_hash"] == "abc123"
@@ -84,7 +82,7 @@ class TestInsertSourceDocument:
     def test_returns_source_doc_id(self, httpx_mock):
         """US-G1: Returns UUID of inserted source_document."""
         httpx_mock.add_response(
-            url__regex=r".*source_document.*",
+            url=SOURCE_DOC_URL,
             json=[{"source_doc_id": FAKE_SOURCE_DOC_ID}],
             status_code=201,
         )
@@ -93,13 +91,12 @@ class TestInsertSourceDocument:
 
     def test_raises_on_4xx(self, httpx_mock):
         """US-G1: Raises on Supabase error response."""
-        import httpx as _httpx
         httpx_mock.add_response(
-            url__regex=r".*source_document.*",
+            url=SOURCE_DOC_URL,
             status_code=400,
             json={"message": "bad request"},
         )
-        with pytest.raises(_httpx.HTTPStatusError):
+        with pytest.raises(httpx.HTTPStatusError):
             db.insert_source_document(SAMPLE_SOURCE_DOC_META)
 
 
@@ -111,7 +108,7 @@ class TestInsertChangeEvent:
     def test_returns_change_event_id(self, httpx_mock):
         """US-G2: Returns UUID of inserted change_event."""
         httpx_mock.add_response(
-            url__regex=r".*change_event.*",
+            url=CHANGE_EVENT_URL,
             json=[{"change_event_id": FAKE_CHANGE_EVENT_ID}],
             status_code=201,
         )
@@ -120,10 +117,6 @@ class TestInsertChangeEvent:
 
     def test_raises_on_5xx(self, httpx_mock):
         """US-G2: Raises on Supabase server error."""
-        import httpx as _httpx
-        httpx_mock.add_response(
-            url__regex=r".*change_event.*",
-            status_code=500,
-        )
-        with pytest.raises(_httpx.HTTPStatusError):
+        httpx_mock.add_response(url=CHANGE_EVENT_URL, status_code=500)
+        with pytest.raises(httpx.HTTPStatusError):
             db.insert_change_event(SAMPLE_CHANGE_EVENT)
