@@ -97,3 +97,12 @@
         grid-template-columns: 1fr;
     }
 }
+/* Browse all section */
+.browse_all {
+    margin-bottom: var(--sp-6);
+    padding-top: var(--sp-2);
+}
+
+.browse_all__heading {
+    margin-bottom: var(--sp-2);
+}

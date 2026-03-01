@@ -78,21 +78,27 @@ export default function PathwayPage({ searchParams }: PathwayPageProps) {
         <div className="section">
             <div className="container container--content">
 
-                {/* Assumptions block */}
-                <div className={styles.assumptions}>
-                    <p className="caption" style={{ color: "var(--color-muted)" }}>
-                        <strong>Assumption:</strong> applying as at{" "}
-                        <span className="mono">{caseDate}</span>.{" "}
-                        Change this in the checklist if your case date differs.
-                    </p>
-                </div>
-
                 {/* Header */}
                 <div className={styles.header}>
                     <h1 className="h1">Pathway Finder</h1>
                     <p className="body-lg" style={{ color: "var(--color-slate)", marginTop: "var(--sp-3)" }}>
-                        Select your visa type to generate a tailored evidence checklist grounded
-                        in current Australian migration law.
+                        Answer three quick questions and we&apos;ll build you a tailored
+                        Australian visa evidence checklist.
+                    </p>
+                </div>
+
+                {/* Eligibility quiz — Client Island */}
+                <PathwayQuiz />
+
+                {/* Browse all visa types — fallback / manual selection */}
+                <div id="browse-all" className={styles.browse_all}>
+                    <h2 className={`h2 ${styles.browse_all__heading}`}>
+                        Browse all Australian visa types
+                    </h2>
+                    <p className={`body-sm ${styles.assumptions}`} style={{ color: "var(--color-muted)" }}>
+                        <strong>Assumed case date:</strong>{" "}
+                        <span className="mono">{caseDate}</span>.{" "}
+                        Change this in the checklist if your case date differs.
                     </p>
                 </div>
 
@@ -115,7 +121,7 @@ export default function PathwayPage({ searchParams }: PathwayPageProps) {
                                         Subclass {visa.subclass}
                                     </span>
                                 </div>
-                                <h2 className={`h3 ${styles.visa_card__name}`}>{visa.name}</h2>
+                                <h3 className={`h3 ${styles.visa_card__name}`}>{visa.name}</h3>
                                 <p className={`body-sm ${styles.visa_card__applicant}`}>
                                     {visa.applicantType}
                                 </p>
@@ -159,7 +165,7 @@ export default function PathwayPage({ searchParams }: PathwayPageProps) {
                 <div className="next-actions" style={{ marginTop: "var(--sp-10)" }}>
                     <p className="next-actions__title">Next actions</p>
                     <ul className="next-actions__list">
-                        <li className="next-actions__item">Select your visa type above to open an evidence checklist</li>
+                        <li className="next-actions__item">Use the quiz above or select your visa type to open an evidence checklist</li>
                         <li className="next-actions__item">Review the key focus areas to understand the primary risk indicators</li>
                         <li className="next-actions__item">Create an account to save your progress and export your readiness pack</li>
                     </ul>
