@@ -6,6 +6,8 @@ import { getKBPackage } from "../../../../lib/kb-service";
 import { buildExportPayload, type ChecklistItemState } from "../../../../lib/export-builder";
 import { createClient } from "@supabase/supabase-js";
 import ReactPDF from "@react-pdf/renderer";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore — ExportPDFDocument uses react-pdf JSX which tsc cannot type-check in Next.js tsconfig
 import { ExportPDFDocument } from "../../components/ExportPDFDocument";
 
 function adminClient() {
