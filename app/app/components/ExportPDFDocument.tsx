@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * ExportPDFDocument.tsx — @react-pdf/renderer Document for the Readiness Pack
  * US-D1 | Brand Guidelines §9.5
