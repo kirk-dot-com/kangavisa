@@ -73,11 +73,92 @@
 
 ---
 
-### Open questions / decisions pending
-- None — Supabase fully wired. Sprint 1 is next.
+## Session: 2026-03-01 (day 2)
+
+### What we achieved — Sprints 3–8
+
+| Sprint | Theme | Status |
+|---|---|---|
+| 3 | Supabase DaaS consent + analytics schema migration | ✅ |
+| 4 | Checklist persistence (sessions API, ChecklistController, timeline view) | ✅ |
+| 5 | Flags page, safety-lint, golden-test suite | ✅ |
+| 6 | Seed migration SQL, data seeding for Subclass 500 demo, requirement rows | ✅ |
+| 7 | LLM AskBar activation, mobile nav, onboarding modal, DaaS consent banner | ✅ |
+| 8 | PathwayQuiz (3-step eligibility pre-filter), brand icons, landing page copy | ✅ |
 
 ---
 
+### Key deliverables
+
+#### LLM AskBar (Sprint 7 — US-F1)
+- `lib/llm-service.ts` — empty-KB guard (returns readable message without calling OpenAI when KB not seeded)
+- `app/api/ask/route.ts` — SSE `done` event now includes `model` + `kbEmpty`
+- `app/components/AskBar.tsx` — prompt chips (3 per subclass), model badge footer (`gpt-4o-mini · KB-grounded`)
+
+#### Mobile Nav (Sprint 7 — US-A2)
+- `app/components/MobileNav.tsx` — slide-out drawer (Escape/backdrop dismiss, scroll lock, focus trap)
+- `app/components/AppHeaderClient.tsx` — client island that keeps AppHeader as a Server Component
+- Hamburger hidden on desktop (`<768px` only)
+
+#### Onboarding Modal (Sprint 7 — US-E1)
+- `app/components/OnboardingModal.tsx` — 4-slide welcome from `narrative_scaffolding_pack.md`, localStorage-guarded
+
+#### DaaS Consent Banner (Sprint 7 — US-C1)
+- `app/components/DaaSConsentBanner.tsx` — amber prompt, calls `POST /api/auth/create-consent` on opt-in
+
+#### PathwayQuiz (Sprint 8 — US-A1)
+- `app/components/PathwayQuiz.tsx` — 3-step quiz: purpose → location (partner only) → confirm + CTA
+- Sits above the existing visa card grid on `/pathway`; "I'm not sure" scrolls to `#browse-all`
+
+#### Brand icons
+- Actual KangaVisa logo assets used (from Desktop PNGs)
+- `app/public/logo-mark.png` — transparent mark (PIL-extracted, white bg removed)
+- `app/public/icon.png`, `apple-icon.png`, `icon-192/48/32/16.png` — navy bg variants
+- `AppHeader` uses transparent mark + "KangaVisa" text; `filter: saturate(1.6) brightness(1.2) drop-shadow(gold)`
+
+#### Landing page copy
+- Hero: "Prepare a decision-ready / **Australian visa application pack**"
+- Subhead and all 4 tiles rewritten with Australian visa keywords (Australian Government, subclass-specific, plain English, no AI em-dashes)
+- SEO `generateMetadata()` confirmed on checklist, flags, and timeline pages
+
+---
+
+### Current test status
+```
+tsc --noEmit:  0 errors
+Jest:         28 / 28
+Branch:       main (up to date with origin)
+```
+
+---
+
+### ⚠️ One action required before next session
+
+> **KB Seed** — open Supabase SQL Editor and run `migrations/seed_kb_v1.sql` (750 lines, already generated).  
+> Once done, the AskBar will answer real visa questions grounded in the KB instead of returning "not seeded".
+
+---
+
+### Next session — where to pick up
+
+**Priority 1 — Verify AskBar live**
+- After KB seed: `/checklist/500` → AskBar → "What documents prove genuine student intent?"
+- Expect: streamed KB-grounded answer + `gpt-4o-mini · KB-grounded` badge
+
+**Priority 2 — Sprint 9 candidates**
+- Auth email templates: customise Supabase signup/confirmation/reset with KangaVisa branding
+- Dashboard readiness score: surface a % readiness score based on completed checklist items
+- Readiness pack export: PDF export of checklist + evidence status + AskBar citations
+- PWA manifest: offline support + "Add to home screen" for mobile users
+
+**Priority 3 — DaaS consent refinement**
+- Pass real `hasConsent` server-side check and actual `authToken` to `DaaSConsentBanner` (currently placeholder `false`/`null`)
+
+---
+
+### Open questions / decisions pending
+- Export format preference: PDF only, or also include DOCX/CSV options?
+- Dashboard readiness score: simple % complete, or weighted by requirement criticality?
 ### How to use this file
 At the end of each working session, update this file:
 1. Add a new session block with today's date
