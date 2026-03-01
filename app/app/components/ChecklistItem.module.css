@@ -1,0 +1,132 @@
+.item {
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    gap: var(--sp-3);
+    padding: var(--sp-3) var(--sp-4);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.item:hover {
+    border-color: var(--color-teal);
+}
+
+.item__done {
+    background: var(--color-success-bg);
+    border-color: var(--color-success);
+    opacity: 0.85;
+}
+
+/* Cycle button */
+.cycle_btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-full);
+    border: 2px solid var(--color-border);
+    background: var(--color-white);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: border-color var(--transition-fast), background var(--transition-fast);
+    margin-top: 2px;
+}
+
+.cycle_btn:hover {
+    border-color: var(--color-teal);
+    background: var(--color-teal-light);
+}
+
+.cycle_btn:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+}
+
+.cycle_icon {
+    font-size: 1rem;
+    color: var(--color-slate);
+    line-height: 1;
+}
+
+/* Content */
+.content {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+}
+
+.top_row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--sp-2);
+}
+
+.label {
+    font-size: var(--text-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--color-ink);
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+}
+
+.label__done {
+    text-decoration: line-through;
+    color: var(--color-muted);
+    font-weight: var(--fw-regular);
+}
+
+.priority_dot {
+    width: 6px;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-risk);
+    flex-shrink: 0;
+}
+
+.status_badge {
+    flex-shrink: 0;
+}
+
+.proves {
+    color: var(--color-slate);
+}
+
+.citation {
+    display: inline-block;
+    padding: var(--sp-1) var(--sp-2);
+    background: var(--color-gold-light);
+    color: var(--color-navy);
+    border-radius: var(--radius-sm);
+}
+
+.format_notes {
+    color: var(--color-muted);
+    font-style: italic;
+}
+
+/* Gaps */
+.gaps {
+    margin-top: var(--sp-1);
+}
+
+.gaps_summary {
+    cursor: pointer;
+    color: var(--color-warning);
+    font-weight: var(--fw-medium);
+}
+
+.gaps_list {
+    margin-top: var(--sp-2);
+    padding-left: var(--sp-3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+    color: var(--color-slate);
+}
