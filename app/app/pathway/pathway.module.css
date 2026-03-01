@@ -1,0 +1,99 @@
+.assumptions {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-2);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--sp-2) var(--sp-4);
+    margin-bottom: var(--sp-6);
+}
+
+.header {
+    margin-bottom: var(--sp-8);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--sp-5);
+}
+
+.visa_card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-5);
+    padding: var(--sp-6);
+    border-top: 3px solid var(--color-teal);
+    transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+.visa_card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.visa_card__top {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+}
+
+.visa_card__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-2);
+}
+
+.subclass {
+    color: var(--color-muted);
+}
+
+.visa_card__name {
+    color: var(--color-navy);
+    font-size: var(--text-xl);
+}
+
+.visa_card__applicant {
+    color: var(--color-slate);
+    flex: 1;
+}
+
+.visa_card__risks {
+    flex: 1;
+}
+
+.risks__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+}
+
+.risk {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    color: var(--color-slate);
+}
+
+.risk__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--color-teal);
+    flex-shrink: 0;
+}
+
+.visa_card__actions {
+    display: flex;
+    gap: var(--sp-3);
+    margin-top: auto;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}

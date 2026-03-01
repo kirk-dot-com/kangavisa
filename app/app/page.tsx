@@ -1,95 +1,105 @@
-import Image from "next/image";
+// Landing page — KangaVisa hero + value pillars
+// US-A1 | Brand Guidelines §13
+
+import Link from "next/link";
 import styles from "./page.module.css";
 
-export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+const VALUE_PILLARS = [
+  {
+    icon: "🧭",
+    title: "Know your pathway",
+    body: "Understand which visa fits your situation, the key criteria, and the documents that matter — before you start.",
+  },
+  {
+    icon: "📋",
+    title: "Build your evidence",
+    body: "A structured, visa-specific checklist maps each document to what it actually proves, so nothing is forgotten.",
+  },
+  {
+    icon: "🔍",
+    title: "Fix the gaps",
+    body: "KangaVisa surfaces risk flags — inconsistencies, missing evidence, timing issues — with plain-English explanations and fix paths.",
+  },
+  {
+    icon: "📦",
+    title: "Export with confidence",
+    body: "Generate a structured readiness pack you can share with your migration agent or keep as a personal record.",
+  },
+] as const;
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
+export default function HomePage() {
+  return (
+    <>
+      {/* Hero */}
+      <section className={styles.hero}>
+        <div className={`container ${styles.hero__inner}`}>
+          <div className={styles.hero__badge}>
+            <span className="badge badge--teal">Readiness, not advice</span>
+          </div>
+          <h1 className={`h1 ${styles.hero__heading}`}>
+            Prepare a decision-ready
+            <br />
+            <span className={styles.hero__accent}>visa application pack</span>
+          </h1>
+          <p className={`body-lg ${styles.hero__sub}`}>
+            KangaVisa helps applicants, sponsors, and registered migration agents
+            turn complex immigration requirements into a clear, structured evidence
+            plan — without giving legal advice or predicting outcomes.
+          </p>
+          <div className={styles.hero__ctas}>
+            <Link href="/pathway" className="btn btn--primary btn--lg">
+              Start your readiness check →
+            </Link>
+            <Link href="/auth/signup" className="btn btn--secondary btn--lg">
+              Create account
+            </Link>
+          </div>
+          <p className={`caption ${styles.hero__disclaimer}`}>
+            Not legal advice · No approval guarantees · Privacy-first
+          </p>
         </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </section>
+
+      {/* Value pillars */}
+      <section className={`section ${styles.pillars}`}>
+        <div className="container">
+          <h2 className={`h2 ${styles.pillars__heading}`}>
+            Clarity you can act on
+          </h2>
+          <p className={`body-lg ${styles.pillars__sub}`}>
+            Four steps from confusion to a structured readiness plan.
+          </p>
+          <div className={styles.pillars__grid}>
+            {VALUE_PILLARS.map((pillar, i) => (
+              <div key={i} className={`card ${styles.pillar}`}>
+                <span className={styles.pillar__icon} aria-hidden="true">
+                  {pillar.icon}
+                </span>
+                <h3 className={`h3 ${styles.pillar__title}`}>{pillar.title}</h3>
+                <p className={`body-sm ${styles.pillar__body}`}>{pillar.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA band */}
+      <section className={styles.cta_band}>
+        <div className={`container ${styles.cta_band__inner}`}>
+          <div>
+            <h2 className={`h2 ${styles.cta_band__heading}`}>
+              Ready to build your readiness pack?
+            </h2>
+            <p className="body-sm" style={{ color: "#94A3B8", marginTop: "var(--sp-2)" }}>
+              Choose your visa type and we will generate a tailored evidence checklist
+              grounded in current Australian migration law.
+            </p>
+          </div>
+          <Link href="/pathway" className="btn btn--primary btn--lg">
+            Choose your visa →
+          </Link>
+        </div>
+      </section>
+    </>
   );
 }
