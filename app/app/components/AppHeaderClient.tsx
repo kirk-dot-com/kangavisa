@@ -1,9 +1,9 @@
 /**
- * AppHeaderClient.tsx — Client wrapper for mobile hamburger toggle
+ * AppHeaderClient.tsx — Client island for mobile hamburger toggle
  * US-A2 | Sprint 7
  *
- * AppHeader (Server Component) renders this as a client island.
- * Manages mobile drawer open/close state.
+ * AppHeader (Server Component) passes auth state down to this thin
+ * client island. It manages the mobile drawer open/close state only.
  */
 "use client";
 
@@ -21,19 +21,20 @@ export function AppHeaderClient({ isAuthenticated, userEmail }: AppHeaderClientP
 
     return (
         <>
-            {/* Hamburger button — visible on mobile only */}
+            {/* Hamburger — mobile only, hidden via CSS on desktop */}
             <button
                 className={styles.hamburger}
                 onClick={() => setDrawerOpen(true)}
-                aria-label="Open navigation"
+                aria-label="Open navigation menu"
                 aria-expanded={drawerOpen}
+                aria-controls="mobile-nav"
             >
-                <span className={styles.hamburger__bar} />
-                <span className={styles.hamburger__bar} />
-                <span className={styles.hamburger__bar} />
+                <span className={styles.hamburger__bar} aria-hidden="true" />
+                <span className={styles.hamburger__bar} aria-hidden="true" />
+                <span className={styles.hamburger__bar} aria-hidden="true" />
             </button>
 
-            {/* Mobile navigation drawer */}
+            {/* Mobile nav drawer */}
             <MobileNav
                 isOpen={drawerOpen}
                 onClose={() => setDrawerOpen(false)}
