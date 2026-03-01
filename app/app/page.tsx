@@ -39,12 +39,12 @@ export default function HomePage() {
           <h1 className={`h1 ${styles.hero__heading}`}>
             Prepare a decision-ready
             <br />
-            <span className={styles.hero__accent}>visa application pack</span>
+            <span className={styles.hero__accent}>Australian visa application pack</span>
           </h1>
           <p className={`body-lg ${styles.hero__sub}`}>
-            KangaVisa helps applicants, sponsors, and registered migration agents
-            turn complex immigration requirements into a clear, structured evidence
-            plan — without giving legal advice or predicting outcomes.
+            KangaVisa helps people preparing Australian visa applications turn complex
+            immigration requirements into a clear, structured evidence plan — without
+            predicting outcomes.
           </p>
           <div className={styles.hero__ctas}>
             <Link href="/pathway" className="btn btn--primary btn--lg">
