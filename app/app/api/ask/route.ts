@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
     const caseDateObj = caseDate ? new Date(caseDate) : new Date();
 
     try {
-        const { stream, citations, warnings } = await askLLMStream({
+        const { stream, citations, warnings, model, kbEmpty } = await askLLMStream({
             userQuery: query,
             subclassCode: subclass,
             caseDate: caseDateObj,
@@ -72,6 +72,8 @@ export async function POST(req: NextRequest) {
                                 violations: postCheck.violations,
                                 citations,
                                 warnings,
+                                model: model ?? null,
+                                kbEmpty: kbEmpty ?? false,
                             })}\n\n`
                         )
                     );

@@ -133,3 +133,55 @@
         display: none;
     }
 }
+/* Hamburger button — mobile only */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: var(--sp-2);
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+    transition: background var(--transition-fast);
+}
+
+.hamburger:hover {
+    background: var(--color-navy-light);
+}
+
+.hamburger__bar {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 2px;
+    transition: background var(--transition-fast);
+}
+
+.hamburger:hover .hamburger__bar {
+    background: var(--color-white);
+}
+
+@media (max-width: 768px) {
+    .hamburger {
+        display: flex;
+    }
+
+    /* Hide desktop nav on mobile — drawer handles it */
+    .nav {
+        display: none;
+    }
+
+    .user_pill,
+    .user_email {
+        display: none;
+    }
+
+    /* Keep desktop auth CTAs hidden on mobile */
+    .actions > .btn {
+        display: none;
+    }
+}

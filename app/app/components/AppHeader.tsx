@@ -9,6 +9,7 @@
 
 import Link from "next/link";
 import { getServerUser } from "../../lib/supabase-server";
+import { AppHeaderClient } from "./AppHeaderClient";
 import styles from "./AppHeader.module.css";
 
 export default async function AppHeader() {
@@ -83,6 +84,12 @@ export default async function AppHeader() {
                             </Link>
                         </>
                     )}
+
+                    {/* Mobile hamburger (client island — manages drawer state) */}
+                    <AppHeaderClient
+                        isAuthenticated={isAuthenticated}
+                        userEmail={user?.email ?? null}
+                    />
                 </div>
             </div>
         </header>
