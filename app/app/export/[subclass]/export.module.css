@@ -1,0 +1,106 @@
+.breadcrumb {
+    display: inline-block;
+    color: var(--color-muted);
+    margin-bottom: var(--sp-5);
+    text-decoration: none;
+}
+
+.breadcrumb:hover {
+    color: var(--color-teal);
+}
+
+.header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--sp-6);
+    margin-bottom: var(--sp-8);
+    flex-wrap: wrap;
+}
+
+.pack_meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--sp-1);
+    text-align: right;
+}
+
+.pack_version {
+    background: var(--color-navy);
+    color: var(--color-gold);
+    padding: var(--sp-1) var(--sp-3);
+    border-radius: var(--radius-sm);
+}
+
+.export_date {
+    color: var(--color-muted);
+}
+
+.section_card {
+    margin-bottom: var(--sp-5);
+}
+
+.section_title {
+    color: var(--color-navy);
+    margin-bottom: var(--sp-4);
+    padding-bottom: var(--sp-3);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.assumptions_list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    list-style: none;
+}
+
+/* Coverage */
+.coverage_card {}
+
+.coverage_bar__wrap {
+    height: 8px;
+    background: var(--color-border);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    margin-bottom: var(--sp-2);
+}
+
+.coverage_bar__fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-teal), var(--color-gold));
+    border-radius: var(--radius-full);
+    transition: width 0.6s ease;
+}
+
+.coverage_label {
+    color: var(--color-muted);
+}
+
+/* Flags */
+.flags_list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+}
+
+.flag_row {
+    display: flex;
+    gap: var(--sp-4);
+    align-items: flex-start;
+}
+
+/* Downloads */
+.download_card {}
+
+.download_buttons {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+    align-items: flex-start;
+}
+
+.pdf_note {
+    color: var(--color-muted);
+    font-style: italic;
+}
