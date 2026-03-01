@@ -8,22 +8,22 @@ const VALUE_PILLARS = [
   {
     icon: "🧭",
     title: "Know your Australian visa pathway",
-    body: "Understand which Australian visa subclass fits your situation — student, graduate, partner, working holiday, or employer sponsored — and what the Home Affairs decision-maker is actually looking for.",
+    body: "Understand which Australian visa subclass fits your situation, whether student, graduate, partner, working holiday, or employer sponsored, and what the Australian Government is actually looking for.",
   },
   {
     icon: "📋",
     title: "Build your evidence checklist",
-    body: "A structured, subclass-specific checklist maps every Australian visa requirement to the exact documents and statements that satisfy it — nothing forgotten, nothing guessed.",
+    body: "A structured, subclass-specific checklist maps every Australian visa requirement to the exact documents and statements that satisfy it. Nothing forgotten. Nothing guessed.",
   },
   {
     icon: "🔍",
     title: "Spot the gaps before you lodge",
-    body: "KangaVisa surfaces common Australian visa refusal risks — inconsistent timelines, missing primary documents, weak genuine intent statements — with plain-English explanations and fix paths.",
+    body: "KangaVisa surfaces common Australian visa refusal risks, including inconsistent timelines, missing primary documents, and weak genuine intent statements, with plain-English explanations and practical fix paths.",
   },
   {
     icon: "📦",
     title: "Export a decision-ready pack",
-    body: "Generate a structured Australian visa readiness pack grounded in current migration law — to review with your registered migration agent or keep as your own preparation record.",
+    body: "Generate a structured Australian visa readiness pack grounded in current migration law, ready to review with your registered migration agent or keep as your own preparation record.",
   },
 ] as const;
 
@@ -43,7 +43,7 @@ export default function HomePage() {
           </h1>
           <p className={`body-lg ${styles.hero__sub}`}>
             KangaVisa helps people preparing Australian visa applications turn complex
-            immigration requirements into a clear, structured evidence plan — without
+            immigration requirements into a clear, structured evidence plan without
             predicting outcomes.
           </p>
           <div className={styles.hero__ctas}>
