@@ -42,8 +42,12 @@ export const FRAUD_PATTERNS = [
     "fake letter",
     "forged document",
     "forge a",
+    "forge my",
+    "forge the",
     "fabricate evidence",
+    "fabricate a",
     "hide gaps",
+    "hide the",           // catches "hide the employment gaps"
     "conceal gaps",
     "hide my history",
     "conceal my history",
@@ -51,6 +55,9 @@ export const FRAUD_PATTERNS = [
     "avoid detection",
     "bypass the character test",
     "bypass character check",
+    "employment gaps",    // any query about hiding employment gaps
+    "cover up",
+    "falsify",
 ] as const;
 
 // ---------------------------------------------------------------------------
