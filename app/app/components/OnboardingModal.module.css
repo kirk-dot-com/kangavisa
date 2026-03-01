@@ -1,0 +1,131 @@
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    z-index: 300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--sp-5);
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.modal {
+    background: var(--color-white);
+    border-radius: var(--radius-xl, 16px);
+    width: 100%;
+    max-width: 480px;
+    padding: var(--sp-8);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-6);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.25);
+    animation: slideUp 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(24px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Progress dots */
+.dots {
+    display: flex;
+    gap: var(--sp-2);
+    justify-content: center;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: var(--radius-full);
+    background: #E2E8F0;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+.dot__active {
+    background: var(--color-teal);
+    transform: scale(1.35);
+}
+
+/* Slide content */
+.slide {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--sp-4);
+}
+
+.emoji {
+    font-size: 2.5rem;
+    line-height: 1;
+}
+
+.title {
+    color: var(--color-navy);
+}
+
+.body {
+    color: var(--color-slate);
+    line-height: 1.65;
+    max-width: 380px;
+}
+
+/* Footer */
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-4);
+}
+
+.step_count {
+    color: var(--color-muted);
+    flex-shrink: 0;
+}
+
+.actions {
+    display: flex;
+    gap: var(--sp-3);
+}
+
+/* Skip */
+.skip {
+    position: absolute;
+    top: var(--sp-4);
+    right: var(--sp-4);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--color-muted);
+    font-size: var(--text-sm);
+    padding: var(--sp-1) var(--sp-2);
+    border-radius: var(--radius-sm);
+    transition: color var(--transition-fast);
+}
+
+.skip:hover {
+    color: var(--color-slate);
+}
