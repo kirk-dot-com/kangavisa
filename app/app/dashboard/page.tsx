@@ -8,6 +8,8 @@ import Link from "next/link";
 import { getServerUser } from "../../lib/supabase-server";
 import { createClient } from "@supabase/supabase-js";
 import Disclaimer from "../components/Disclaimer";
+import { OnboardingModal } from "../components/OnboardingModal";
+import { DaaSConsentBanner } from "../components/DaaSConsentBanner";
 import styles from "./dashboard.module.css";
 
 export const metadata: Metadata = {
@@ -72,6 +74,12 @@ export default async function DashboardPage() {
     return (
         <div className="section">
             <div className="container container--content">
+
+                {/* First-visit onboarding modal (localStorage-guarded, client-side) */}
+                <OnboardingModal isAuthenticated={true} />
+
+                {/* DaaS consent banner (shown if no prior consent) */}
+                <DaaSConsentBanner hasConsent={false} authToken={null} />
 
                 <div className={styles.header}>
                     <div>

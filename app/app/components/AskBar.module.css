@@ -113,3 +113,47 @@
 .citation_chip a {
     color: inherit;
 }
+/* Prompt chips */
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    margin-bottom: var(--sp-3);
+}
+
+.chip {
+    padding: var(--sp-2) var(--sp-3);
+    background: transparent;
+    border: 1px solid var(--color-navy-light, #2d3f55);
+    border-radius: var(--radius-full);
+    font-size: var(--text-xs);
+    color: var(--color-slate);
+    cursor: pointer;
+    transition: border-color var(--transition-fast), color var(--transition-fast), background var(--transition-fast);
+    text-align: left;
+    line-height: 1.4;
+}
+
+.chip:hover {
+    border-color: var(--color-gold);
+    color: var(--color-gold);
+    background: rgba(197, 154, 48, 0.06);
+}
+
+/* Model badge */
+.model_badge {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    margin-top: var(--sp-3);
+    padding-top: var(--sp-3);
+    border-top: 1px solid var(--color-navy-light, #2d3f55);
+}
+
+.model_chip {
+    padding: var(--sp-1) var(--sp-2);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius-sm);
+    color: var(--color-teal);
+}

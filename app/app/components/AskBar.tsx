@@ -11,6 +11,40 @@ interface AskBarProps {
     caseDate: string;
 }
 
+const PROMPT_CHIPS: Record<string, string[]> = {
+    "500": [
+        "What documents prove genuine student intent?",
+        "What are the most common evidence gaps for a 500 visa?",
+        "When does my English test score need to be valid until?",
+    ],
+    "485": [
+        "What documents do I need at time of lodgement?",
+        "How do I prove my qualification meets 485 requirements?",
+        "What are the timing risks I should watch for?",
+    ],
+    "482": [
+        "What nomination evidence should my sponsor provide?",
+        "How do I demonstrate my salary meets the threshold?",
+        "What work history documents does the 482 require?",
+    ],
+    "417": [
+        "What documents prove I did specified work for a second grant?",
+        "How do I show financial capacity for the 417 visa?",
+        "What regional work evidence is accepted?",
+    ],
+    "820": [
+        "What are the four pillars of relationship evidence?",
+        "What financial evidence shows a genuine relationship?",
+        "How long does processing typically take for an 820?",
+    ],
+};
+
+const DEFAULT_CHIPS = [
+    "What are the key requirements for this visa?",
+    "What are the most common evidence gaps?",
+    "What should I prepare first?",
+];
+
 export default function AskBar({ subclass, caseDate }: AskBarProps) {
     const [query, setQuery] = useState("");
     const [answer, setAnswer] = useState("");
@@ -19,7 +53,10 @@ export default function AskBar({ subclass, caseDate }: AskBarProps) {
     const [violations, setViolations] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
     const [done, setDone] = useState(false);
+    const [model, setModel] = useState<string | null>(null);
     const abortRef = useRef<AbortController | null>(null);
+
+    const chips = PROMPT_CHIPS[subclass] ?? DEFAULT_CHIPS;
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -32,6 +69,7 @@ export default function AskBar({ subclass, caseDate }: AskBarProps) {
         setViolations([]);
         setDone(false);
         setLoading(true);
+        setModel(null);
 
         abortRef.current = new AbortController();
 
@@ -62,6 +100,7 @@ export default function AskBar({ subclass, caseDate }: AskBarProps) {
                             if (payload.refusal) setRefusal(payload.refusal);
                             if (payload.citations) setCitations(payload.citations);
                             if (payload.violations) setViolations(payload.violations);
+                            if (payload.model) setModel(payload.model);
                             setDone(true);
                         }
                     } catch {
@@ -96,6 +135,21 @@ export default function AskBar({ subclass, caseDate }: AskBarProps) {
 
             {/* Query form */}
             <form onSubmit={handleSubmit} className={styles.form}>
+                {/* Prompt chips */}
+                {!answer && !loading && (
+                    <div className={styles.chips} aria-label="Suggested questions">
+                        {chips.map((chip) => (
+                            <button
+                                key={chip}
+                                type="button"
+                                className={styles.chip}
+                                onClick={() => setQuery(chip)}
+                            >
+                                {chip}
+                            </button>
+                        ))}
+                    </div>
+                )}
                 <textarea
                     id="ask-query"
                     className={`form-input ${styles.textarea}`}
@@ -179,6 +233,16 @@ export default function AskBar({ subclass, caseDate }: AskBarProps) {
                                     </span>
                                 ))}
                             </div>
+                        </div>
+                    )}
+
+                    {/* Model badge */}
+                    {done && (
+                        <div className={styles.model_badge}>
+                            <span className={`caption mono ${styles.model_chip}`}>
+                                {model ? `${model} · KB-grounded` : "KB-grounded"}
+                            </span>
+                            <span className="caption" style={{ color: "var(--color-muted)" }}>· Not legal advice</span>
                         </div>
                     )}
                 </div>
