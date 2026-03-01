@@ -448,3 +448,69 @@ Jest:          28 / 28 (no regressions)
 ---
 
 *Next sprint walkthrough will be added here when Sprint 6 completes.*
+
+---
+
+## Sprint 6 — KB Seed + Auth-Aware AppHeader + Staleness Alert
+**Completed:** 2026-03-01  
+**Commits:** `d4969ac`, `931aafd`, `de38ad9` on `main`
+
+### User stories delivered
+
+| Story | Description | Status |
+|---|---|---|
+| US-F6 | KB seed migration — all 5 visa subclasses seeded from kb/seed/ JSON | ✅ |
+| US-G1 | Auth-aware AppHeader — Dashboard nav + user pill + Sign out | ✅ |
+| US-B5 | KB staleness alert — amber banner when data > 30 days old | ✅ |
+
+### What was built
+
+#### KB Seed (US-F6)
+| File | Description |
+|---|---|
+| `scripts/generate_seed_sql.py` | Python generator — reads all `kb/seed/*.json`, emits idempotent `INSERT` SQL using deterministic UUID5 |
+| `migrations/seed_kb_v1.sql` | Output — paste into Supabase SQL Editor to seed 5 subclasses (500, 485, 482, 417, 820) |
+
+**Seed output:**
+| Item | Count |
+|---|---|
+| Visa subclasses | 5 |
+| Requirements | 18 |
+| Evidence items | 19 |
+| Flag templates | 3 |
+
+**To unlock full demo:**
+```bash
+# Regenerate at any time:
+python3 scripts/generate_seed_sql.py
+
+# Then paste migrations/seed_kb_v1.sql into Supabase SQL Editor → Run
+```
+
+#### Auth-Aware AppHeader (US-G1)
+| File | Description |
+|---|---|
+| `app/components/AppHeader.tsx` | Async Server Component — `getServerUser()` on every render. Authenticated: Dashboard nav link, teal avatar pill, Sign out. Unauthenticated: Sign in / Get started. |
+| `app/components/AppHeader.module.css` | User pill, avatar, and email styles |
+| `app/auth/signout/route.ts` | GET/POST handler — `supabase.auth.signOut()` → redirect `/` |
+
+#### KB Staleness Alert (US-B5)
+| File | Description |
+|---|---|
+| `app/components/KBStalenessAlert.tsx` | Dismissible amber banner — shows when `last_reviewed_at` > 30 days ago |
+| `app/components/KBStalenessAlert.module.css` | Alert banner styles |
+
+### Tests
+```
+tsc --noEmit:   0 errors
+Jest:          28 / 28 (no regressions)
+```
+
+### Key decisions
+- **Deterministic UUID5 in seed script** — using `uuid.uuid5(ns, "requirement:REQ-500-GS-001")` means every re-run produces the same UUIDs. Combined with `ON CONFLICT DO NOTHING`, the migration is safe to run multiple times without duplication.
+- **AppHeader reads auth server-side** — `getServerUser()` uses the Supabase SSR cookie client, which means no client-side JS needed for the header auth state. No flash of unauthenticated content.
+- **KBStalenessAlert receives props from Server Component** — the Server Component page passes `lastReviewedAt` as a prop; the client component only decides whether to show/dismiss the banner. This avoids any extra API calls from the browser.
+
+---
+
+*Next sprint walkthrough will be added here when Sprint 7 completes.*
