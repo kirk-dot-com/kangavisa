@@ -1,9 +1,10 @@
-// Pathway Finder — visa selector
-// US-A1, US-A2 | Brand Guidelines §4, §9
-// Server Component
+// Pathway Finder — eligibility quiz + visa selector
+// US-A1 | Brand Guidelines §4, §9 | Sprint 8
+// Server Component (quiz is a Client Island)
 
 import Link from "next/link";
 import type { Metadata } from "next";
+import PathwayQuiz from "../components/PathwayQuiz";
 import styles from "./pathway.module.css";
 
 export const metadata: Metadata = {
