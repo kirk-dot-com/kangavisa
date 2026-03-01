@@ -24,13 +24,14 @@ export default async function AppHeader() {
                 {/* Logo */}
                 <Link href="/" className={styles.logo} aria-label="KangaVisa — Home">
                     <Image
-                        src="/logo.png"
-                        alt="KangaVisa"
-                        width={140}
-                        height={40}
-                        className={styles.logo__img}
+                        src="/logo-mark.png"
+                        alt=""
+                        width={40}
+                        height={26}
+                        className={styles.logo__mark_img}
                         priority
                     />
+                    <span className={styles.logo__name}>KangaVisa</span>
                 </Link>
 
                 {/* Primary Nav */}

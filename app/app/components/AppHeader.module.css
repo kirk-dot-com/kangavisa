@@ -199,3 +199,18 @@
         height: 32px;
     }
 }
+
+/* Transparent brand icon mark (next to logo__name text) */
+.logo__mark_img {
+    height: 32px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+    flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+    .logo__mark_img {
+        height: 26px;
+    }
+}
