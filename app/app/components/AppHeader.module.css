@@ -203,18 +203,17 @@
 
 /* Transparent brand icon mark (next to logo__name text) */
 .logo__mark_img {
-    height: 36px;
+    height: 42px;
     width: auto;
     object-fit: contain;
     display: block;
     flex-shrink: 0;
-    /* Blend white background into navy header — makes the box invisible */
-    mix-blend-mode: multiply;
-    filter: brightness(1.1) contrast(1.05);
+    /* Boost vibrancy so gold and teal pop on the navy header */
+    filter: saturate(1.15) brightness(1.05);
 }
 
 @media (max-width: 640px) {
     .logo__mark_img {
-        height: 28px;
+        height: 32px;
     }
 }
