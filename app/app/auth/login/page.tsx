@@ -92,6 +92,11 @@ export default function LoginPage() {
                         Create one free
                     </Link>
                 </p>
+                <p className={`caption ${styles.footer_link}`}>
+                    <Link href="/auth/reset-request" style={{ color: "var(--color-muted)" }}>
+                        Forgot password?
+                    </Link>
+                </p>
             </div>
         </div>
     );

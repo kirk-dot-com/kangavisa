@@ -5,14 +5,6 @@ import { NextRequest } from "next/server";
 import { getKBPackage } from "../../../../lib/kb-service";
 import { buildExportPayload, type ChecklistItemState } from "../../../../lib/export-builder";
 import { createClient } from "@supabase/supabase-js";
-import ReactPDF from "@react-pdf/renderer";
-
-// We do a dynamic import to avoid SSR issues with @react-pdf/renderer
-async function renderPDF(payload: Awaited<ReturnType<typeof buildExportPayload>>) {
-    const { ExportPDFDocument } = await import("../../../../app/components/ExportPDFDocument");
-    const buffer = await ReactPDF.renderToBuffer(ExportPDFDocument({ payload }));
-    return buffer;
-}
 
 function adminClient() {
     return createClient(
@@ -75,9 +67,15 @@ export async function GET(req: NextRequest) {
     const payload = buildExportPayload(pkg, itemStates, visaName, subclass);
 
     try {
-        const buffer = await renderPDF(payload);
+        // Dynamic imports to avoid SSR canvas issues
+        const ReactPDF = await import("@react-pdf/renderer");
+        const { ExportPDFDocument } = await import("../../components/ExportPDFDocument");
+        const buffer = await ReactPDF.renderToBuffer(ExportPDFDocument({ payload }));
+        // Wrap in Uint8Array for BodyInit compatibility
+        const body = new Uint8Array(buffer);
+
         const filename = `kangavisa-pack-${subclass}-${caseDateStr}.pdf`;
-        return new Response(buffer, {
+        return new Response(body, {
             headers: {
                 "Content-Type": "application/pdf",
                 "Content-Disposition": `attachment; filename="${filename}"`,
@@ -85,6 +83,6 @@ export async function GET(req: NextRequest) {
         });
     } catch (err: unknown) {
         console.error("PDF render error:", err);
-        return new Response("PDF generation failed", { status: 500 });
+        return new Response("PDF generation failed — check server logs.", { status: 500 });
     }
 }

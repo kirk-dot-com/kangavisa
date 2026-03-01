@@ -149,15 +149,19 @@ export default async function ExportPage({ params, searchParams }: ExportPagePro
                     </p>
                     <div className={styles.download_buttons}>
                         <a
-                            href={csvUrl}
+                            href={`/api/export/pdf?subclass=${subclass}&caseDate=${caseDateStr}`}
                             download
                             className="btn btn--primary btn--lg"
                         >
+                            ↓ Download PDF
+                        </a>
+                        <a
+                            href={csvUrl}
+                            download
+                            className="btn btn--secondary"
+                        >
                             ↓ Download CSV
                         </a>
-                        <p className={`caption ${styles.pdf_note}`}>
-                            PDF export coming in Sprint 5 (requires PDF renderer build step).
-                        </p>
                     </div>
                 </div>
 

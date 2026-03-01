@@ -1,0 +1,153 @@
+.page_header {
+    margin-bottom: var(--sp-8);
+}
+
+.breadcrumb {
+    display: inline-block;
+    color: var(--color-muted);
+    margin-bottom: var(--sp-4);
+    text-decoration: none;
+}
+
+.breadcrumb:hover {
+    color: var(--color-teal);
+}
+
+/* Legend */
+.legend {
+    display: flex;
+    gap: var(--sp-6);
+    margin-bottom: var(--sp-8);
+    flex-wrap: wrap;
+}
+
+.legend_item {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+}
+
+.legend__active {
+    color: var(--color-teal);
+}
+
+.legend__expired {
+    color: var(--color-muted);
+}
+
+.legend__future {
+    color: var(--color-gold);
+}
+
+/* Year group */
+.timeline {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-8);
+}
+
+.year_group {
+    display: flex;
+    gap: var(--sp-6);
+}
+
+.year_label {
+    font-size: var(--text-xl);
+    font-weight: var(--fw-bold);
+    color: var(--color-navy);
+    min-width: 52px;
+    padding-top: 2px;
+}
+
+.year_entries {
+    flex: 1;
+    border-left: 2px solid var(--color-border);
+    padding-left: var(--sp-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-5);
+}
+
+/* Timeline node */
+.node {
+    display: flex;
+    gap: var(--sp-4);
+    position: relative;
+}
+
+.node__dot {
+    width: 12px;
+    height: 12px;
+    border-radius: var(--radius-full);
+    margin-top: 4px;
+    flex-shrink: 0;
+    margin-left: calc(-1 * var(--sp-6) - 5px);
+    box-shadow: 0 0 0 3px var(--color-white);
+}
+
+.node__content {
+    flex: 1;
+    padding: var(--sp-4);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    transition: border-color var(--transition-fast);
+}
+
+.node__active .node__content {
+    border-color: var(--color-teal);
+    background: var(--color-teal-light);
+}
+
+.node__expired .node__content {
+    opacity: 0.65;
+}
+
+.node__active .node__dot {
+    box-shadow: 0 0 0 3px var(--color-teal-light);
+}
+
+.node__header {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
+    flex-wrap: wrap;
+}
+
+.type_badge {
+    background: transparent;
+    border: 1px solid;
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+}
+
+.node__date {
+    color: var(--color-muted);
+}
+
+.node__title {
+    font-size: var(--text-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--color-navy);
+}
+
+.node__plain {
+    color: var(--color-slate);
+}
+
+.node__citation {
+    display: inline-block;
+    background: var(--color-gold-light);
+    color: var(--color-navy);
+    padding: var(--sp-1) var(--sp-2);
+    border-radius: var(--radius-sm);
+    align-self: flex-start;
+}
+
+.expired_badge {
+    align-self: flex-start;
+}
