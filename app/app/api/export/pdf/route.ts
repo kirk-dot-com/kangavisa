@@ -5,6 +5,8 @@ import { NextRequest } from "next/server";
 import { getKBPackage } from "../../../../lib/kb-service";
 import { buildExportPayload, type ChecklistItemState } from "../../../../lib/export-builder";
 import { createClient } from "@supabase/supabase-js";
+import ReactPDF from "@react-pdf/renderer";
+import { ExportPDFDocument } from "../../components/ExportPDFDocument";
 
 function adminClient() {
     return createClient(
@@ -67,9 +69,6 @@ export async function GET(req: NextRequest) {
     const payload = buildExportPayload(pkg, itemStates, visaName, subclass);
 
     try {
-        // Dynamic imports to avoid SSR canvas issues
-        const ReactPDF = await import("@react-pdf/renderer");
-        const { ExportPDFDocument } = await import("../../components/ExportPDFDocument");
         const buffer = await ReactPDF.renderToBuffer(ExportPDFDocument({ payload }));
         // Wrap in Uint8Array for BodyInit compatibility
         const body = new Uint8Array(buffer);
