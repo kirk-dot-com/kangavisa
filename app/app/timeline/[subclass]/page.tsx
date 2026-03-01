@@ -4,7 +4,7 @@
 
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getRequirements } from "../../../lib/kb-service";
+import { getRequirements, type Requirement } from "../../../lib/kb-service";
 import Disclaimer from "../../components/Disclaimer";
 import styles from "./timeline.module.css";
 
@@ -46,9 +46,9 @@ export default async function TimelinePage({ params, searchParams }: TimelinePag
     const caseDate = new Date(caseDateStr);
     const visaName = VISA_NAMES[subclass] ?? `Subclass ${subclass}`;
 
-    let requirements = [];
+    let requirements: Requirement[] = [];
     try {
-        // Fetch ALL requirements (not filtered by caseDate) to show full history
+        // Fetch all requirements history (earlier than any real date) to show full timeline
         requirements = await getRequirements(subclass, new Date("2000-01-01"));
     } catch {
         requirements = [];
@@ -60,7 +60,7 @@ export default async function TimelinePage({ params, searchParams }: TimelinePag
     );
 
     // Group by year of effective_from
-    const byYear = sorted.reduce<Record<string, typeof sorted>>((acc, req) => {
+    const byYear = sorted.reduce<Record<string, Requirement[]>>((acc, req) => {
         const year = req.effective_from.slice(0, 4);
         if (!acc[year]) acc[year] = [];
         acc[year].push(req);
@@ -69,13 +69,13 @@ export default async function TimelinePage({ params, searchParams }: TimelinePag
 
     const years = Object.keys(byYear).sort();
 
-    function isActive(req: (typeof sorted)[0]) {
+    function isActive(req: Requirement) {
         const from = new Date(req.effective_from);
         const to = req.effective_to ? new Date(req.effective_to) : null;
         return from <= caseDate && (to === null || to >= caseDate);
     }
 
-    function isExpired(req: (typeof sorted)[0]) {
+    function isExpired(req: Requirement) {
         return req.effective_to !== null && new Date(req.effective_to) < caseDate;
     }
 
