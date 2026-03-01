@@ -7,23 +7,23 @@
 
 -- ---- 1. Visa subclasses ----
 INSERT INTO visa_subclass (visa_id, subclass_code, stream, audience, canonical_info_url, last_verified_at)
-  VALUES ('7f342e2f-ddb0-5990-8d88-fe1a001011d8':uuid, '500', NULL, 'B2C':kb_audience, 'https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500', '2026-03-01T01:37:20.902993Z')
+  VALUES ('7f342e2f-ddb0-5990-8d88-fe1a001011d8'::uuid, '500', NULL, 'B2C'::kb_audience, 'https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500', '2026-03-01T01:37:20.902993Z')
   ON CONFLICT DO NOTHING;
 
 INSERT INTO visa_subclass (visa_id, subclass_code, stream, audience, canonical_info_url, last_verified_at)
-  VALUES ('58ee7773-cf74-5ac6-a889-17f2ac82136f':uuid, '485', NULL, 'B2C':kb_audience, 'https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-graduate-485', '2026-03-01T01:37:20.903023Z')
+  VALUES ('58ee7773-cf74-5ac6-a889-17f2ac82136f'::uuid, '485', NULL, 'B2C'::kb_audience, 'https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-graduate-485', '2026-03-01T01:37:20.903023Z')
   ON CONFLICT DO NOTHING;
 
 INSERT INTO visa_subclass (visa_id, subclass_code, stream, audience, canonical_info_url, last_verified_at)
-  VALUES ('c8e0b614-d7c3-5ec5-ae43-34ba8c9f1942':uuid, '482', NULL, 'Both':kb_audience, 'https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-skill-shortage-482', '2026-03-01T01:37:20.903040Z')
+  VALUES ('c8e0b614-d7c3-5ec5-ae43-34ba8c9f1942'::uuid, '482', NULL, 'Both'::kb_audience, 'https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-skill-shortage-482', '2026-03-01T01:37:20.903040Z')
   ON CONFLICT DO NOTHING;
 
 INSERT INTO visa_subclass (visa_id, subclass_code, stream, audience, canonical_info_url, last_verified_at)
-  VALUES ('c31dbb82-8012-57f6-9cdc-606bbc3590c0':uuid, '417', NULL, 'B2C':kb_audience, 'https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-417', '2026-03-01T01:37:20.903054Z')
+  VALUES ('c31dbb82-8012-57f6-9cdc-606bbc3590c0'::uuid, '417', NULL, 'B2C'::kb_audience, 'https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-417', '2026-03-01T01:37:20.903054Z')
   ON CONFLICT DO NOTHING;
 
 INSERT INTO visa_subclass (visa_id, subclass_code, stream, audience, canonical_info_url, last_verified_at)
-  VALUES ('7eca8282-3da9-5aca-b66b-21c39ad551c5':uuid, '820', NULL, 'B2C':kb_audience, 'https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/partner-onshore-820-801', '2026-03-01T01:37:20.903067Z')
+  VALUES ('7eca8282-3da9-5aca-b66b-21c39ad551c5'::uuid, '820', NULL, 'B2C'::kb_audience, 'https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/partner-onshore-820-801', '2026-03-01T01:37:20.903067Z')
   ON CONFLICT DO NOTHING;
 
 
