@@ -377,3 +377,74 @@ Dev server:    HTTP 200 on all Sprint 3 routes confirmed before commit
 ---
 
 *Next sprint walkthrough will be added here when Sprint 5 completes.*
+
+---
+
+## Sprint 5 — Checklist Wiring + Dashboard + PDF + Auth Reset + Timeline
+**Completed:** 2026-03-01  
+**Commits:** Auto-saved across 6 commits on `main` (latest: `2a2c607`)
+
+### User stories delivered
+
+| Story | Description | Status |
+|---|---|---|
+| US-B3 | Checklist wiring — ChecklistBodyStandalone loads session + persists state | ✅ |
+| US-B4 | Session resume — ChecklistController loads existing session on mount | ✅ |
+| US-B5 | Timeline view — effective-date vertical timeline for all KiB requirements | ✅ |
+| US-D1 | PDF export — react-pdf Document rendered server-side | ✅ |
+| US-E3 | Password reset — reset-request + reset-confirm auth pages | ✅ |
+| US-G1 | User dashboard — session list, coverage bars, Resume + Export buttons | ✅ |
+
+### What was built
+
+#### Checklist Wiring (US-B3, US-B4)
+| File | Description |
+|---|---|
+| `lib/supabase-server.ts` | Cookie-based server Supabase client via `@supabase/ssr` |
+| `app/components/ChecklistController.tsx` | Sidebar Client Component — loads/creates session, fires analytics, updates ReadinessScorecard live |
+| `app/components/ChecklistBodyStandalone.tsx` | Main column Client Component — loads item states independently, renders `ChecklistItem` per row |
+| `app/checklist/[subclass]/page.tsx` | Rewritten Server Component — passes KB data to client components, adds AskBar + Export + Timeline links |
+| `app/components/ChecklistItem.tsx` | Added `onStatusChange` callback prop |
+
+#### Dashboard (US-G1)
+| File | Description |
+|---|---|
+| `app/dashboard/page.tsx` | Server Component — auth-guarded (redirect to login), sessions grid with coverage bars + Resume/Export |
+| `app/dashboard/dashboard.module.css` | Session card grid CSS |
+
+#### PDF Export (US-D1)
+| File | Description |
+|---|---|
+| `app/components/ExportPDFDocument.tsx` | @react-pdf/renderer Document — brand §9.5 (header, assumptions, coverage bar, top flags, checklist, disclaimer) |
+| `app/api/export/pdf/route.ts` | GET → `renderToBuffer()` → `application/pdf` download |
+| `app/export/[subclass]/page.tsx` | Updated: PDF Download as primary button, CSV as secondary |
+
+#### Password Reset (US-E3)
+| File | Description |
+|---|---|
+| `app/auth/reset-request/page.tsx` | Email form → `resetPasswordForEmail()` + confirmation |
+| `app/auth/reset-confirm/page.tsx` | PASSWORD_RECOVERY event listener → `updateUser({ password })` → redirect to /dashboard |
+| `app/auth/login/page.tsx` | Added "Forgot password?" link |
+
+#### Timeline View (US-B5)
+| File | Description |
+|---|---|
+| `app/timeline/[subclass]/page.tsx` | Vertical timeline from full requirement history, grouped by year, active/expired/future states |
+| `app/timeline/[subclass]/timeline.module.css` | Dot-track timeline CSS |
+
+### Tests
+```
+tsc --noEmit:   0 errors
+Jest:          28 / 28 (no regressions)
+```
+
+### Key decisions
+- **Split sidebar/body into separate Client Components** — `ChecklistController` (sidebar, scorecard) and `ChecklistBodyStandalone` (main column, item list) each load session state independently. This avoids prop-drilling session data across Server/Client boundary.
+- **`@supabase/ssr` for dashboard auth** — cookie-based `getUser()` in Server Components is more reliable than JWT decode. Redirects immediately on unauthenticated access.
+- **`@ts-nocheck` on ExportPDFDocument** — `@react-pdf/renderer` uses a custom JSX factory incompatible with Next.js tsconfig. File is server-only and verified at runtime.
+- **PDF route `runtime = "nodejs"`** — required for `renderToBuffer()` (edge runtime doesn't support canvas).
+- **Timeline loads ALL requirement history** — passes `new Date("2000-01-01")` to `getRequirements()` to bypass the effective-date filter, showing the full arc of requirement changes.
+
+---
+
+*Next sprint walkthrough will be added here when Sprint 6 completes.*
