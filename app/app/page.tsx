@@ -7,23 +7,23 @@ import styles from "./page.module.css";
 const VALUE_PILLARS = [
   {
     icon: "🧭",
-    title: "Know your pathway",
-    body: "Understand which visa fits your situation, the key criteria, and the documents that matter — before you start.",
+    title: "Know your Australian visa pathway",
+    body: "Understand which Australian visa subclass fits your situation — student, graduate, partner, working holiday, or employer sponsored — and what the Home Affairs decision-maker is actually looking for.",
   },
   {
     icon: "📋",
-    title: "Build your evidence",
-    body: "A structured, visa-specific checklist maps each document to what it actually proves, so nothing is forgotten.",
+    title: "Build your evidence checklist",
+    body: "A structured, subclass-specific checklist maps every Australian visa requirement to the exact documents and statements that satisfy it — nothing forgotten, nothing guessed.",
   },
   {
     icon: "🔍",
-    title: "Fix the gaps",
-    body: "KangaVisa surfaces risk flags — inconsistencies, missing evidence, timing issues — with plain-English explanations and fix paths.",
+    title: "Spot the gaps before you lodge",
+    body: "KangaVisa surfaces common Australian visa refusal risks — inconsistent timelines, missing primary documents, weak genuine intent statements — with plain-English explanations and fix paths.",
   },
   {
     icon: "📦",
-    title: "Export with confidence",
-    body: "Generate a structured readiness pack you can share with your migration agent or keep as a personal record.",
+    title: "Export a decision-ready pack",
+    body: "Generate a structured Australian visa readiness pack grounded in current migration law — to review with your registered migration agent or keep as your own preparation record.",
   },
 ] as const;
 
@@ -67,7 +67,7 @@ export default function HomePage() {
             Clarity you can act on
           </h2>
           <p className={`body-lg ${styles.pillars__sub}`}>
-            Four steps from confusion to a structured readiness plan.
+            Four steps from confusion to a structured Australian visa readiness plan.
           </p>
           <div className={styles.pillars__grid}>
             {VALUE_PILLARS.map((pillar, i) => (

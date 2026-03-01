@@ -133,6 +133,7 @@
         display: none;
     }
 }
+
 /* Hamburger button — mobile only */
 .hamburger {
     display: none;
@@ -181,7 +182,7 @@
     }
 
     /* Keep desktop auth CTAs hidden on mobile */
-    .actions > .btn {
+    .actions>.btn {
         display: none;
     }
 }
@@ -202,15 +203,18 @@
 
 /* Transparent brand icon mark (next to logo__name text) */
 .logo__mark_img {
-    height: 32px;
+    height: 36px;
     width: auto;
     object-fit: contain;
     display: block;
     flex-shrink: 0;
+    /* Blend white background into navy header — makes the box invisible */
+    mix-blend-mode: multiply;
+    filter: brightness(1.1) contrast(1.05);
 }
 
 @media (max-width: 640px) {
     .logo__mark_img {
-        height: 26px;
+        height: 28px;
     }
 }
