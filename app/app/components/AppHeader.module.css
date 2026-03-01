@@ -185,3 +185,17 @@
         display: none;
     }
 }
+
+/* Actual brand logo image */
+.logo__img {
+    height: 40px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+}
+
+@media (max-width: 640px) {
+    .logo__img {
+        height: 32px;
+    }
+}
