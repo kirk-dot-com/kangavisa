@@ -232,3 +232,73 @@ cd workers && python3 -m kangavisa_workers.seed_loader --dry-run
 ---
 
 *Next sprint walkthrough will be added here when Sprint 3 completes.*
+
+---
+
+## Sprint 3 — Next.js UI: Design System + Core Screens + Auth
+**Completed:** 2026-03-01  
+**Commits:** `d90f749`, `c7154d1`, `d86d14f` on `main`
+
+### User stories delivered
+
+| Story | Description | Status |
+|---|---|---|
+| US-A1 | Pathway Finder — 5 visa group cards | ✅ |
+| US-A2 | Checklist driven by getKBPackage() | ✅ |
+| US-B1 | Evidence Checklist + ReadinessScorecard | ✅ |
+| US-B2 | Evidence items with citations and common gaps | ✅ |
+| US-C1 | Flag Cards with brand §9.2 structure | ✅ |
+| US-C3 | Safety lint applied (server-side, Sprint 2) | ✅ |
+| US-E1 | consent_state row created on sign-up | ✅ |
+
+### What was built
+
+#### Design system (`app/globals.css`)
+Full CSS token layer:
+- Colours: `--color-navy` / `--color-gold` / `--color-teal` + semantic status + neutrals
+- Typography: Inter (body) + JetBrains Mono (data fields) via Google Fonts
+- 8pt spacing grid (`--sp-1` → `--sp-24`), border radii, shadows, transitions
+- Utility classes: `.h1–h3`, `.body`, `.caption`, `.mono`, `.container`, `.card`, `.btn`, `.badge`, `.alert`, `.next-actions`, `.form-input`
+
+#### Components (`app/app/components/`)
+| Component | Purpose |
+|---|---|
+| `AppHeader.tsx` | Sticky navy nav, gold KV logo mark, auth CTAs |
+| `Disclaimer.tsx` | Mandatory MARA disclaimer (brand §3) — onboarding + flags |
+| `StalenessAlert.tsx` | Dismissible amber banner for stale sources |
+| `FlagCard.tsx` | Brand §9.2 — severity badge (icon + text, WCAG), numbered actions |
+| `ReadinessScorecard.tsx` | Coverage %, items, open flags; no approval language (§9.1) |
+
+#### Pages
+| Route | Type | Description |
+|---|---|---|
+| `/` | Server | Hero (navy gradient, gold CTA) + 4 value pillar cards |
+| `/pathway` | Server | 5 visa cards, complexity badges, assumptions block, next actions |
+| `/checklist/[subclass]` | Server | Calls `getKBPackage()`, accordion per requirement, evidence items with citations |
+| `/flags/[subclass]` | Server | Calls `getFlagTemplates()`, `FlagCard` grid, empty state, disclaimer |
+| `/auth/signup` | Client | Supabase sign-up + consent toggles (both default off) |
+| `/auth/login` | Client | Supabase sign-in → redirect `/pathway` |
+| `POST /api/auth/create-consent` | API route | Upserts `consent_state` row (service role) |
+
+#### Fixes
+- `lib/supabase.ts`: exported `createClient()` factory for auth Client Components
+- `flags/[subclass]/page.tsx`: explicit `FlagTemplate[]` type — fixed TS7034
+
+### Tests
+```
+tsc --noEmit:      0 errors
+Jest:             19 / 19 (no regressions)
+Dev server:       HTTP 200 on /, /pathway, /auth/login
+Compile:          551 modules — no warnings
+```
+
+### Key decisions
+- **All page routes are Server Components** — data fetching at render time, no client-side waterfalls
+- **Checklist gracefully handles missing KB data** — shows a contextual error alert if Supabase is unreachable, rather than crashing
+- **Consent toggles default OFF** — both product analytics and GovData research start unchecked (brand §10 dark-pattern ban)
+- **Severity badges always icon + text** — never colour-alone (WCAG 2.1 AA, brand §9.2)
+- **ReadinessScorecard has explicit non-prediction notice** — "does not indicate approval likelihood" hardcoded in component (brand §9.1)
+
+---
+
+*Next sprint walkthrough will be added here when Sprint 4 completes.*
