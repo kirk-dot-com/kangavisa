@@ -586,3 +586,52 @@ Jest:          28 / 28 (no regressions)
 ---
 
 *Next sprint walkthrough will be added here when Sprint 8 completes.*
+
+---
+
+## Sprint 8 — Pathway Finder Quiz + Brand Icons + Landing Page Copy
+**Completed:** 2026-03-01  
+**Commits:** `9498f89` → `42e14cd` on `main`
+
+### User stories delivered
+
+| Story | Description | Status |
+|---|---|---|
+| US-A1 | PathwayQuiz — 3-step eligibility pre-filter on Pathway Finder | ✅ |
+| US-SEO-1 | Per-page SEO metadata on checklist/flags/timeline — confirmed present | ✅ |
+| US-Brand | Brand icons (actual logo asset) + landing page copy polish | ✅ |
+
+### What was built
+
+#### PathwayQuiz (US-A1)
+| File | Description |
+|---|---|
+| `app/components/PathwayQuiz.tsx` | 3-step quiz: (1) 6 purpose tiles → subclass mapping, (2) onshore/offshore for partner visa only, (3) confirm + `router.push` to checklist |
+| `app/components/PathwayQuiz.module.css` | 3→2→1 col tile grid, gold active border, teal hover, fade-slide step animation, gold-border confirm card |
+| `app/pathway/page.tsx` | Quiz renders above existing visa cards. Cards wrapped in `#browse-all` anchor section. "I'm not sure" scrolls to Browse All. |
+
+#### Brand icons
+- `logo-mark.png`: transparent PNG extracted from actual brand asset via PIL
+- `filter: saturate(1.6) brightness(1.2) drop-shadow(gold)` — logo pops on navy header
+- `mix-blend-mode: multiply` removed (was darkening logo colours)
+- `icon.png`, `apple-icon.png`, `icon-192/48/32/16.png` all generated from brand mark
+
+#### Landing page copy
+- Hero: "Australian visa application pack"
+- Tiles: "Australian Government", "Nothing forgotten. Nothing guessed.", natural-language phrasing, no AI em-dashes
+- Pillar sub: "structured Australian visa readiness plan"
+
+### KB Seed (pending — manual step)
+
+> [!IMPORTANT]
+> Run `migrations/seed_kb_v1.sql` in Supabase SQL Editor to activate the LLM AskBar. This is the only remaining Sprint 8 item.
+
+### Tests
+```
+tsc --noEmit:  0 errors
+Jest:         28 / 28
+```
+
+---
+
+*Next sprint walkthrough will be added here when Sprint 9 completes.*
