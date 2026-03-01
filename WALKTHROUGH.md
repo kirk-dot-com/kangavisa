@@ -302,3 +302,78 @@ Compile:          551 modules — no warnings
 ---
 
 *Next sprint walkthrough will be added here when Sprint 4 completes.*
+
+---
+
+## Sprint 4 — Checklist Persistence + LLM + Export + Analytics + Golden Tests
+**Completed:** 2026-03-01  
+**Commits:** `4af2ec4`, `853945a`, `ececa81`, `fda2029`, `835dee1` on `main`
+
+### User stories delivered
+
+| Story | Description | Status |
+|---|---|---|
+| US-B3 | Checklist state persistence (case_session + checklist_item_state) | ✅ |
+| US-B4 | Session resume — GET existing session on checklist load | ✅ |
+| US-D1 | CSV export download with evidence items + status | ✅ |
+| US-D2 | Export Summary screen (brand §9.5 — coverage, flags, assumptions, pack version) | ✅ |
+| US-E2 | Analytics events gated on consent_state.product_analytics_enabled | ✅ |
+| US-F1 | LLM integration — KB-grounded streaming answers | ✅ |
+| FR-K5 | Golden test runner validates safety lint against testcases.md prompts | ✅ |
+| FR-K6 | All LLM answers grounded in structured KB (getKBPackage system prompt) | ✅ |
+
+### What was built
+
+#### Checklist State Persistence
+| File | Description |
+|---|---|
+| `app/api/sessions/route.ts` | GET/POST `case_session` — get-or-create per user+visa+caseDate |
+| `app/api/sessions/[sessionId]/items/route.ts` | GET all items, PATCH single item status+note |
+| `app/components/ChecklistItem.tsx` | Cycles `not_started→in_progress→done→na`, optimistic update |
+
+#### LLM Integration
+| File | Description |
+|---|---|
+| `lib/llm-service.ts` | `buildSystemPrompt()` (KB-grounded), `askLLM()`, `askLLMStream()` |
+| `app/api/ask/route.ts` | SSE streaming — pre-input fraud check, tokens, post-stream lint |
+| `app/components/AskBar.tsx` | SSE consumer, blinking cursor, refusal/violation banners, citation chips |
+
+#### Analytics
+| File | Description |
+|---|---|
+| `lib/analytics.ts` | Fire-and-forget `track()` — never throws |
+| `app/api/analytics/route.ts` | Consent-gated insert into `analytics_event` |
+
+Events fired: `CHECKLIST_VIEWED` · `ITEM_STATUS_CHANGED` · `PACK_EXPORTED` · `ASK_SUBMITTED`
+
+#### Export Pack
+| File | Description |
+|---|---|
+| `lib/export-builder.ts` | `buildExportPayload()` (brand §9.5), `buildCsv()` (RFC-compliant) |
+| `app/api/export/csv/route.ts` | Loads KB + saved states, returns CSV file download |
+| `app/export/[subclass]/page.tsx` | Export Summary — pack version, coverage bar, top 5 flags, download buttons |
+
+#### Safety & Tests
+| File | Description |
+|---|---|
+| `lib/__tests__/golden-tests.test.ts` | 9 golden tests: S-01, S-02, forbidden phrases, structural checks |
+| `lib/safety-lint.ts` | Extended `FRAUD_PATTERNS`: `forge my/the`, `employment gaps`, `falsify`, `cover up` |
+| `.env.local` | Fixed `OPENAI_API_KEY` prefix error (removed literal `YOUR_OPENAI_API_KEY`) |
+
+### Tests
+```
+tsc --noEmit:   0 errors
+Jest:          28 / 28 (19 safety-lint + 9 golden — no regressions)
+Dev server:    HTTP 200 on all Sprint 3 routes confirmed before commit
+```
+
+### Key decisions
+- **LLM is purely server-side** — API key never on client, SSE readable stream via Next.js Route Handler
+- **Fraud check runs BEFORE LLM is called** — no wasted tokens on blocked requests
+- **ChecklistItem works unauthenticated** — sessionId=null → UI-only mode, no API calls
+- **Analytics is fire-and-forget** — `track()` never throws, analytics must never break UX
+- **Coverage % excludes N/A items** — only meaningful "applicable items" counted in denominator
+
+---
+
+*Next sprint walkthrough will be added here when Sprint 5 completes.*
