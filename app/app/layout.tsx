@@ -8,6 +8,15 @@ export const metadata: Metadata = {
   description:
     "KangaVisa helps you prepare a decision-ready visa application pack — clear, structured, and explainable. Not legal advice.",
   keywords: ["visa", "australia", "immigration", "readiness", "student visa", "partner visa"],
+  icons: {
+    icon: [
+      { url: "/icon.png", sizes: "512x512", type: "image/png" },
+      { url: "/icon-48.png", sizes: "48x48", type: "image/png" },
+      { url: "/icon-32.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-icon.png", sizes: "512x512", type: "image/png" }],
+    shortcut: "/icon-32.png",
+  },
 };
 
 export default function RootLayout({

@@ -8,6 +8,7 @@
  */
 
 import Link from "next/link";
+import Image from "next/image";
 import { getServerUser } from "../../lib/supabase-server";
 import { AppHeaderClient } from "./AppHeaderClient";
 import styles from "./AppHeader.module.css";
@@ -22,8 +23,14 @@ export default async function AppHeader() {
             <div className={`container ${styles.inner}`}>
                 {/* Logo */}
                 <Link href="/" className={styles.logo} aria-label="KangaVisa — Home">
-                    <span className={styles.logo__mark}>KV</span>
-                    <span className={styles.logo__name}>KangaVisa</span>
+                    <Image
+                        src="/logo.png"
+                        alt="KangaVisa"
+                        width={140}
+                        height={40}
+                        className={styles.logo__img}
+                        priority
+                    />
                 </Link>
 
                 {/* Primary Nav */}
