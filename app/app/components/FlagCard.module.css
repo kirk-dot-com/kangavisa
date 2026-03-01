@@ -1,0 +1,132 @@
+.card {
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow var(--transition-base);
+}
+
+.card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+/* Severity left-border accent */
+.card[aria-label*="Flag: Weak ties"],
+.card[aria-label*="Flag: Course"] {
+    border-left: 4px solid var(--color-warning);
+}
+
+.card[aria-label*="Flag: English"] {
+    border-left: 4px solid var(--color-risk);
+}
+
+.header {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-3);
+    padding: var(--sp-5) var(--sp-6) var(--sp-4);
+    border-bottom: 1px solid var(--color-border);
+    flex-wrap: wrap;
+}
+
+.badge {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.title {
+    font-size: var(--text-lg);
+    font-weight: var(--fw-semibold);
+    color: var(--color-ink);
+    flex: 1;
+}
+
+.section {
+    padding: var(--sp-4) var(--sp-6);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.section:last-of-type {
+    border-bottom: none;
+}
+
+.section__title {
+    font-size: var(--text-xs);
+    font-weight: var(--fw-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-muted);
+    margin-bottom: var(--sp-3);
+}
+
+.why {
+    color: var(--color-slate);
+}
+
+/* Numbered actions */
+.actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+    list-style: none;
+}
+
+.action {
+    display: flex;
+    gap: var(--sp-3);
+    align-items: flex-start;
+}
+
+.action__num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: var(--radius-full);
+    background: var(--color-navy);
+    color: var(--color-gold);
+    font-size: var(--text-xs);
+    font-weight: var(--fw-bold);
+    font-family: var(--font-mono);
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+/* Evidence list */
+.evidence {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    list-style: none;
+}
+
+.evidence__item {
+    display: flex;
+    gap: var(--sp-2);
+    align-items: flex-start;
+    color: var(--color-slate);
+}
+
+.evidence__icon {
+    flex-shrink: 0;
+    font-size: 0.85rem;
+    margin-top: 1px;
+}
+
+/* Footer */
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--sp-3) var(--sp-6);
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+}
+
+.date {
+    color: var(--color-muted);
+}
+
+.status {}
