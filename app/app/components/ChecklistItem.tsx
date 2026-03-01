@@ -18,6 +18,7 @@ export interface ChecklistItemProps {
     initialStatus?: ItemStatus;
     sessionId: string | null;   // null = unauthenticated, state not persisted
     authToken: string | null;
+    onStatusChange?: (evidenceId: string, status: ItemStatus) => void;
 }
 
 const STATUS_ORDER: ItemStatus[] = ["not_started", "in_progress", "done", "na"];
@@ -47,6 +48,7 @@ export default function ChecklistItem({
     initialStatus = "not_started",
     sessionId,
     authToken,
+    onStatusChange,
 }: ChecklistItemProps) {
     const [status, setStatus] = useState<ItemStatus>(initialStatus);
     const [, startTransition] = useTransition();
@@ -54,6 +56,7 @@ export default function ChecklistItem({
     function cycleStatus() {
         const next = STATUS_ORDER[(STATUS_ORDER.indexOf(status) + 1) % STATUS_ORDER.length];
         setStatus(next); // optimistic
+        onStatusChange?.(evidenceId, next); // notify parent
 
         if (!sessionId || !authToken) return; // unauthenticated — UI only
 
