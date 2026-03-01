@@ -514,3 +514,75 @@ Jest:          28 / 28 (no regressions)
 ---
 
 *Next sprint walkthrough will be added here when Sprint 7 completes.*
+
+---
+
+## Sprint 7 — LLM AskBar Activation + Mobile Nav + Onboarding + DaaS Consent
+**Completed:** 2026-03-01  
+**Commits:** `55330f4` → `c43f294` on `main`
+
+### User stories delivered
+
+| Story | Description | Status |
+|---|---|---|
+| US-F1 | LLM AskBar — activated with empty-KB guard + model badge + prompt chips | ✅ |
+| US-A2 | Mobile hamburger nav — slide-out drawer with auth state | ✅ |
+| US-E1 | Onboarding welcome modal — 4-slide, localStorage-guarded | ✅ |
+| US-C1 | DaaS consent banner — amber prompt with opt-in/decline flow | ✅ |
+
+### What was built
+
+#### LLM AskBar (US-F1)
+| File | Change |
+|---|---|
+| `lib/llm-service.ts` | Empty-KB guard: returns friendly "not yet seeded" message via async generator without calling OpenAI. Exposes `model` + `kbEmpty` in result. |
+| `app/api/ask/route.ts` | SSE `done` event now includes `model` and `kbEmpty` fields. |
+| `app/components/AskBar.tsx` | Prompt chips (3 per subclass), model badge footer (`GPT-4o mini · KB-grounded`), model state from SSE. |
+| `app/components/AskBar.module.css` | `.chips`, `.chip`, `.model_badge`, `.model_chip` styles. |
+
+**Prompt chips per subclass:**
+- 500 (Student): genuine intent docs, evidence gaps, English test validity
+- 485 (Grad): lodgement docs, qualification proof, timing risks
+- 482 (Employer): nomination evidence, salary threshold, work history
+- 417 (WHM): specified work docs, financial capacity, regional evidence
+- 820 (Partner): four pillars, financial evidence, processing timeline
+
+#### Mobile Nav (US-A2)
+| File | Description |
+|---|---|
+| `app/components/MobileNav.tsx` | Slide-out drawer — Escape key, backdrop dismiss, scroll lock, focus management |
+| `app/components/MobileNav.module.css` | `slideIn` + `fadeIn` CSS animations, nav link hover with gold left-border |
+| `app/components/AppHeaderClient.tsx` | Thin client island managing open/close state — keeps AppHeader as Server Component |
+| `app/components/AppHeader.tsx` | Integrates `AppHeaderClient` island |
+| `app/components/AppHeader.module.css` | Hamburger styles; `<768px` shows hamburger, hides desktop nav |
+
+#### Onboarding Modal (US-E1)
+| File | Description |
+|---|---|
+| `app/components/OnboardingModal.tsx` | 4-slide welcome from `narrative_scaffolding_pack.md §2`. localStorage-guarded (`kv_onboarded`). Progress dots, Back/Next/Skip. |
+| `app/components/OnboardingModal.module.css` | Spring slide-up + fade-in animation |
+
+**Slides:** (1) Two speeds of the system → (2) Documentary vs satisfaction criteria → (3) Policy changes + staleness warnings → (4) Evidence quality is the #1 avoidable risk
+
+#### DaaS Consent Banner (US-C1)
+| File | Description |
+|---|---|
+| `app/components/DaaSConsentBanner.tsx` | Amber prompt → calls `POST /api/auth/create-consent` on opt-in. Decline stores in localStorage. Animated success/decline states. |
+| `app/components/DaaSConsentBanner.module.css` | Banner + success/muted variants |
+| `app/dashboard/page.tsx` | Renders both `OnboardingModal` + `DaaSConsentBanner` at top of dashboard |
+
+### Tests
+```
+tsc --noEmit:   0 errors
+Jest:          28 / 28 (no regressions)
+```
+
+### Key decisions
+- **Client island pattern for hamburger** — `AppHeaderClient` is a narrow client island that owns only drawer state. The outer `AppHeader` stays a Server Component, meaning auth state is read server-side with zero JS on the main thread.
+- **Empty-KB guard uses async generator** — avoids calling OpenAI (and spending API credits) when no requirements exist for a subclass. Returns the same SSE shape as a real stream, so no changes needed in the route handler.
+- **Prompt chips disappear on first send** — once a query is submitted, chips hide to give full width to the answer area. They reappear on component remount (new page visit).
+- **Icon pack** — user provided brand icon pack (K + kangaroo + gold arrow). Actual PNG/SVG/ICO files to be placed in `app/public/` by user; `layout.tsx` will be updated once files are available.
+
+---
+
+*Next sprint walkthrough will be added here when Sprint 8 completes.*
