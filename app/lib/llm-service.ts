@@ -157,21 +157,46 @@ export async function askLLMStream(req: LLMRequest) {
 
     const caseDate = req.caseDate ?? new Date();
     const pkg = await getKBPackage(req.subclassCode, caseDate);
+
+    // Empty-KB guard — no LLM call if KB not seeded for this subclass
+    if (pkg.requirements.length === 0) {
+        const notSeededMsg =
+            `**Knowledge base not yet seeded for subclass ${req.subclassCode}.**\n\n` +
+            `To unlock AI answers:\n` +
+            `1. Run \`python3 scripts/generate_seed_sql.py\` in the repo root\n` +
+            `2. Paste \`migrations/seed_kb_v1.sql\` into your Supabase SQL Editor and run it\n` +
+            `3. Reload this page\n\n` +
+            `Once seeded, KangaVisa AI will be grounded in the structured requirements for this visa.`;
+
+        // Arrow-function generator: yields one chunk mimicking the OpenAI stream shape
+        const makeFakeStream = async function* () {
+            yield { choices: [{ delta: { content: notSeededMsg }, finish_reason: null as null | string }] };
+        };
+        return {
+            stream: makeFakeStream(),
+            citations: [] as string[],
+            warnings: ["KB not seeded — using fallback response"],
+            model: null as string | null,
+            kbEmpty: true,
+        };
+    }
+
+    const MODEL = "gpt-4o-mini";
     const systemPrompt = buildSystemPrompt(pkg, req.subclassCode);
     const citations = extractCitations(pkg);
 
     const client = new OpenAI({ apiKey });
 
     const stream = await client.chat.completions.create({
-        model: "gpt-4o-mini",
+        model: MODEL,
         messages: [
             { role: "system", content: systemPrompt },
-            { role: "user", content: req.userQuery },
+            { role: "user", content: req.subclassCode ? `[Visa: ${req.subclassCode}] ${req.userQuery}` : req.userQuery },
         ],
         max_tokens: 1200,
         temperature: 0.2,
         stream: true,
     });
 
-    return { stream, citations, warnings: pkg.warnings };
+    return { stream, citations, warnings: pkg.warnings, model: MODEL, kbEmpty: false };
 }
