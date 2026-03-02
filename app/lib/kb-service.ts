@@ -110,6 +110,24 @@ function effectiveDateFilter(caseDate: Date) {
     return { caseIso: iso };
 }
 
+/**
+ * Resolve the visa_id UUID for a given subclass_code.
+ * requirement and flag_template join to visa_subclass via visa_id, not subclass_code.
+ */
+async function resolveVisaId(subclassCode: string): Promise<string> {
+    const supabase = adminClient();
+    const { data, error } = await supabase
+        .from("visa_subclass")
+        .select("visa_id")
+        .eq("subclass_code", subclassCode)
+        .limit(1)
+        .single();
+    if (error || !data) {
+        throw new Error(`resolveVisaId: no visa_subclass row for subclass_code='${subclassCode}': ${error?.message ?? "no row"}`);
+    }
+    return data.visa_id as string;
+}
+
 // ---------------------------------------------------------------------------
 // Retrieval functions
 // ---------------------------------------------------------------------------
@@ -126,12 +144,13 @@ export async function getRequirements(
     caseDate: Date = new Date()
 ): Promise<Requirement[]> {
     const { caseIso } = effectiveDateFilter(caseDate);
+    const visaId = await resolveVisaId(subclassCode);
     const supabase = adminClient();
 
     const { data, error } = await supabase
         .from("requirement")
         .select("*")
-        .eq("subclass_code", subclassCode)
+        .eq("visa_id", visaId)
         .lte("effective_from", caseIso)
         .or(`effective_to.is.null,effective_to.gte.${caseIso}`)
         .order("last_reviewed_at", { ascending: false, nullsFirst: false });
@@ -173,12 +192,13 @@ export async function getFlagTemplates(
     caseDate: Date = new Date()
 ): Promise<FlagTemplate[]> {
     const { caseIso } = effectiveDateFilter(caseDate);
+    const visaId = await resolveVisaId(subclassCode);
     const supabase = adminClient();
 
     const { data, error } = await supabase
         .from("flag_template")
         .select("*")
-        .eq("subclass_code", subclassCode)
+        .eq("visa_id", visaId)
         .lte("effective_from", caseIso)
         .or(`effective_to.is.null,effective_to.gte.${caseIso}`)
         .order("severity", { ascending: false });
