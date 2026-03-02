@@ -130,36 +130,66 @@ Jest:         28 / 28
 Branch:       main (up to date with origin)
 ```
 
+
 ---
 
-### ⚠️ One action required before next session
+## Session: 2026-03-02
 
-> **KB Seed** — open Supabase SQL Editor and run `migrations/seed_kb_v1.sql` (750 lines, already generated).  
-> Once done, the AskBar will answer real visa questions grounded in the KB instead of returning "not seeded".
+### What we achieved — Sprint 9
+
+#### 1. AskBar verification + critical KB bug fix
+
+| Item | Status |
+|---|---|
+| `kb-service.ts`: `getRequirements` + `getFlagTemplates` queried non-existent `subclass_code` column | Fixed ✅ |
+| Added `resolveVisaId()` helper — looks up `visa_id` UUID from `visa_subclass` first | ✅ |
+| AskBar on `/checklist/500`: 5 requirements loaded, KB-grounded response with clause 500.212, LIN 19/051, LIN 18/036 + `gpt-4o-mini · KB-grounded` badge | Verified ✅ |
+| SEO tab title confirmed on checklist, flags, timeline pages | Verified ✅ |
+
+#### 2. Sprint 9 deliverables
+
+| Item | File | Status |
+|---|---|---|
+| `EvidenceItem` interface: renamed `description` + `format_notes` → `what_it_proves` (matches DB column) | `lib/kb-service.ts` | ✅ |
+| Dashboard: real `hasConsent` from `consent_state` table + real JWT `authToken` from SSR session | `app/dashboard/page.tsx` | ✅ |
+| `DaaSConsentBanner` POST payload: `govdata_research_enabled: true` (was `consent_type: "daas_research"`) | `components/DaaSConsentBanner.tsx` | ✅ |
+| `create-consent` route: extracts user from JWT `Authorization` header (no longer trusts body `user_id`) | `api/auth/create-consent/route.ts` | ✅ |
+| Export page coverage: `ReadinessScorecard` when signed in; Sign-in prompt when not (was hardcoded 0%) | `export/[subclass]/page.tsx` | ✅ |
+
+---
+
+### Current test status
+```
+tsc --noEmit:  0 errors
+Jest:         28 / 28
+Branch:       main (up to date with origin)
+```
 
 ---
 
 ### Next session — where to pick up
 
-**Priority 1 — Verify AskBar live**
-- After KB seed: `/checklist/500` → AskBar → "What documents prove genuine student intent?"
-- Expect: streamed KB-grounded answer + `gpt-4o-mini · KB-grounded` badge
+**Priority 1 — Auth email templates**
+- Customise Supabase signup/confirmation/password-reset emails with KangaVisa branding (logo, gold CTAs, plain-English copy)
 
-**Priority 2 — Sprint 9 candidates**
-- Auth email templates: customise Supabase signup/confirmation/reset with KangaVisa branding
-- Dashboard readiness score: surface a % readiness score based on completed checklist items
-- Readiness pack export: PDF export of checklist + evidence status + AskBar citations
-- PWA manifest: offline support + "Add to home screen" for mobile users
+**Priority 2 — Dashboard readiness score**
+- Surface `ReadinessScorecard` on dashboard for authenticated users with an active session
+- Currently renders 0/0 because no `case_session` rows exist for unauthenticated visitors
 
-**Priority 3 — DaaS consent refinement**
-- Pass real `hasConsent` server-side check and actual `authToken` to `DaaSConsentBanner` (currently placeholder `false`/`null`)
+**Priority 3 — PDF export route**
+- Wire `/api/export/pdf` using existing `ExportPDFDocument.tsx` + `export-builder.ts`
+- Add "Download PDF" button to export page
+
+**Priority 4 — PWA manifest**
+- `app/manifest.ts` → offline support + "Add to home screen" for mobile users
 
 ---
 
 ### Open questions / decisions pending
-- Export format preference: PDF only, or also include DOCX/CSV options?
+- Export format: PDF only, or also include DOCX/CSV?
 - Dashboard readiness score: simple % complete, or weighted by requirement criticality?
-### How to use this file
+
+
 At the end of each working session, update this file:
 1. Add a new session block with today's date
 2. Update "What we achieved" with session outcomes
