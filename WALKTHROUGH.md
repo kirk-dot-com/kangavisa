@@ -634,4 +634,95 @@ Jest:         28 / 28
 
 ---
 
-*Next sprint walkthrough will be added here when Sprint 9 completes.*
+## Sprint 9 — AskBar Bug Fix + DaaS Consent Wiring + Export Coverage
+**Completed:** 2026-03-02
+**Commits:** `56cb4e2`, `a8220e2`, `2722890` on `main`
+
+### User stories delivered
+
+| Story | Description | Status |
+|---|---|---|
+| US-F1 | AskBar live — KB-grounded answers with clause citations + model badge | ✅ |
+| US-E1 | DaaS consent: real `hasConsent` + JWT `authToken` wired on dashboard | ✅ |
+| US-D2 | Export coverage: `ReadinessScorecard` when authenticated; sign-in prompt when not | ✅ |
+
+### What was built / fixed
+
+#### Critical bug fix — `kb-service.ts`
+`getRequirements()` and `getFlagTemplates()` were querying by `.eq("subclass_code", subclassCode)`.
+Neither table has a `subclass_code` column — they join to `visa_subclass` via `visa_id` UUID FK.
+Every query silently returned 0 rows. Fix:
+
+| File | Change |
+|---|---|
+| `lib/kb-service.ts` | Added `resolveVisaId(subclassCode)` helper — looks up `visa_id` from `visa_subclass` table |
+| `lib/kb-service.ts` | `getRequirements()` + `getFlagTemplates()` now call `resolveVisaId()` then filter by `.eq("visa_id", visaId)` |
+| `lib/kb-service.ts` | `EvidenceItem` interface: removed dead `description` + `format_notes` fields; `what_it_proves` now matches the actual DB column |
+
+#### DaaS consent wiring
+
+| File | Change |
+|---|---|
+| `app/dashboard/page.tsx` | Queries `consent_state.govdata_research_enabled` for current user; passes real `authToken` from SSR session |
+| `app/components/DaaSConsentBanner.tsx` | POST body fixed: `govdata_research_enabled: true` (was `consent_type: "daas_research"`) |
+| `app/api/auth/create-consent/route.ts` | Extracts user from JWT `Authorization` header — no longer trusts `user_id` in POST body |
+
+#### Export page coverage
+
+| File | Change |
+|---|---|
+| `app/export/[subclass]/page.tsx` | Fetches most recent `case_session` + `checklist_item_state` for authenticated user; renders `<ReadinessScorecard>` with real done/total counts; shows sign-in prompt when unauthenticated (was hardcoded 0%) |
+
+### Tests
+```
+tsc --noEmit:  0 errors
+Jest:         28 / 28 (no regressions)
+AskBar:       KB-grounded on /checklist/500 — 5 reqs loaded, clause 500.212 cited, gpt-4o-mini · KB-grounded badge
+```
+
+### Key decisions
+- `resolveVisaId()` makes a separate Supabase call before the main query — acceptable overhead for a Server Component; could be cached with `unstable_cache` later
+- `create-consent` route now validates identity from the JWT, not the request body — prevents a user spoofing another user's `user_id`
+- Export page uses admin client (service role) to fetch session items — avoids RLS complexity on an already-server-side-only page
+
+---
+
+## Sprint 10 — Auth Email Templates
+**Completed:** 2026-03-02
+**Commits:** `ffa4c6e`, `81c197c`, `c1cc974` on `main`
+
+### What was built
+
+Three Supabase transactional email templates with KangaVisa branding. Source HTML committed to `app/email-templates/` for version control; deployed by pasting into the Supabase dashboard.
+
+| File | Supabase template slot | Status |
+|---|---|---|
+| `app/email-templates/signup-confirm.html` | Confirm signup | ✅ |
+| `app/email-templates/reset-password.html` | Reset password | ✅ |
+| `app/email-templates/email-change.html` | Change email address | ✅ |
+| `app/email-templates/README.md` | Deploy instructions + subject lines | ✅ |
+
+**Design:**
+- Navy `#0B1F3B` header with gold `#c9902a` "KV" badge + "KangaVisa" wordmark
+- White card body, gold CTA button, teal inline link colour
+- Security callout (amber left-border) on reset + email-change templates
+- "Not legal advice" footer on all templates
+- Email-client-safe: all inline styles, no external fonts (Arial/Helvetica fallback), no images
+
+**Supabase variable used:** `{{ .ConfirmationURL }}` — Supabase injects the one-time action URL at send time.
+
+### ⚠️ Action required
+> Paste each HTML file into **Supabase → Authentication → Email Templates**.
+> Full instructions + subject lines in `app/email-templates/README.md`.
+
+### Tests
+```
+tsc --noEmit:  0 errors
+Jest:         28 / 28 (no regressions)
+Browser preview: both templates render correctly (navy header, gold CTA, footer)
+```
+
+---
+
+*Next sprint walkthrough will be added here when Sprint 11 completes.*
+
