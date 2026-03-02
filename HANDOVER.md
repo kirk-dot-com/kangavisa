@@ -195,3 +195,53 @@ At the end of each working session, update this file:
 2. Update "What we achieved" with session outcomes
 3. Update "Next session — where to pick up" with revised priorities
 4. Note any new open questions or decisions made
+
+---
+
+## Session: 2026-03-02 (evening)
+
+### What we achieved — Sprint 10
+
+#### Auth email templates (Sprint 10 P1)
+
+| File | Supabase template | Status |
+|---|---|---|
+| `app/email-templates/signup-confirm.html` | Confirm signup | ✅ |
+| `app/email-templates/reset-password.html` | Reset password | ✅ |
+| `app/email-templates/email-change.html` | Change email address | ✅ |
+| `app/email-templates/README.md` | Deploy instructions | ✅ |
+
+All templates: navy `#0B1F3B` header · gold `#c9902a` KV badge · gold CTA button · "Not legal advice" footer · email-client-safe inline styles · Supabase `{{ .ConfirmationURL }}` variable.
+
+---
+
+### ⚠️ Action required before next session
+
+> **Paste email templates into Supabase dashboard.**
+> Go to: Supabase → Authentication → Email Templates
+> Paste each HTML file per the instructions in `app/email-templates/README.md`.
+> Subject lines and which template slot to use are documented there.
+
+---
+
+### Current test status
+```
+tsc --noEmit:  0 errors
+Jest:         28 / 28
+Branch:       main (committed: Sprint 10 email templates)
+```
+
+---
+
+### Next session — where to pick up
+
+**Priority 1 — Dashboard readiness score**
+- Surface `ReadinessScorecard` on `/dashboard` for authenticated users with an active session
+- The data-fetch pattern is established (export page does it); just wire into dashboard
+
+**Priority 2 — PDF export route**
+- Wire `/api/export/pdf` using existing `ExportPDFDocument.tsx` + `export-builder.ts`
+- Add "Download PDF" button to the export page
+
+**Priority 3 — PWA manifest**
+- `app/manifest.ts` → offline support + "Add to home screen"
