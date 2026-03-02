@@ -56,13 +56,12 @@ export interface EvidenceItem {
     evidence_id: string;
     requirement_id: string;
     label: string;
-    description: string;
-    priority: number;
     what_it_proves: string;
     common_gaps: string[];
-    format_notes: string;
+    priority: number;
     effective_from: string;
     effective_to: string | null;
+    legal_basis: Array<{ frl_title_id: string | null; series: string | null; citation: string | null }>;
 }
 
 export interface FlagTemplate {

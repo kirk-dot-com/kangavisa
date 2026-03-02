@@ -4,7 +4,10 @@
 
 import type { Metadata } from "next";
 import Link from "next/link";
+import { createClient } from "@supabase/supabase-js";
 import { getKBPackage } from "../../../lib/kb-service";
+import { getServerUser } from "../../../lib/supabase-server";
+import ReadinessScorecard from "../../components/ReadinessScorecard";
 import Disclaimer from "../../components/Disclaimer";
 import styles from "./export.module.css";
 
@@ -51,6 +54,44 @@ export default async function ExportPage({ params, searchParams }: ExportPagePro
             return order[a.severity] - order[b.severity];
         })
         .slice(0, 5);
+
+    // --- Real coverage from the user's most recent session (if authenticated) ---
+    const user = await getServerUser();
+    let coverageTotalItems = 0;
+    let coverageDoneItems = 0;
+    let coverageLastUpdated: string | null = null;
+    if (user) {
+        try {
+            const adminSupabase = createClient(
+                process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                process.env.SUPABASE_SERVICE_ROLE_KEY!,
+                { auth: { persistSession: false } }
+            );
+            // Most recent session for this subclass
+            const { data: session } = await adminSupabase
+                .from("case_session")
+                .select("session_id, updated_at")
+                .eq("user_id", user.id)
+                .eq("subclass_code", subclass)
+                .order("updated_at", { ascending: false })
+                .limit(1)
+                .maybeSingle();
+
+            if (session) {
+                const { data: items } = await adminSupabase
+                    .from("checklist_item_state")
+                    .select("status")
+                    .eq("session_id", session.session_id);
+                coverageTotalItems = items?.length ?? 0;
+                coverageDoneItems = items?.filter((i) => i.status === "done").length ?? 0;
+                coverageLastUpdated = session.updated_at
+                    ? new Date(session.updated_at).toLocaleDateString("en-AU")
+                    : null;
+            }
+        } catch {
+            // Soft fail — show 0/0 rather than crashing
+        }
+    }
 
     const assumptions = [
         `Visa subclass: ${subclass}`,
@@ -100,19 +141,25 @@ export default async function ExportPage({ params, searchParams }: ExportPagePro
                     </ul>
                 </div>
 
-                {/* Coverage (placeholder — will be real when state persistence is loaded) */}
+                {/* Coverage — real data when signed in, prompt when not */}
                 <div className={`card ${styles.section_card} ${styles.coverage_card}`}>
-                    <h2 className={`h3 ${styles.section_title}`}>Evidence coverage</h2>
-                    <p className="body-sm" style={{ color: "var(--color-muted)" }}>
-                        Sign in and mark your evidence items on the checklist page to see your
-                        coverage score here and in your exported pack.
-                    </p>
-                    <div style={{ marginTop: "var(--sp-4)" }}>
-                        <div className={styles.coverage_bar__wrap}>
-                            <div className={styles.coverage_bar__fill} style={{ width: "0%" }} />
-                        </div>
-                        <p className={`caption mono ${styles.coverage_label}`}>0% — no items saved yet</p>
-                    </div>
+                    {user ? (
+                        <ReadinessScorecard
+                            totalItems={coverageTotalItems}
+                            doneItems={coverageDoneItems}
+                            unresolvedFlags={pkg.flagTemplates.length}
+                            visaName={visaName}
+                            lastUpdated={coverageLastUpdated}
+                        />
+                    ) : (
+                        <>
+                            <h2 className={`h3 ${styles.section_title}`}>Evidence coverage</h2>
+                            <p className="body-sm" style={{ color: "var(--color-muted)" }}>
+                                <Link href={`/auth/login?from=/export/${subclass}`} style={{ color: "var(--color-gold)" }}>Sign in</Link>{" "}
+                                and mark your evidence items on the checklist to see your coverage score here.
+                            </p>
+                        </>
+                    )}
                 </div>
 
                 {/* Top flags */}

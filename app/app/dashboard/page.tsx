@@ -71,6 +71,26 @@ export default async function DashboardPage() {
     const coveragePct = (row: SessionRow) =>
         row.item_count > 0 ? Math.round((row.done_count / row.item_count) * 100) : 0;
 
+    // --- DaaS consent: check if user has already given govdata consent ---
+    let hasConsent = false;
+    let authToken: string | null = null;
+    try {
+        const { data: consentRow } = await supabase
+            .from("consent_state")
+            .select("govdata_research_enabled")
+            .eq("user_id", user.id)
+            .maybeSingle();
+        hasConsent = consentRow?.govdata_research_enabled ?? false;
+
+        // Get the user's JWT access token from the SSR cookie session
+        const { createSupabaseServerClient } = await import("../../lib/supabase-server");
+        const ssrClient = createSupabaseServerClient();
+        const { data: sessionData } = await ssrClient.auth.getSession();
+        authToken = sessionData.session?.access_token ?? null;
+    } catch {
+        // Soft fail — don't block dashboard render
+    }
+
     return (
         <div className="section">
             <div className="container container--content">
@@ -78,8 +98,8 @@ export default async function DashboardPage() {
                 {/* First-visit onboarding modal (localStorage-guarded, client-side) */}
                 <OnboardingModal isAuthenticated={true} />
 
-                {/* DaaS consent banner (shown if no prior consent) */}
-                <DaaSConsentBanner hasConsent={false} authToken={null} />
+                {/* DaaS consent banner (shown if no prior govdata consent) */}
+                <DaaSConsentBanner hasConsent={hasConsent} authToken={authToken} />
 
                 <div className={styles.header}>
                     <div>

@@ -39,7 +39,7 @@ export function DaaSConsentBanner({ hasConsent, authToken }: DaaSConsentBannerPr
                     "Content-Type": "application/json",
                     ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
                 },
-                body: JSON.stringify({ consent_type: "daas_research", version: "1.0" }),
+                body: JSON.stringify({ govdata_research_enabled: true }),
             });
             setStatus("opted_in");
             setTimeout(() => setDismissed(true), 2500);

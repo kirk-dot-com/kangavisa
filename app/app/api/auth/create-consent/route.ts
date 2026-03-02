@@ -8,11 +8,7 @@ import { createClient } from "@supabase/supabase-js";
 export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
-        const { user_id, product_analytics_enabled, govdata_research_enabled } = body;
-
-        if (!user_id) {
-            return NextResponse.json({ error: "user_id is required" }, { status: 400 });
-        }
+        const { product_analytics_enabled, govdata_research_enabled, user_id: bodyUserId } = body;
 
         const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
         const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -24,15 +20,27 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        // Use service role to bypass RLS — server-only
         const supabase = createClient(supabaseUrl, serviceRoleKey, {
             auth: { persistSession: false },
         });
 
+        // Prefer JWT from Authorization header; fall back to body user_id (sign-up flow)
+        let userId: string | undefined = bodyUserId;
+        const authHeader = req.headers.get("authorization");
+        if (authHeader?.startsWith("Bearer ")) {
+            const jwt = authHeader.slice(7);
+            const { data } = await supabase.auth.getUser(jwt);
+            if (data.user) userId = data.user.id;
+        }
+
+        if (!userId) {
+            return NextResponse.json({ error: "user_id is required" }, { status: 400 });
+        }
+
         const { error } = await supabase.from("consent_state").upsert(
             {
-                user_id,
-                product_analytics_enabled: product_analytics_enabled ?? false,
+                user_id: userId,
+                product_analytics_enabled: product_analytics_enabled ?? true,
                 govdata_research_enabled: govdata_research_enabled ?? false,
             },
             { onConflict: "user_id" }
