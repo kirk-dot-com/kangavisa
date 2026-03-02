@@ -235,13 +235,18 @@ Branch:       main (committed: Sprint 10 email templates)
 
 ### Next session — where to pick up
 
-**Priority 1 — Dashboard readiness score**
+**Sprint 10 — remaining items (P1 email templates ✅ done)**
+
+**Priority 1 — Dashboard readiness score (~1h)**
 - Surface `ReadinessScorecard` on `/dashboard` for authenticated users with an active session
-- The data-fetch pattern is established (export page does it); just wire into dashboard
+- Data-fetch pattern already established on the export page — pipe `done_items` / `total_items` counts from `checklist_item_state` into the existing component
 
-**Priority 2 — PDF export route**
-- Wire `/api/export/pdf` using existing `ExportPDFDocument.tsx` + `export-builder.ts`
+**Priority 2 — PDF export route (~2h)**
+- Wire `/api/export/pdf` using the already-built `ExportPDFDocument.tsx` + `export-builder.ts`
 - Add "Download PDF" button to the export page
+- Route already scaffolded in Sprint 5; needs session data wired in
 
-**Priority 3 — PWA manifest**
-- `app/manifest.ts` → offline support + "Add to home screen"
+**Priority 3 — PWA manifest (~30m)**
+- `app/manifest.ts` → `apple-touch-icon`, `theme_color`, `display: standalone`
+- Offline support + "Add to home screen" for mobile users
+
