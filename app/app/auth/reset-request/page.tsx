@@ -52,7 +52,7 @@ export default function ResetRequestPage() {
                 ) : (
                     <form onSubmit={handleSubmit} className={styles.form}>
                         <p className="body-sm" style={{ color: "var(--color-slate)" }}>
-                            Enter the email address associated with your account and we'll send a
+                            Enter the email address associated with your account and we&apos;ll send a
                             reset link.
                         </p>
 

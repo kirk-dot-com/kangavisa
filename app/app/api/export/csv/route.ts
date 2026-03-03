@@ -1,7 +1,7 @@
 // GET /api/export/csv?subclass=500&caseDate=2026-03-01
 // US-D1 — Returns evidence checklist as RFC-compliant CSV
 
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { getKBPackage } from "../../../../lib/kb-service";
 import { buildExportPayload, buildCsv, type ChecklistItemState } from "../../../../lib/export-builder";
 import { createClient } from "@supabase/supabase-js";

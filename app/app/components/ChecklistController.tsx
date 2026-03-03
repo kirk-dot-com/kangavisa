@@ -9,20 +9,14 @@
  * Keeps a live count of done items for ReadinessScorecard.
  */
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { createClient } from "../../lib/supabase";
 import ReadinessScorecard from "./ReadinessScorecard";
-import ChecklistItem from "./ChecklistItem";
 import type { Requirement, EvidenceItem, FlagTemplate } from "../../lib/kb-service";
 import type { ItemStatus } from "./ChecklistItem";
 import styles from "../checklist/[subclass]/checklist.module.css";
 import Link from "next/link";
 
-interface ItemState {
-    evidence_id: string;
-    status: ItemStatus;
-    note?: string | null;
-}
 
 interface ChecklistControllerProps {
     subclass: string;
@@ -33,10 +27,6 @@ interface ChecklistControllerProps {
     flagTemplates: FlagTemplate[];
 }
 
-const REQ_TYPE_ORDER = [
-    "genuine", "english", "financial", "occupation",
-    "nomination", "sponsorship", "work_history", "health", "character", "other",
-];
 
 export default function ChecklistController({
     subclass,
@@ -51,12 +41,6 @@ export default function ChecklistController({
     const [itemStates, setItemStates] = useState<Map<string, ItemStatus>>(new Map());
     const [loading, setLoading] = useState(true);
 
-    // Sort requirements
-    const sortedReqs = [...requirements].sort(
-        (a, b) =>
-            (REQ_TYPE_ORDER.indexOf(a.requirement_type) + 1 || 99) -
-            (REQ_TYPE_ORDER.indexOf(b.requirement_type) + 1 || 99)
-    );
 
     // Load session + item states on mount
     useEffect(() => {
@@ -123,14 +107,6 @@ export default function ChecklistController({
         }
         init();
     }, [subclass, caseDateStr]);
-
-    // Called by ChecklistItem when status changes — keep local count in sync
-    const handleStatusChange = useCallback(
-        (evidenceId: string, status: ItemStatus) => {
-            setItemStates((prev) => new Map(prev).set(evidenceId, status));
-        },
-        []
-    );
 
     const doneCount = Array.from(itemStates.values()).filter(
         (s) => s === "done"

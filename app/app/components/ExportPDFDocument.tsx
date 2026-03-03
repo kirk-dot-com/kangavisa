@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-nocheck
 /**
  * ExportPDFDocument.tsx — @react-pdf/renderer Document for the Readiness Pack
@@ -13,7 +14,6 @@ import {
     Text,
     View,
     StyleSheet,
-    Font,
 } from "@react-pdf/renderer";
 import type { ExportPayload } from "../../lib/export-builder";
 
