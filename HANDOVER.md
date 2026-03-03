@@ -279,8 +279,8 @@ All code was already implemented. Wired the environment and fixed a schema bug:
 
 **Live smoke test:** 3/3 sources fetched, `source_document` + `change_event` rows written to Supabase.
 
-#### Supabase RLS performance fix
-`kb/migrations/rls_performance_fix.sql` — wraps all `auth.uid()` calls in scalar subqueries. Apply in SQL Editor.
+#### Supabase RLS performance fix ✅
+`kb/migrations/rls_performance_fix.sql` applied. Wrapped all `auth.uid()` calls in scalar subqueries across `analytics_event`, `consent_event`, `consent_state`. Also dropped stale `analytics_event_insert_if_enabled` policy that was causing a duplicate permissive policy warning. **Supabase advisor: 0 performance issues.**
 
 ---
 
@@ -290,23 +290,25 @@ tsc --noEmit:  0 errors
 Jest:         28 / 28
 pytest:       62 / 62
 CI:           run #64 ✅
-Branch:       main (up to date)
+Supabase:     0 performance issues ✅
+Branch:       main (uncommitted — workers/.env excluded by .gitignore)
 ```
 
 ---
 
 ### Next session — where to pick up
 
-**Priority 1 — Apply RLS migration**
-- Run `kb/migrations/rls_performance_fix.sql` in Supabase SQL Editor
-- Verify 7 performance warnings clear in Supabase advisor
+**Priority 1 — Home Affairs + data.gov.au watchers**
+- Wire `homeaffairs_watcher.py` + `datagov_watcher.py` same way as FRL
+- Combine into a single `run_watchers.py` entrypoint alongside FRL
 
-**Priority 2 — Home Affairs + data.gov.au watchers**
-- Run `homeaffairs_watcher.py` + `datagov_watcher.py` same way as FRL
-- Add targets to a combined `run_watchers.py` entrypoint
+**Priority 2 — Scheduler**
+- Wire weekly cron (GitHub Actions schedule or Render cron job)
+- Target: every Monday 06:00 AEST
 
-**Priority 3 — Scheduler**
-- Wire `run_frl_watch.py` to run weekly (GitHub Actions cron or Render cron job)
+**Priority 3 — Dashboard staleness banner**
+- Surface `StalenessAlert` when `kb_release.released_at` is > 7 days old
+- Already has the component — needs the data hook wired in
 
 
 #### P1 — Dashboard readiness score
