@@ -267,26 +267,33 @@ Scorecard shows evidence coverage %, items addressed, and open flags for the mos
 
 ---
 
+#### P2 — PDF export route
+
+| File | Change | Status |
+|---|---|---|
+| `app/app/api/export/pdf/route.ts` | Fixed import path (`../../` → `../../../components/ExportPDFDocument`) | ✅ |
+| `app/app/api/export/pdf/route.ts` | Fixed `renderToBuffer` — switched from broken default import to named import | ✅ |
+
+Route now returns `200 application/pdf` with proper `Content-Disposition: attachment` header. Download PDF button was already wired on the export page (Sprint 5). No UI changes needed.
+
+---
+
 ### Current test status
 ```
 tsc --noEmit:  0 errors
 Jest:         28 / 28
-Branch:       main (uncommitted — commit after P2 or standalone)
+Branch:       main (uncommitted — commit after P3)
 ```
 
 ---
 
 ### Next session — where to pick up
 
-**Priority 1 — PDF export route (~2h)**
-- Wire `/api/export/pdf` using the already-built `ExportPDFDocument.tsx` + `export-builder.ts`
-- Add "Download PDF" button to the export page
-- Route already scaffolded in Sprint 5; needs session data wired in
-
-**Priority 2 — PWA manifest (~30m)**
+**Priority 1 — PWA manifest (~30m)**
 - `app/manifest.ts` → `apple-touch-icon`, `theme_color`, `display: standalone`
 - Offline support + "Add to home screen" for mobile users
 
 ### Open questions / decisions pending
-- Export format: PDF only, or also include DOCX/CSV?
+- Export format: PDF only, or also include DOCX/CSV? (CSV already exists at `/api/export/csv`)
+
 

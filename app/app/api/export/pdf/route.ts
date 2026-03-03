@@ -5,10 +5,10 @@ import { NextRequest } from "next/server";
 import { getKBPackage } from "../../../../lib/kb-service";
 import { buildExportPayload, type ChecklistItemState } from "../../../../lib/export-builder";
 import { createClient } from "@supabase/supabase-js";
-import ReactPDF from "@react-pdf/renderer";
+import { renderToBuffer } from "@react-pdf/renderer";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore — ExportPDFDocument uses react-pdf JSX which tsc cannot type-check in Next.js tsconfig
-import { ExportPDFDocument } from "../../components/ExportPDFDocument";
+import { ExportPDFDocument } from "../../../components/ExportPDFDocument";
 
 function adminClient() {
     return createClient(
@@ -71,7 +71,7 @@ export async function GET(req: NextRequest) {
     const payload = buildExportPayload(pkg, itemStates, visaName, subclass);
 
     try {
-        const buffer = await ReactPDF.renderToBuffer(ExportPDFDocument({ payload }));
+        const buffer = await renderToBuffer(ExportPDFDocument({ payload }));
         // Wrap in Uint8Array for BodyInit compatibility
         const body = new Uint8Array(buffer);
 
