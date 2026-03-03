@@ -241,7 +241,7 @@ def run_frl_watch_and_persist(
     })
 
     # 5. Insert change_event
-    event_type = "initial_snapshot" if prev_hash is None else "text_change"
+    event_type = "new_instrument" if prev_hash is None else "text_change"
     change_event_id = db.insert_change_event({
         "source_doc_id_new": source_doc_id,
         "source_doc_id_old": prev_doc_id,

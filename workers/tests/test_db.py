@@ -38,7 +38,7 @@ SAMPLE_SOURCE_DOC_META = {
 SAMPLE_CHANGE_EVENT = {
     "source_doc_id_new": FAKE_SOURCE_DOC_ID,
     "source_doc_id_old": None,
-    "change_type": "initial_snapshot",
+    "change_type": "new_instrument",
     "impact_score": 60,
     "requires_review": False,
     "summary": "Initial snapshot of Migration Act 1958",
