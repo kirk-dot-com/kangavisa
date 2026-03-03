@@ -252,9 +252,62 @@ Branch:       main (committed: Sprint 10 email templates)
 
 ---
 
-## Session: 2026-03-03
+## Session: 2026-03-03 (evening)
 
-### What we achieved — Sprint 11
+### What we achieved — Sprint 12
+
+#### CI fixed
+All 7 ESLint errors resolved — CI green on run #64 after 8 consecutive failures.
+
+| File | Fix |
+|---|---|
+| `api/ask/route.ts` | Empty `catch {}` (unused `err` var) |
+| `api/export/csv/route.ts` | Removed unused `NextResponse` import |
+| `auth/reset-request/page.tsx` | Escaped `we&apos;ll` (react/no-unescaped-entities) |
+| `ChecklistController.tsx` | Removed 5 unused symbols (ChecklistItem, ItemState, REQ_TYPE_ORDER, sortedReqs, handleStatusChange, useCallback) |
+| `ExportPDFDocument.tsx` | `eslint-disable ban-ts-comment` + removed unused `Font` |
+
+#### FRL watcher → Supabase (live)
+All code was already implemented. Wired the environment and fixed a schema bug:
+
+| Item | Detail |
+|---|---|
+| `workers/.env` | Created with SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY |
+| `workers/.env.example` | Template for future operators |
+| `workers/run_frl_watch.py` | Operator entrypoint — 3 FRL targets (Migration Act, Migration Regs, LIN 18/036) |
+| `frl_watcher.py` + `test_db.py` | Fixed invalid `kb_change_type` enum: `initial_snapshot` → `new_instrument` |
+
+**Live smoke test:** 3/3 sources fetched, `source_document` + `change_event` rows written to Supabase.
+
+#### Supabase RLS performance fix
+`kb/migrations/rls_performance_fix.sql` — wraps all `auth.uid()` calls in scalar subqueries. Apply in SQL Editor.
+
+---
+
+### Current test status
+```
+tsc --noEmit:  0 errors
+Jest:         28 / 28
+pytest:       62 / 62
+CI:           run #64 ✅
+Branch:       main (up to date)
+```
+
+---
+
+### Next session — where to pick up
+
+**Priority 1 — Apply RLS migration**
+- Run `kb/migrations/rls_performance_fix.sql` in Supabase SQL Editor
+- Verify 7 performance warnings clear in Supabase advisor
+
+**Priority 2 — Home Affairs + data.gov.au watchers**
+- Run `homeaffairs_watcher.py` + `datagov_watcher.py` same way as FRL
+- Add targets to a combined `run_watchers.py` entrypoint
+
+**Priority 3 — Scheduler**
+- Wire `run_frl_watch.py` to run weekly (GitHub Actions cron or Render cron job)
+
 
 #### P1 — Dashboard readiness score
 
