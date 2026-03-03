@@ -8,6 +8,13 @@ export const metadata: Metadata = {
   description:
     "KangaVisa helps you prepare a decision-ready visa application pack — clear, structured, and explainable. Not legal advice.",
   keywords: ["visa", "australia", "immigration", "readiness", "student visa", "partner visa"],
+  manifest: "/manifest.webmanifest",
+  themeColor: "#0B1F3B",
+  appleWebApp: {
+    capable: true,
+    title: "KangaVisa",
+    statusBarStyle: "black-translucent",
+  },
   icons: {
     icon: [
       { url: "/icon.png", sizes: "512x512", type: "image/png" },
