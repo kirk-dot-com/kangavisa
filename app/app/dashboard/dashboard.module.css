@@ -73,3 +73,8 @@
     gap: var(--sp-3);
     margin-top: var(--sp-2);
 }
+
+/* Readiness scorecard wrapper */
+.scorecard_wrap {
+    margin-bottom: var(--sp-6);
+}

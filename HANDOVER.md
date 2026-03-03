@@ -250,3 +250,43 @@ Branch:       main (committed: Sprint 10 email templates)
 - `app/manifest.ts` → `apple-touch-icon`, `theme_color`, `display: standalone`
 - Offline support + "Add to home screen" for mobile users
 
+---
+
+## Session: 2026-03-03
+
+### What we achieved — Sprint 11
+
+#### P1 — Dashboard readiness score
+
+| File | Change | Status |
+|---|---|---|
+| `app/app/dashboard/page.tsx` | Import `ReadinessScorecard`; add `getUnresolvedFlagsCount()` helper; fetch flag count for most-recent session's subclass; render `<ReadinessScorecard>` in a card above the sessions grid | ✅ |
+| `app/app/dashboard/dashboard.module.css` | Add `.scorecard_wrap` (bottom margin) | ✅ |
+
+Scorecard shows evidence coverage %, items addressed, and open flags for the most-recently-updated session. Gracefully shows nothing when no sessions exist (empty state unchanged).
+
+---
+
+### Current test status
+```
+tsc --noEmit:  0 errors
+Jest:         28 / 28
+Branch:       main (uncommitted — commit after P2 or standalone)
+```
+
+---
+
+### Next session — where to pick up
+
+**Priority 1 — PDF export route (~2h)**
+- Wire `/api/export/pdf` using the already-built `ExportPDFDocument.tsx` + `export-builder.ts`
+- Add "Download PDF" button to the export page
+- Route already scaffolded in Sprint 5; needs session data wired in
+
+**Priority 2 — PWA manifest (~30m)**
+- `app/manifest.ts` → `apple-touch-icon`, `theme_color`, `display: standalone`
+- Offline support + "Add to home screen" for mobile users
+
+### Open questions / decisions pending
+- Export format: PDF only, or also include DOCX/CSV?
+

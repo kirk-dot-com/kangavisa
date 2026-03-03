@@ -10,6 +10,7 @@ import { createClient } from "@supabase/supabase-js";
 import Disclaimer from "../components/Disclaimer";
 import { OnboardingModal } from "../components/OnboardingModal";
 import { DaaSConsentBanner } from "../components/DaaSConsentBanner";
+import ReadinessScorecard from "../components/ReadinessScorecard";
 import styles from "./dashboard.module.css";
 
 export const metadata: Metadata = {
@@ -42,6 +43,21 @@ interface SessionRow {
     done_count: number;
 }
 
+async function getUnresolvedFlagsCount(
+    supabase: ReturnType<typeof adminClient>,
+    subclassCode: string
+): Promise<number> {
+    try {
+        const { data } = await supabase
+            .from("flag_template")
+            .select("flag_id", { count: "exact", head: false })
+            .eq("subclass_code", subclassCode);
+        return data?.length ?? 0;
+    } catch {
+        return 0;
+    }
+}
+
 export default async function DashboardPage() {
     const user = await getServerUser();
     if (!user) redirect("/auth/login?from=/dashboard");
@@ -70,6 +86,16 @@ export default async function DashboardPage() {
 
     const coveragePct = (row: SessionRow) =>
         row.item_count > 0 ? Math.round((row.done_count / row.item_count) * 100) : 0;
+
+    // --- Readiness scorecard for the most recently updated session ---
+    let scorecardUnresolvedFlags = 0;
+    const latestSession = sessionRows[0] ?? null;
+    if (latestSession) {
+        scorecardUnresolvedFlags = await getUnresolvedFlagsCount(
+            supabase,
+            latestSession.subclass_code
+        );
+    }
 
     // --- DaaS consent: check if user has already given govdata consent ---
     let hasConsent = false;
@@ -126,63 +152,84 @@ export default async function DashboardPage() {
                         </Link>
                     </div>
                 ) : (
-                    <div className={styles.sessions_grid}>
-                        {sessionRows.map((row) => {
-                            const pct = coveragePct(row);
-                            const visaName = VISA_NAMES[row.subclass_code] ?? `Subclass ${row.subclass_code}`;
-                            const updatedDate = new Date(row.updated_at).toLocaleDateString("en-AU");
-                            return (
-                                <div key={row.session_id} className={`card ${styles.session_card}`}>
-                                    <div className={styles.session_card__header}>
-                                        <div>
-                                            <p className={`caption ${styles.session_subclass}`}>
-                                                Subclass {row.subclass_code}
-                                            </p>
-                                            <h2 className={`h3 ${styles.session_visa}`}>{visaName}</h2>
+                    <>
+                        {/* Readiness scorecard — most recently updated session */}
+                        {latestSession && (
+                            <div className={`card ${styles.scorecard_wrap}`}>
+                                <ReadinessScorecard
+                                    totalItems={latestSession.item_count}
+                                    doneItems={latestSession.done_count}
+                                    unresolvedFlags={scorecardUnresolvedFlags}
+                                    visaName={
+                                        VISA_NAMES[latestSession.subclass_code] ??
+                                        `Subclass ${latestSession.subclass_code}`
+                                    }
+                                    lastUpdated={
+                                        new Date(latestSession.updated_at).toLocaleDateString("en-AU")
+                                    }
+                                />
+                            </div>
+                        )}
+
+                        {/* Session cards grid */}
+                        <div className={styles.sessions_grid}>
+                            {sessionRows.map((row) => {
+                                const pct = coveragePct(row);
+                                const visaName = VISA_NAMES[row.subclass_code] ?? `Subclass ${row.subclass_code}`;
+                                const updatedDate = new Date(row.updated_at).toLocaleDateString("en-AU");
+                                return (
+                                    <div key={row.session_id} className={`card ${styles.session_card}`}>
+                                        <div className={styles.session_card__header}>
+                                            <div>
+                                                <p className={`caption ${styles.session_subclass}`}>
+                                                    Subclass {row.subclass_code}
+                                                </p>
+                                                <h2 className={`h3 ${styles.session_visa}`}>{visaName}</h2>
+                                            </div>
+                                            <span className={`badge ${pct === 100 ? "badge--success" : "badge--info"}`}>
+                                                {pct}%
+                                            </span>
                                         </div>
-                                        <span className={`badge ${pct === 100 ? "badge--success" : "badge--info"}`}>
-                                            {pct}%
-                                        </span>
-                                    </div>
 
-                                    <p className="caption" style={{ color: "var(--color-muted)" }}>
-                                        Case date: <span className="mono">{row.case_date}</span> · Last updated: {updatedDate}
-                                    </p>
+                                        <p className="caption" style={{ color: "var(--color-muted)" }}>
+                                            Case date: <span className="mono">{row.case_date}</span> · Last updated: {updatedDate}
+                                        </p>
 
-                                    {/* Coverage bar */}
-                                    <div className={styles.coverage_bar__wrap}>
-                                        <div
-                                            className={styles.coverage_bar__fill}
-                                            style={{ width: `${pct}%` }}
-                                            role="progressbar"
-                                            aria-valuenow={pct}
-                                            aria-valuemin={0}
-                                            aria-valuemax={100}
-                                            aria-label={`${pct}% evidence coverage`}
-                                        />
-                                    </div>
-                                    <p className="caption" style={{ color: "var(--color-muted)" }}>
-                                        {row.done_count} of {row.item_count} items done
-                                    </p>
+                                        {/* Coverage bar */}
+                                        <div className={styles.coverage_bar__wrap}>
+                                            <div
+                                                className={styles.coverage_bar__fill}
+                                                style={{ width: `${pct}%` }}
+                                                role="progressbar"
+                                                aria-valuenow={pct}
+                                                aria-valuemin={0}
+                                                aria-valuemax={100}
+                                                aria-label={`${pct}% evidence coverage`}
+                                            />
+                                        </div>
+                                        <p className="caption" style={{ color: "var(--color-muted)" }}>
+                                            {row.done_count} of {row.item_count} items done
+                                        </p>
 
-                                    <div className={styles.session_card__actions}>
-                                        <Link
-                                            href={`/checklist/${row.subclass_code}?caseDate=${row.case_date}`}
-                                            className="btn btn--primary"
-                                        >
-                                            Resume →
-                                        </Link>
-                                        <Link
-                                            href={`/export/${row.subclass_code}?caseDate=${row.case_date}`}
-                                            className="btn btn--ghost"
-                                        >
-                                            Export
-                                        </Link>
+                                        <div className={styles.session_card__actions}>
+                                            <Link
+                                                href={`/checklist/${row.subclass_code}?caseDate=${row.case_date}`}
+                                                className="btn btn--primary"
+                                            >
+                                                Resume →
+                                            </Link>
+                                            <Link
+                                                href={`/export/${row.subclass_code}?caseDate=${row.case_date}`}
+                                                className="btn btn--ghost"
+                                            >
+                                                Export
+                                            </Link>
+                                        </div>
                                     </div>
-                                </div>
-                            );
-                        })}
-                    </div>
+                                );
+                            })}
+                        </div>
+                    </>
                 )}
 
                 <div style={{ marginTop: "var(--sp-8)" }}>
