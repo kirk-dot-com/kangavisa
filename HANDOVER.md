@@ -278,22 +278,46 @@ Route now returns `200 application/pdf` with proper `Content-Disposition: attach
 
 ---
 
+#### P3 — PWA manifest
+
+| File | Change | Status |
+|---|---|---|
+| `app/app/manifest.ts` | New — Next.js 14 manifest route. `display: standalone`, `theme_color: #0B1F3B`, `background_color: #0B1F3B`, icon-192 + icon-512 + apple-icon | ✅ |
+| `app/app/layout.tsx` | Add `manifest`, `themeColor`, `appleWebApp` to root metadata | ✅ |
+
+Manifest served at `/manifest.webmanifest` as `application/manifest+json`. Enables "Add to Home Screen" on iOS and Android.
+
+---
+
 ### Current test status
 ```
 tsc --noEmit:  0 errors
 Jest:         28 / 28
-Branch:       main (uncommitted — commit after P3)
+Branch:       main (uncommitted — Sprint 11 complete, ready to commit)
 ```
 
 ---
 
 ### Next session — where to pick up
 
-**Priority 1 — PWA manifest (~30m)**
-- `app/manifest.ts` → `apple-touch-icon`, `theme_color`, `display: standalone`
-- Offline support + "Add to home screen" for mobile users
+**Sprint 11 is complete. Suggested Sprint 12 items:**
+
+**Priority 1 — Commit Sprint 11 work**
+- `git add -A && git commit -m "Sprint 11: dashboard scorecard, PDF route fix, PWA manifest"`
+- `git push`
+
+**Priority 2 — Dashboard readiness score: weighted scoring**
+- Open question: weight by requirement criticality instead of simple % complete?
+
+**Priority 3 — Worker: write change_events to Supabase**
+- `frl_watcher.py` currently only stubs dicts — wire up `httpx` + Supabase REST to insert rows
+
+**Priority 4 — Home Affairs + data.gov.au watchers**
+- Weekly fetch + section-level diff, per `kb/architecture.md §6`
 
 ### Open questions / decisions pending
-- Export format: PDF only, or also include DOCX/CSV? (CSV already exists at `/api/export/csv`)
+- Export format: DOCX/CSV in addition to PDF? (CSV already exists at `/api/export/csv`)
+- Dashboard readiness score: simple % or weighted by requirement criticality?
+
 
 
