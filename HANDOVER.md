@@ -421,19 +421,24 @@ Branch:       main → a88699f (pushed)
 
 ---
 
-### Next session — where to pick up
+### Next session — Sprint 14 priorities
 
-**Priority 1 — Home Affairs + data.gov.au watchers**
-- Build `homeaffairs_watcher.py` + `datagov_watcher.py` (same pattern as FRL watcher)
-- Combine all three into a single `run_watchers.py` entrypoint
+**Priority 1 — Home Affairs + data.gov.au watchers (~2–3h)**
+- Build `workers/kangavisa_workers/homeaffairs_watcher.py` — scrape Home Affairs visa pages + PDFs, section-level diff against previous snapshot
+- Build `workers/kangavisa_workers/datagov_watcher.py` — dataset metadata + CSV snapshot from data.gov.au
+- Combine FRL + HA + DG into `workers/run_watchers.py` single entrypoint (replace `run_frl_watch.py`)
+- Pattern: identical to FRL watcher — fetch → diff → write `source_document` + `change_event` rows to Supabase
 
-**Priority 2 — Weekly scheduler**
-- GitHub Actions schedule or Render cron job — every Monday 06:00 AEST
+**Priority 2 — Weekly scheduler (~30m)**
+- Add `schedule:` trigger to `.github/workflows/ci.yml` (or separate `watchers.yml`)
+- Target: every Monday 06:00 AEST (`cron: '0 20 * * 0'` UTC)
+- Job: `pip install -e '.[dev]' && python workers/run_watchers.py`
 
-**Priority 3 — Dashboard staleness banner**
-- `StalenessAlert` when `kb_release.released_at` > 7 days old — component exists, needs data hook
+**Priority 3 — Dashboard staleness banner (~30m)**
+- `app/app/components/StalenessAlert.tsx` already built — wire data hook in `app/app/dashboard/page.tsx`
+- Fetch latest `kb_release.released_at` via adminClient; pass to `<StalenessAlert>` when > 7 days old
 
-### Open questions / decisions pending
-- Manual verification needed: download DOCX from `/export/500`, open in Word/Pages
-- Confirm Supabase Advisor shows 0 issues for `analytics_event` after v2 migration
-
+### Verified ✅
+- DOCX download working on `/export/500`
+- Supabase Advisor: 0 issues for `analytics_event` (v2 migration applied)
+- CI run #74 green
