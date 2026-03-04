@@ -4,13 +4,13 @@
  *
  * Required fields per brand §9.5:
  *   - case snapshot (visa name, subclass, case date)
- *   - evidence coverage % 
+ *   - evidence coverage %
  *   - top flags (max 5, by severity: risk > warning > info)
  *   - assumptions
  *   - export date + pack version
  */
 
-import type { KBPackage, FlagTemplate } from "./kb-service";
+import type { KBPackage, FlagTemplate, EvidenceItem } from "./kb-service";
 
 export interface ChecklistItemState {
     evidence_id: string;
@@ -54,8 +54,14 @@ export interface ExportPayload {
     pack_version: string;       // kb-vYYYYMMDD
     disclaimer: string;
 
-    // Item states (for CSV)
+    // Item states (for CSV / DOCX)
     item_states: ChecklistItemState[];
+
+    // Evidence items (for enriched CSV + weighted score)
+    evidence_items: EvidenceItem[];
+
+    // Weighted coverage — evidence_item.priority weighted (1=high→3pts, 2→2pts, ≥3→1pt)
+    weighted_coverage_pct: number;
 }
 
 const DISCLAIMER =
@@ -69,6 +75,40 @@ const SEVERITY_ORDER: Record<FlagTemplate["severity"], number> = {
     warning: 1,
     info: 2,
 };
+
+// ---------------------------------------------------------------------------
+// Weighted coverage helper
+// ---------------------------------------------------------------------------
+
+/**
+ * Maps EvidenceItem.priority to a weight value.
+ * priority 1 (high) = 3 pts, priority 2 = 2 pts, priority ≥ 3 (default) = 1 pt.
+ * Brand-safe: labelled "Priority-weighted coverage", not "approval likelihood".
+ */
+function priorityWeight(priority: number): number {
+    if (priority <= 1) return 3;
+    if (priority === 2) return 2;
+    return 1;
+}
+
+export function computeWeightedCoverage(
+    itemStates: ChecklistItemState[],
+    evidenceItems: EvidenceItem[]
+): number {
+    const priorityMap = new Map(evidenceItems.map((e) => [e.evidence_id, e.priority]));
+    const applicable = itemStates.filter((s) => s.status !== "na");
+    const totalWeight = applicable.reduce(
+        (sum, s) => sum + priorityWeight(priorityMap.get(s.evidence_id) ?? 3),
+        0
+    );
+    const doneWeight = applicable
+        .filter((s) => s.status === "done")
+        .reduce(
+            (sum, s) => sum + priorityWeight(priorityMap.get(s.evidence_id) ?? 3),
+            0
+        );
+    return totalWeight > 0 ? Math.round((doneWeight / totalWeight) * 100) : 0;
+}
 
 export function buildExportPayload(
     pkg: KBPackage,
@@ -119,6 +159,8 @@ export function buildExportPayload(
         "Effective date selection: as at case date above",
     ];
 
+    const weightedCoveragePct = computeWeightedCoverage(itemStates, pkg.evidenceItems);
+
     return {
         visa_name: visaName,
         subclass_code: subclassCode,
@@ -133,6 +175,8 @@ export function buildExportPayload(
         pack_version: packVersion,
         disclaimer: DISCLAIMER,
         item_states: itemStates,
+        evidence_items: pkg.evidenceItems,
+        weighted_coverage_pct: weightedCoveragePct,
     };
 }
 
@@ -160,15 +204,29 @@ export function buildCsv(payload: ExportPayload): string {
         "pack_version",
     ].join(",");
 
+    // Build lookup maps from evidence_items in the payload
+    const evidenceMap = new Map(
+        payload.evidence_items.map((e) => [e.evidence_id, e])
+    );
+    // Map requirement_id → title from requirements_summary (best effort)
+    const reqMap = new Map(
+        payload.requirements_summary.map((r) => [r.title, r.title])
+    );
+
     // Join evidence item metadata with item states
     const rows = payload.item_states.map((s) => {
+        const ev = evidenceMap.get(s.evidence_id);
+        // Find the requirement title for this evidence item
+        const reqSummary = payload.requirements_summary.find(
+            (r) => r.title && reqMap.has(r.title)
+        );
         return [
             escapeCsv(s.evidence_id),
-            "", // label not in state — populated from KB in route
-            "",
+            escapeCsv(ev?.label ?? ""),
+            escapeCsv(ev?.what_it_proves ?? ""),
             escapeCsv(s.status),
             escapeCsv(s.note ?? ""),
-            "",
+            escapeCsv(reqSummary?.title ?? ""),
             escapeCsv(payload.visa_name),
             escapeCsv(payload.case_date),
             escapeCsv(payload.pack_version),

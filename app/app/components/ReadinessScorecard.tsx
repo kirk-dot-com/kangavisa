@@ -14,6 +14,7 @@ interface ReadinessScorecardProps {
     unresolvedFlags: number;
     visaName: string;
     lastUpdated?: string | null; // ISO date of most recent source retrieved_at
+    weightedPct?: number;        // Priority-weighted coverage % (optional)
 }
 
 export default function ReadinessScorecard({
@@ -22,6 +23,7 @@ export default function ReadinessScorecard({
     unresolvedFlags,
     visaName,
     lastUpdated,
+    weightedPct,
 }: ReadinessScorecardProps) {
     const coveragePct =
         totalItems > 0 ? Math.round((doneItems / totalItems) * 100) : 0;
@@ -75,6 +77,24 @@ export default function ReadinessScorecard({
                     </div>
                     <div className={styles.metric__label}>Items addressed</div>
                 </div>
+
+                {/* Weighted coverage — only shown when data is available */}
+                {weightedPct !== undefined && totalItems > 0 && (
+                    <div className={styles.metric}>
+                        <div className={styles.metric__value}>
+                            <span className={`mono ${styles.number}`}>{weightedPct}%</span>
+                        </div>
+                        <div className={styles.metric__label}>
+                            Priority-weighted{" "}
+                            <span
+                                title="High-priority requirements (priority 1) count 3×, medium 2×, standard 1×. Does not indicate approval likelihood."
+                                style={{ cursor: "help", textDecoration: "underline dotted", color: "var(--color-muted)" }}
+                            >
+                                ?
+                            </span>
+                        </div>
+                    </div>
+                )}
 
                 {/* Unresolved flags */}
                 <div className={styles.metric}>

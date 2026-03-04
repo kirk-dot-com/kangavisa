@@ -45,7 +45,7 @@ const MUTED = "4A5568";
 // Helper primitives
 // ---------------------------------------------------------------------------
 
-function heading(text: string, level: HeadingLevel = HeadingLevel.HEADING_2): Paragraph {
+function heading(text: string, level: (typeof HeadingLevel)[keyof typeof HeadingLevel] = HeadingLevel.HEADING_2): Paragraph {
     return new Paragraph({
         text,
         heading: level,
