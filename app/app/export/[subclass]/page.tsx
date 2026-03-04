@@ -5,8 +5,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
-import { getKBPackage } from "../../../lib/kb-service";
-import { getEvidenceItems, getRequirements } from "../../../lib/kb-service";
+import { getKBPackage, getEvidenceItems, getRequirements } from "../../../lib/kb-service";
 import { getServerUser } from "../../../lib/supabase-server";
 import { computeWeightedCoverage, type ChecklistItemState } from "../../../lib/export-builder";
 import ReadinessScorecard from "../../components/ReadinessScorecard";
@@ -98,8 +97,8 @@ export default async function ExportPage({ params, searchParams }: ExportPagePro
 
                 // Compute weighted coverage
                 try {
-                    const requirements = await getRequirements(subclass, caseDate);
-                    const evidenceItems = await getEvidenceItems(requirements.map((r) => r.requirement_id), caseDate);
+                    const requirements = await getRequirements(subclass, new Date(caseDateStr));
+                    const evidenceItems = await getEvidenceItems(requirements.map((r) => r.requirement_id), new Date(caseDateStr));
                     if (itemStates.length > 0 && evidenceItems.length > 0) {
                         coverageWeightedPct = computeWeightedCoverage(itemStates, evidenceItems);
                     }
