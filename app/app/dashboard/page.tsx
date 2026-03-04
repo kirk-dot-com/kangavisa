@@ -11,6 +11,8 @@ import Disclaimer from "../components/Disclaimer";
 import { OnboardingModal } from "../components/OnboardingModal";
 import { DaaSConsentBanner } from "../components/DaaSConsentBanner";
 import ReadinessScorecard from "../components/ReadinessScorecard";
+import { computeWeightedCoverage, type ChecklistItemState } from "../../lib/export-builder";
+import { getEvidenceItems, getRequirements } from "../../lib/kb-service";
 import styles from "./dashboard.module.css";
 
 export const metadata: Metadata = {
@@ -89,12 +91,31 @@ export default async function DashboardPage() {
 
     // --- Readiness scorecard for the most recently updated session ---
     let scorecardUnresolvedFlags = 0;
+    let scorecardWeightedPct: number | undefined = undefined;
     const latestSession = sessionRows[0] ?? null;
     if (latestSession) {
         scorecardUnresolvedFlags = await getUnresolvedFlagsCount(
             supabase,
             latestSession.subclass_code
         );
+
+        // Compute weighted coverage using evidence item priorities
+        try {
+            const requirements = await getRequirements(latestSession.subclass_code);
+            const evidenceItems = await getEvidenceItems(requirements.map((r) => r.requirement_id));
+            const itemStates: ChecklistItemState[] = (latestSession.done_count > 0 || latestSession.item_count > 0)
+                ? (await supabase
+                    .from("checklist_item_state")
+                    .select("evidence_id, status, note")
+                    .eq("session_id", latestSession.session_id)
+                ).data?.map((i) => ({ evidence_id: i.evidence_id, status: i.status, note: i.note })) ?? []
+                : [];
+            if (itemStates.length > 0 && evidenceItems.length > 0) {
+                scorecardWeightedPct = computeWeightedCoverage(itemStates, evidenceItems);
+            }
+        } catch {
+            // Soft fail — weighted score is optional
+        }
     }
 
     // --- DaaS consent: check if user has already given govdata consent ---
@@ -167,6 +188,7 @@ export default async function DashboardPage() {
                                     lastUpdated={
                                         new Date(latestSession.updated_at).toLocaleDateString("en-AU")
                                     }
+                                    weightedPct={scorecardWeightedPct}
                                 />
                             </div>
                         )}

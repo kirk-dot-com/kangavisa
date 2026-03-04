@@ -6,7 +6,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
 import { getKBPackage } from "../../../lib/kb-service";
+import { getEvidenceItems, getRequirements } from "../../../lib/kb-service";
 import { getServerUser } from "../../../lib/supabase-server";
+import { computeWeightedCoverage, type ChecklistItemState } from "../../../lib/export-builder";
 import ReadinessScorecard from "../../components/ReadinessScorecard";
 import Disclaimer from "../../components/Disclaimer";
 import styles from "./export.module.css";
@@ -60,6 +62,7 @@ export default async function ExportPage({ params, searchParams }: ExportPagePro
     let coverageTotalItems = 0;
     let coverageDoneItems = 0;
     let coverageLastUpdated: string | null = null;
+    let coverageWeightedPct: number | undefined = undefined;
     if (user) {
         try {
             const adminSupabase = createClient(
@@ -80,13 +83,29 @@ export default async function ExportPage({ params, searchParams }: ExportPagePro
             if (session) {
                 const { data: items } = await adminSupabase
                     .from("checklist_item_state")
-                    .select("status")
+                    .select("evidence_id, status, note")
                     .eq("session_id", session.session_id);
-                coverageTotalItems = items?.length ?? 0;
-                coverageDoneItems = items?.filter((i) => i.status === "done").length ?? 0;
+                const itemStates: ChecklistItemState[] = (items ?? []).map((i) => ({
+                    evidence_id: i.evidence_id,
+                    status: i.status,
+                    note: i.note,
+                }));
+                coverageTotalItems = itemStates.length;
+                coverageDoneItems = itemStates.filter((i) => i.status === "done").length;
                 coverageLastUpdated = session.updated_at
                     ? new Date(session.updated_at).toLocaleDateString("en-AU")
                     : null;
+
+                // Compute weighted coverage
+                try {
+                    const requirements = await getRequirements(subclass, caseDate);
+                    const evidenceItems = await getEvidenceItems(requirements.map((r) => r.requirement_id), caseDate);
+                    if (itemStates.length > 0 && evidenceItems.length > 0) {
+                        coverageWeightedPct = computeWeightedCoverage(itemStates, evidenceItems);
+                    }
+                } catch {
+                    // Soft fail — weighted score optional
+                }
             }
         } catch {
             // Soft fail — show 0/0 rather than crashing
@@ -150,6 +169,7 @@ export default async function ExportPage({ params, searchParams }: ExportPagePro
                             unresolvedFlags={pkg.flagTemplates.length}
                             visaName={visaName}
                             lastUpdated={coverageLastUpdated}
+                            weightedPct={coverageWeightedPct}
                         />
                     ) : (
                         <>
@@ -203,9 +223,16 @@ export default async function ExportPage({ params, searchParams }: ExportPagePro
                             ↓ Download PDF
                         </a>
                         <a
-                            href={csvUrl}
+                            href={`/api/export/docx?subclass=${subclass}&caseDate=${caseDateStr}`}
                             download
                             className="btn btn--secondary"
+                        >
+                            ↓ Download DOCX
+                        </a>
+                        <a
+                            href={csvUrl}
+                            download
+                            className="btn btn--ghost"
                         >
                             ↓ Download CSV
                         </a>
