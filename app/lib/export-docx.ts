@@ -54,12 +54,7 @@ function heading(text: string, level: (typeof HeadingLevel)[keyof typeof Heading
     });
 }
 
-function body(text: string, color = MUTED): Paragraph {
-    return new Paragraph({
-        children: [new TextRun({ text, color, size: 22 })],
-        spacing: { after: 80 },
-    });
-}
+
 
 function noBorder() {
     return {
