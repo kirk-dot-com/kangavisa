@@ -370,9 +370,70 @@ Branch:       main (uncommitted — Sprint 11 complete, ready to commit)
 **Priority 4 — Home Affairs + data.gov.au watchers**
 - Weekly fetch + section-level diff, per `kb/architecture.md §6`
 
+### Open questions / decisions pending (resolved)
+- Export format: **PDF + DOCX + CSV** — all three live ✅
+- Dashboard readiness score: **weighted by requirement criticality** ✅
+
+---
+
+## Session: 2026-03-04
+
+### What we achieved — Sprint 13
+
+#### P0 — RLS analytics_event fix
+| File | Change | Status |
+|---|---|---|
+| `kb/migrations/rls_analytics_event_fix_v2.sql` | Drops duplicate `analytics_event_insert_if_enabled` + `analytics_event_insert_own`; recreates single `analytics_event_insert_own` with `(SELECT auth.uid())` | ✅ Applied in Supabase |
+
+Supabase Advisor: 0 issues for `analytics_event` after applying.
+
+#### P1 — DOCX export
+| File | Change | Status |
+|---|---|---|
+| `app/lib/export-docx.ts` | New — `buildDocx(payload)` using `docx` npm package; branded cover, requirements/flags/evidence tables, disclaimer | ✅ |
+| `app/app/api/export/docx/route.ts` | New — `/api/export/docx` route mirroring PDF pattern | ✅ |
+| `app/app/export/[subclass]/page.tsx` | Added DOCX download button (between PDF and CSV) | ✅ |
+
+#### P2 — Enriched CSV
+| File | Change | Status |
+|---|---|---|
+| `app/lib/export-builder.ts` | `buildCsv()` now populates `label`, `what_it_proves`, `requirement` columns from evidenceItems in payload (previously blank) | ✅ |
+
+#### P3 — Weighted readiness scorecard
+| File | Change | Status |
+|---|---|---|
+| `app/lib/export-builder.ts` | `computeWeightedCoverage()` helper added — priority 1→3pts, 2→2pts, ≥3→1pt | ✅ |
+| `app/app/components/ReadinessScorecard.tsx` | Optional `weightedPct` prop renders "Priority-weighted ?" metric with tooltip | ✅ |
+| `app/app/dashboard/page.tsx` | Fetches evidence priorities for latest session, passes `weightedPct` | ✅ |
+| `app/app/export/[subclass]/page.tsx` | Same pattern on export page scorecard | ✅ |
+
+---
+
+### Current test status
+```
+tsc --noEmit:  0 errors
+Jest:         28 / 28
+CI:           run #65 — pending (was failing due to caseDate bug, now fixed)
+Branch:       main → a88699f (pushed)
+```
+
+> **Note:** Slow Supabase queries flagged by advisor (pg_timezone_names, PostgREST introspection, WAL backup) are Supabase-internal — no action possible.
+
+---
+
+### Next session — where to pick up
+
+**Priority 1 — Home Affairs + data.gov.au watchers**
+- Build `homeaffairs_watcher.py` + `datagov_watcher.py` (same pattern as FRL watcher)
+- Combine all three into a single `run_watchers.py` entrypoint
+
+**Priority 2 — Weekly scheduler**
+- GitHub Actions schedule or Render cron job — every Monday 06:00 AEST
+
+**Priority 3 — Dashboard staleness banner**
+- `StalenessAlert` when `kb_release.released_at` > 7 days old — component exists, needs data hook
+
 ### Open questions / decisions pending
-- Export format: DOCX/CSV in addition to PDF? (CSV already exists at `/api/export/csv`)
-- Dashboard readiness score: simple % or weighted by requirement criticality?
-
-
+- Manual verification needed: download DOCX from `/export/500`, open in Word/Pages
+- Confirm Supabase Advisor shows 0 issues for `analytics_event` after v2 migration
 
