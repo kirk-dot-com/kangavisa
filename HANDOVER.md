@@ -569,16 +569,42 @@ Branch:       main → a88699f (pushed)
 
 ### Next session — Sprint 17 priorities
 
-**Priority 1 — Apply seed SQL to Supabase (~10m)**
-- Paste `kb/migrations/seed_mvp_visas_v1.sql` into Supabase SQL Editor and run
+**Priority 1 — ~~Apply seed SQL to Supabase~~ ✅ Done (2026-03-09)**
+- `seed_mvp_visas_v1.sql` applied successfully
+- 485 and 820 had pre-existing rows from an earlier seed — ran de-dup cleanup:
+  ```sql
+  WITH ranked AS (
+    SELECT r.requirement_id,
+           ROW_NUMBER() OVER (
+             PARTITION BY vs.subclass_code, r.title
+             ORDER BY r.requirement_id::text
+           ) AS rn
+    FROM requirement r
+    JOIN visa_subclass vs ON vs.visa_id = r.visa_id
+    WHERE vs.subclass_code IN ('485', '820')
+  )
+  DELETE FROM requirement
+  WHERE requirement_id IN (SELECT requirement_id FROM ranked WHERE rn > 1);
+  ```
+- Final counts: 189 → 6, 190 → 1, 485 → 3, 491 → 2, 820 → 4 ✅
 
-**Priority 2 — Visitor (600) and Tourist seed data (~1h)**
-- Create `kb/seed/visa_600_requirements.json` + `visa_600_evidence_items.json` (Genuine Temporary Entrant, financial capacity, health)
-- Add `visa_600` INSERT rows to a `seed_v2.sql` patch
+**Priority 2 — Add unique constraint on `requirement (visa_id, title)` (~15m)**
+- Write `kb/migrations/requirement_unique_title_v1.sql`:
+  ```sql
+  CREATE UNIQUE INDEX IF NOT EXISTS requirement_visa_title_uk
+    ON requirement (visa_id, title);
+  ```
+- Apply in Supabase SQL Editor
+- Prevents future seed reruns creating duplicate content rows (root cause of the 485/820 doubling)
 
-**Priority 3 — Supabase KB staleness banner (existing StalenessAlert component)**
-- `kb_release.released_at` is now populated by seed SQL — banner will activate once seed is applied
+**Priority 3 — Visitor (600) seed data (~1h)**
+- Create `kb/seed/visa_600_requirements.json` + evidence items (Genuine Temporary Entrant, financial capacity, health)
+- Extend `seed_mvp_visas_v1.sql` or write `seed_v2.sql`
 
-**Priority 4 — End-to-end test on a fresh session**
+**Priority 4 — Supabase KB staleness banner**
+- `kb_release.released_at` is now populated — `StalenessAlert` should activate on the dashboard
+
+**Priority 5 — End-to-end test on a fresh session**
 - Sign in as a real user, create a 189 case, tick items, open Export page
 - Verify readiness band shows (not just weighted %)
+
