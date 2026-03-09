@@ -12,6 +12,11 @@ interface AskBarProps {
 }
 
 const PROMPT_CHIPS: Record<string, string[]> = {
+    "600": [
+        "What evidence proves I am a genuine visitor to Australia?",
+        "What financial evidence do I need for a Visitor visa?",
+        "What are the most common reasons a 600 visa application is refused?",
+    ],
     "500": [
         "What documents prove genuine student intent?",
         "What are the most common evidence gaps for a 500 visa?",
@@ -36,6 +41,21 @@ const PROMPT_CHIPS: Record<string, string[]> = {
         "What are the four pillars of relationship evidence?",
         "What financial evidence shows a genuine relationship?",
         "How long does processing typically take for an 820?",
+    ],
+    "189": [
+        "How do I make sure my points score is correctly evidenced?",
+        "What makes a good skills assessment for a 189 visa?",
+        "What English test result do I need for Skilled Independent?",
+    ],
+    "190": [
+        "What does state nomination involve and what evidence do I need?",
+        "How does the 5-point nomination bonus work in the points test?",
+        "What is the difference between a 190 and a 189 application?",
+    ],
+    "491": [
+        "What counts as a designated regional area for the 491 visa?",
+        "What is the pathway from 491 to permanent residency?",
+        "What evidence do I need if I am applying via eligible relative sponsorship?",
     ],
 };
 
