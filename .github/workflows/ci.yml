@@ -5,10 +5,13 @@ on:
     branches: [main, develop]
   pull_request:
     branches: [main]
+  schedule:
+    # Weekly KB ingestion — Monday 06:00 AEST (Sunday 20:00 UTC)
+    - cron: "0 20 * * 0"
 
 jobs:
   # ────────────────────────────────────────────────────────────
-  # Python: schema validation + FRL watcher tests
+  # Python: schema validation + watcher tests
   # ────────────────────────────────────────────────────────────
   python-tests:
     name: Python Tests
@@ -63,3 +66,34 @@ jobs:
 
       - name: TypeScript type-check
         run: npx tsc --noEmit
+
+  # ────────────────────────────────────────────────────────────
+  # KB Watcher — runs on schedule only (weekly ingestion)
+  # ────────────────────────────────────────────────────────────
+  kb-watcher:
+    name: KB Watcher
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    defaults:
+      run:
+        working-directory: workers
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: workers/pyproject.toml
+
+      - name: Install package + deps
+        run: pip install -e ".[dev]"
+
+      - name: Run all watchers
+        run: python run_watchers.py
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          KANGAVISA_SNAPSHOTS_DIR: /tmp/kangavisa_snapshots

@@ -10,10 +10,12 @@ import { createClient } from "@supabase/supabase-js";
 import Disclaimer from "../components/Disclaimer";
 import { OnboardingModal } from "../components/OnboardingModal";
 import { DaaSConsentBanner } from "../components/DaaSConsentBanner";
+import { KBStalenessAlert } from "../components/KBStalenessAlert";
 import ReadinessScorecard from "../components/ReadinessScorecard";
 import { computeWeightedCoverage, type ChecklistItemState } from "../../lib/export-builder";
 import { getEvidenceItems, getRequirements } from "../../lib/kb-service";
 import styles from "./dashboard.module.css";
+
 
 export const metadata: Metadata = {
     title: "Dashboard — KangaVisa",
@@ -137,6 +139,21 @@ export default async function DashboardPage() {
     } catch {
         // Soft fail — don't block dashboard render
     }
+    // --- KB staleness: fetch most recent kb_release for banner ---
+    let kbLastReviewedAt: string | null = null;
+    let kbPackVersion: string | undefined = undefined;
+    try {
+        const { data: kbRelease } = await supabase
+            .from("kb_release")
+            .select("release_tag, created_at")
+            .order("created_at", { ascending: false })
+            .limit(1)
+            .maybeSingle();
+        kbLastReviewedAt = kbRelease?.created_at ?? null;
+        kbPackVersion = kbRelease?.release_tag ?? undefined;
+    } catch {
+        // Soft fail — don't block dashboard render
+    }
 
     return (
         <div className="section">
@@ -147,6 +164,9 @@ export default async function DashboardPage() {
 
                 {/* DaaS consent banner (shown if no prior govdata consent) */}
                 <DaaSConsentBanner hasConsent={hasConsent} authToken={authToken} />
+
+                {/* KB staleness banner (shown if KB hasn't been reviewed in 30+ days) */}
+                <KBStalenessAlert lastReviewedAt={kbLastReviewedAt} packVersion={kbPackVersion} />
 
                 <div className={styles.header}>
                     <div>
