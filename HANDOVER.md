@@ -531,3 +531,54 @@ Branch:       main → a88699f (pushed)
 - DOCX download working on `/export/500`
 - Supabase Advisor: 0 issues for `analytics_event` (v2 migration applied)
 - CI run #74 green
+
+---
+
+## Session: 2026-03-09
+
+### What we achieved — Sprint 15 close
+
+| Area | Status |
+|---|---|
+| `case_schema_v1.sql` applied in Supabase (cases, documents, timeline_events, flag_events, case_scores, analytics_events, consent_state, RLS) | ✅ |
+| `computeReadinessScore()` function in `export-builder.ts` — 4-component score formula | ✅ |
+| `ReadinessScorecard.tsx` upgraded to display readiness score band | ✅ |
+| `kb/seed/visa_820_flags.json` — 5 flags for Partner Visa (820) | ✅ |
+| `kb/seed/visa_485_flags.json` — 5 flags for Temporary Graduate (485) | ✅ |
+| `kb/seed/visa_190_491_seed.json` — delta seed for Skilled Nominated (190) + Skilled Work Regional (491) | ✅ |
+| `PathwayQuiz.tsx` — ✈️ Visitor (600) and ⭐ Skilled Independent (189) tiles added | ✅ |
+| `VISA_NAMES` map in all 8 files updated to include 600, 189, 190, 491 | ✅ |
+
+### What we achieved — Sprint 16
+
+| Area | Status |
+|---|---|
+| `kb/migrations/seed_mvp_visas_v1.sql` — complete idempotent seed for 485, 189, 190, 491, 820 | ✅ |
+| AskBar `PROMPT_CHIPS` — added 600 (3 chips), 189 (3), 190 (3), 491 (3) | ✅ |
+| Export page — `computeReadinessScore()` wired in; `ReadinessScorecard` now receives `readinessScore` | ✅ |
+| `tsc --noEmit` — 0 errors | ✅ |
+
+### How to apply the seed SQL
+
+1. Open Supabase → SQL Editor
+2. Paste the contents of `kb/migrations/seed_mvp_visas_v1.sql`
+3. Run — safe to run multiple times (idempotent via `ON CONFLICT DO NOTHING`)
+4. Verify: `SELECT COUNT(*) FROM requirement WHERE visa_id IN (SELECT visa_id FROM visa_subclass WHERE subclass_code IN ('485','189','190','491','820'));`
+
+---
+
+### Next session — Sprint 17 priorities
+
+**Priority 1 — Apply seed SQL to Supabase (~10m)**
+- Paste `kb/migrations/seed_mvp_visas_v1.sql` into Supabase SQL Editor and run
+
+**Priority 2 — Visitor (600) and Tourist seed data (~1h)**
+- Create `kb/seed/visa_600_requirements.json` + `visa_600_evidence_items.json` (Genuine Temporary Entrant, financial capacity, health)
+- Add `visa_600` INSERT rows to a `seed_v2.sql` patch
+
+**Priority 3 — Supabase KB staleness banner (existing StalenessAlert component)**
+- `kb_release.released_at` is now populated by seed SQL — banner will activate once seed is applied
+
+**Priority 4 — End-to-end test on a fresh session**
+- Sign in as a real user, create a 189 case, tick items, open Export page
+- Verify readiness band shows (not just weighted %)
