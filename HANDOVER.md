@@ -376,6 +376,92 @@ Branch:       main (uncommitted — Sprint 11 complete, ready to commit)
 
 ---
 
+## Session: 2026-03-09
+
+### What we achieved — Sprint 14 (KB Architecture + MVP Pathway Scope)
+
+#### P0 — MVP 5-Pathway Strategy Defined
+
+Locked in the 5 visa pathways that represent ~80–90% of real KangaVisa usage:
+
+| Subclass | Role |
+|---|---|
+| 600 — Visitor | Free acquisition funnel (~5M apps/year) |
+| 500 — Student | Global volume, high refusal anxiety |
+| 485 — Temp Graduate | Natural pipeline from 500 users |
+| 189/190/491 — Skilled | High planning complexity, points engine |
+| 820/801 — Partner | Highest emotional + financial stakes |
+
+#### P1 — Subclass 600 (Visitor Visa) — full KB seed
+
+| File | Status |
+|---|---|
+| `kb/seed/visa_600_evidence_items.json` | ✅ 7 evidence items |
+| `kb/seed/visa_600_requirements.json` | ✅ 5 requirements (600.211, financial, identity, travel plan, host) |
+| `kb/seed/visa_600_flags.json` | ✅ 6 visa-specific flags with legal citations |
+| `app/app/pathway/page.tsx` | ✅ Subclass 600 card added first (🟢 Lower complexity) |
+
+#### P2 — Rules Engine Triad
+
+| File | Status |
+|---|---|
+| `kb/seed/flag_templates.json` | ✅ 22 cross-visa reusable flags across 7 refusal categories |
+| `kb/seed/subclass_flag_mapping.json` | ✅ Priority + secondary categories per subclass (7 subclasses) |
+| `kb/rules/flag_detection_rules.json` | ✅ 32 deterministic rules (R001–R032) |
+| `kb/rules/readiness_scoring_model.json` | ✅ 4-component weighted score + score bands + safety rules |
+
+**7 refusal categories:** intent · home_ties · financial_capacity · consistency · evidence_completeness · eligibility · integrity
+
+**Scoring formula:** `(evidence_coverage × 0.35) + (timeline_completeness × 0.20) + (consistency × 0.20) + (risk_flags × 0.25)`
+
+#### P3 — Canonical Case Schema + Supabase Migration
+
+| File | Status |
+|---|---|
+| `kb/schema/case_schema.json` | ✅ Canonical case object (6 entities, relationships, enumerations) |
+| `kb/migrations/case_schema_v1.sql` | ✅ Migration — 6 new tables + RLS policies |
+
+New tables: `cases`, `documents`, `timeline_events`, `flag_events`, `case_scores`, `case_exports`
+RLS: all policies use `(SELECT auth.uid())` scalar subquery pattern (consistent with existing performance fix).
+
+> ⚠️ **Action required:** Apply `kb/migrations/case_schema_v1.sql` in Supabase SQL editor. Skip `analytics_events` / `consent_state` / `consent_event` blocks if those tables already exist.
+
+---
+
+### Current test status
+```
+tsc --noEmit:  0 errors (expected — pathway page change is additive)
+Branch:       main → 734a97f (KB rules engine committed)
+              + kb/schema/case_schema.json (staged, uncommitted)
+              + kb/migrations/case_schema_v1.sql (untracked, uncommitted)
+```
+
+---
+
+### Next session — Sprint 15 priorities
+
+**Priority 1 — Apply case_schema_v1.sql to Supabase**
+- Run migration in Supabase SQL editor
+- Verify all 6 tables created with correct RLS
+
+**Priority 2 — Wire ReadinessScorecard to readiness_scoring_model.json**
+- Update `computeWeightedCoverage()` in `export-builder.ts` to use 4-component formula
+- Feed `flag_events` severity weights from `readiness_scoring_model.json`
+- Surface per-component progress bars on dashboard scorecard
+
+**Priority 3 — Home Affairs + data.gov.au watchers** (Sprint 14 original P1)
+- `homeaffairs_watcher.py` + `datagov_watcher.py` — same pattern as FRL
+- Combine into `workers/run_watchers.py`
+
+**Priority 4 — Dashboard staleness banner**
+- Wire `StalenessAlert.tsx` in `dashboard/page.tsx` (component already built)
+
+**Priority 5 — Subclass 485 flags + 189 seed**
+- `visa_485_flags.json` — GTE weakness, qualification timing, English expiry
+- `visa_189_requirements.json` + evidence + flags (Skilled Migration)
+
+---
+
 ## Session: 2026-03-04
 
 ### What we achieved — Sprint 13
