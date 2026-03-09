@@ -430,33 +430,36 @@ RLS: all policies use `(SELECT auth.uid())` scalar subquery pattern (consistent 
 
 ### Current test status
 ```
-tsc --noEmit:  0 errors (expected — pathway page change is additive)
-Branch:       main → 734a97f (KB rules engine committed)
-              + kb/schema/case_schema.json (staged, uncommitted)
-              + kb/migrations/case_schema_v1.sql (untracked, uncommitted)
+tsc --noEmit:  0 errors
+Branch:       main → e163651 (system architecture doc pushed)
+Supabase:     case_schema_v1.sql pending application
 ```
 
 ---
 
 ### Next session — Sprint 15 priorities
 
-**Priority 1 — Apply case_schema_v1.sql to Supabase**
-- Run migration in Supabase SQL editor
-- Verify all 6 tables created with correct RLS
+**Priority 1 — `workers/run_watchers.py`** (rolled from Sprint 14)
+- Combine FRL + HA + DG into a single entrypoint (replace `run_frl_watch.py`)
+- `homeaffairs_watcher.py` + `datagov_watcher.py` are already implemented
 
-**Priority 2 — Wire ReadinessScorecard to readiness_scoring_model.json**
-- Update `computeWeightedCoverage()` in `export-builder.ts` to use 4-component formula
-- Feed `flag_events` severity weights from `readiness_scoring_model.json`
-- Surface per-component progress bars on dashboard scorecard
+**Priority 2 — GitHub Actions cron scheduler** (rolled from Sprint 14)
+- Add `schedule: cron: '0 20 * * 0'` trigger to `.github/workflows/ci.yml`
+- Job: `pip install -e '.[dev]' && python workers/run_watchers.py`
 
-**Priority 3 — Home Affairs + data.gov.au watchers** (Sprint 14 original P1)
-- `homeaffairs_watcher.py` + `datagov_watcher.py` — same pattern as FRL
-- Combine into `workers/run_watchers.py`
-
-**Priority 4 — Dashboard staleness banner**
+**Priority 3 — Dashboard staleness banner** (rolled from Sprint 14)
 - Wire `StalenessAlert.tsx` in `dashboard/page.tsx` (component already built)
+- Fetch latest `kb_release.released_at` via adminClient
 
-**Priority 5 — Subclass 485 flags + 189 seed**
+**Priority 4 — Apply `case_schema_v1.sql` to Supabase**
+- Run migration in Supabase SQL editor
+- Verify all 6 new tables + RLS policies
+
+**Priority 5 — Wire ReadinessScorecard to `readiness_scoring_model.json`**
+- Update `computeWeightedCoverage()` in `export-builder.ts` to use 4-component formula
+- Surface per-component progress bars on dashboard
+
+**Priority 6 — Subclass 485 flags + 189 seed**
 - `visa_485_flags.json` — GTE weakness, qualification timing, English expiry
 - `visa_189_requirements.json` + evidence + flags (Skilled Migration)
 
