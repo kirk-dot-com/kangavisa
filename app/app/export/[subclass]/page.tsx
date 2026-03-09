@@ -7,7 +7,8 @@ import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
 import { getKBPackage, getEvidenceItems, getRequirements } from "../../../lib/kb-service";
 import { getServerUser } from "../../../lib/supabase-server";
-import { computeWeightedCoverage, type ChecklistItemState } from "../../../lib/export-builder";
+import { computeWeightedCoverage, computeReadinessScore, type ChecklistItemState } from "../../../lib/export-builder";
+
 import ReadinessScorecard from "../../components/ReadinessScorecard";
 import Disclaimer from "../../components/Disclaimer";
 import styles from "./export.module.css";
@@ -66,6 +67,8 @@ export default async function ExportPage({ params, searchParams }: ExportPagePro
     let coverageDoneItems = 0;
     let coverageLastUpdated: string | null = null;
     let coverageWeightedPct: number | undefined = undefined;
+    let readinessScore: ReturnType<typeof computeReadinessScore> | undefined;
+
     if (user) {
         try {
             const adminSupabase = createClient(
@@ -99,21 +102,27 @@ export default async function ExportPage({ params, searchParams }: ExportPagePro
                     ? new Date(session.updated_at).toLocaleDateString("en-AU")
                     : null;
 
-                // Compute weighted coverage
+                // Compute weighted coverage + 4-component readiness score
                 try {
                     const requirements = await getRequirements(subclass, new Date(caseDateStr));
                     const evidenceItems = await getEvidenceItems(requirements.map((r) => r.requirement_id), new Date(caseDateStr));
                     if (itemStates.length > 0 && evidenceItems.length > 0) {
                         coverageWeightedPct = computeWeightedCoverage(itemStates, evidenceItems);
+                        readinessScore = computeReadinessScore(
+                            itemStates,
+                            evidenceItems,
+                            { triggeredFlags: pkg.flagTemplates.map((f) => ({ severity: f.severity })) }
+                        );
                     }
                 } catch {
-                    // Soft fail — weighted score optional
+                    // Soft fail — weighted score and readiness score are both optional
                 }
             }
         } catch {
             // Soft fail — show 0/0 rather than crashing
         }
     }
+
 
     const assumptions = [
         `Visa subclass: ${subclass}`,
@@ -173,7 +182,9 @@ export default async function ExportPage({ params, searchParams }: ExportPagePro
                             visaName={visaName}
                             lastUpdated={coverageLastUpdated}
                             weightedPct={coverageWeightedPct}
+                            readinessScore={readinessScore}
                         />
+
                     ) : (
                         <>
                             <h2 className={`h3 ${styles.section_title}`}>Evidence coverage</h2>
