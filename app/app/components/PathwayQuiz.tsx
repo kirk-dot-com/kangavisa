@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import styles from "./PathwayQuiz.module.css";
 
 /* ─── Types ──────────────────────────────────────────────────────────── */
-type Purpose = "500" | "485" | "482" | "417" | "820" | "unsure";
+type Purpose = "600" | "500" | "485" | "482" | "417" | "820" | "189" | "unsure";
 type Location = "onshore" | "offshore";
 
 interface PurposeTile {
@@ -20,6 +20,12 @@ interface PurposeTile {
 
 /* ─── Data ────────────────────────────────────────────────────────────── */
 const PURPOSE_TILES: PurposeTile[] = [
+    {
+        icon: "✈️",
+        label: "Visit Australia",
+        sublabel: "Tourism, family, or short-term stay",
+        value: "600",
+    },
     {
         icon: "📚",
         label: "Study in Australia",
@@ -51,6 +57,12 @@ const PURPOSE_TILES: PurposeTile[] = [
         value: "820",
     },
     {
+        icon: "⭐",
+        label: "Skilled migration",
+        sublabel: "Points-tested permanent residency",
+        value: "189",
+    },
+    {
         icon: "🤔",
         label: "I'm not sure yet",
         sublabel: "Browse all Australian visa types below",
@@ -59,12 +71,16 @@ const PURPOSE_TILES: PurposeTile[] = [
 ];
 
 const VISA_NAMES: Record<string, string> = {
+    "600": "Visitor visa (Subclass 600)",
     "500": "Student visa (Subclass 500)",
     "485": "Temporary Graduate (Subclass 485)",
     "482": "Employer Sponsored (Subclass 482)",
     "417": "Working Holiday (Subclass 417)",
     "820": "Partner visa — Onshore (Subclass 820)",
     "309": "Partner visa — Offshore (Subclass 309)",
+    "189": "Skilled Independent (Subclass 189)",
+    "190": "Skilled Nominated (Subclass 190)",
+    "491": "Skilled Work Regional (Subclass 491)",
 };
 
 /* ─── Component ───────────────────────────────────────────────────────── */

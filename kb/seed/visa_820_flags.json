@@ -1,0 +1,151 @@
+{
+    "visa_subclass": "820",
+    "visa_name": "Partner Visa (Onshore)",
+    "flags": [
+        {
+            "flag_id": "RF820_RELATIONSHIP_EVIDENCE_WEAK",
+            "visa": {
+                "subclass": "820",
+                "name": "Partner Visa (Onshore)"
+            },
+            "title": "Relationship evidence is limited across the four pillars",
+            "trigger_schema": {
+                "field": "relationship_pillars_present",
+                "operator": "<",
+                "value": 3
+            },
+            "why_it_matters": "Home Affairs assesses partner visa applications across four pillars of shared life: financial, household, social, and commitment. Weak evidence in any pillar — especially if the relationship is recent — raises credibility concerns.",
+            "actions": [
+                "Gather evidence across all four pillars: financial, household, social, and commitment",
+                "Include joint documents, not just statements from each person individually",
+                "Where evidence is thin in one area, provide a written explanation supported by other documents"
+            ],
+            "evidence_examples": [
+                "Joint bank account statements or shared bills (financial)",
+                "Shared lease agreement or utility bills at same address (household)",
+                "Photos, event invitations, messages showing shared social life (social)",
+                "Statutory declarations from friends/family (commitment)",
+                "Evidence of future plans — travel bookings, property enquiries"
+            ],
+            "severity": "critical",
+            "sources": {
+                "legislation": "Migration Regulations 1994 — Clause 820.211, Reg 1.15A",
+                "homeaffairs": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/partner-820-801/partner-evidence"
+            }
+        },
+        {
+            "flag_id": "RF820_RELATIONSHIP_TIMELINE_CONFLICT",
+            "visa": {
+                "subclass": "820",
+                "name": "Partner Visa (Onshore)"
+            },
+            "title": "Relationship timeline appears inconsistent across documents",
+            "trigger_schema": {
+                "field": "relationship_timeline_consistent",
+                "operator": "==",
+                "value": false
+            },
+            "why_it_matters": "If statements, photos, and documents tell different stories about when or how the relationship started or progressed, the application's credibility is undermined.",
+            "actions": [
+                "Write a consistent relationship history that both partners agree on",
+                "Ensure dates of key events (first meeting, cohabitation, engagement, marriage) match across all documents",
+                "Review both partners' statements for discrepancies before lodging"
+            ],
+            "evidence_examples": [
+                "Consistent relationship history statement from both partners",
+                "Supporting documents matching key dates cited in statements"
+            ],
+            "severity": "high",
+            "sources": {
+                "legislation": "Migration Regulations 1994 — Clause 820.211",
+                "homeaffairs": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/partner-820-801"
+            }
+        },
+        {
+            "flag_id": "RF820_SPONSOR_ELIGIBILITY_RISK",
+            "visa": {
+                "subclass": "820",
+                "name": "Partner Visa (Onshore)"
+            },
+            "title": "Sponsor eligibility may not have been confirmed",
+            "trigger_schema": {
+                "field": "sponsor_approved",
+                "operator": "==",
+                "value": false
+            },
+            "why_it_matters": "The Australian partner (sponsor) must be approved before the visa can be granted. Sponsors with certain criminal history, prior sponsorship history, or who don't meet residency criteria may be ineligible.",
+            "actions": [
+                "Confirm the sponsor meets citizenship or permanent residency requirements",
+                "Check if the sponsor has sponsored a previous partner visa within the last 5 years",
+                "Review whether the sponsor has any relevant criminal history that could affect eligibility"
+            ],
+            "evidence_examples": [
+                "Australian citizenship certificate or permanent visa grant notice",
+                "Statutory declaration regarding prior sponsorships"
+            ],
+            "severity": "high",
+            "sources": {
+                "legislation": "Migration Act 1958 — Section 84; Migration Regulations 1994 — Clause 820.710",
+                "homeaffairs": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/partner-820-801/who-can-sponsor"
+            }
+        },
+        {
+            "flag_id": "RF820_ADDRESS_HISTORY_GAP",
+            "visa": {
+                "subclass": "820",
+                "name": "Partner Visa (Onshore)"
+            },
+            "title": "Cohabitation history not clearly documented",
+            "trigger_schema": {
+                "field": "cohabitation_evidence_present",
+                "operator": "==",
+                "value": false
+            },
+            "why_it_matters": "Living together is one of the strongest indicators of a genuine relationship. If shared address history is absent or inconsistent, the household pillar of evidence is weakened.",
+            "actions": [
+                "Provide a joint lease, mortgage, or utility bill showing shared address",
+                "If you have not always lived together, explain the circumstances and periods apart",
+                "Include statutory declaration from landlord or neighbours if formal documents are limited"
+            ],
+            "evidence_examples": [
+                "Lease agreement showing both names at same address",
+                "Utility bills addressed to both partners",
+                "Bank statements showing same residential address"
+            ],
+            "severity": "medium",
+            "sources": {
+                "legislation": "Migration Regulations 1994 — Reg 1.15A(3)(b)",
+                "homeaffairs": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/partner-820-801/partner-evidence"
+            }
+        },
+        {
+            "flag_id": "RF820_STATUTORY_DECLARATIONS_MISSING",
+            "visa": {
+                "subclass": "820",
+                "name": "Partner Visa (Onshore)"
+            },
+            "title": "Third-party statutory declarations not included",
+            "trigger_schema": {
+                "field": "statutory_declarations_present",
+                "operator": "==",
+                "value": false
+            },
+            "why_it_matters": "Statutory declarations from friends, family, or colleagues who know the couple are a standard and expected part of a partner visa application. Their absence is notable.",
+            "actions": [
+                "Obtain at least 2 statutory declarations from people who can attest to the genuineness of the relationship",
+                "Declarations should describe how long they have known the couple and what they have observed",
+                "Include a mix of people who know each partner individually and as a couple"
+            ],
+            "evidence_examples": [
+                "Statutory declaration from a family member of either partner",
+                "Statutory declaration from a friend or colleague who knows the couple",
+                "Form 888 (Supporting statement for partner visa)"
+            ],
+            "severity": "medium",
+            "sources": {
+                "legislation": "Migration Regulations 1994 — Reg 1.15A",
+                "homeaffairs": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/partner-820-801/documents"
+            }
+        }
+    ]
+}

@@ -18,11 +18,15 @@ interface ExportPageProps {
 }
 
 const VISA_NAMES: Record<string, string> = {
+    "600": "Visitor visa (subclass 600)",
     "500": "Student visa (subclass 500)",
     "485": "Temporary Graduate (subclass 485)",
     "482": "Employer Sponsored (subclass 482 / SID)",
     "417": "Working Holiday (subclass 417)",
     "820": "Partner visa (subclass 820 / 309)",
+    "189": "Skilled Independent (subclass 189)",
+    "190": "Skilled Nominated (subclass 190)",
+    "491": "Skilled Work Regional (subclass 491)",
 };
 
 const SEVERITY_CONFIG = {

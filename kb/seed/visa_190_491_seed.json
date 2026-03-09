@@ -1,0 +1,251 @@
+{
+    "version": "1.0",
+    "description": "Skilled Nominated (190) and Skilled Work Regional (491) seed data. These subclasses share the same core evidence and requirements as the Skilled Independent (189), with the addition of a state/territory or regional nomination requirement.",
+    "shared_with": "visa_189_seed.json",
+    "differences_from_189": {
+        "190": "Requires a valid nomination from an Australian state or territory government.",
+        "491": "Requires a valid nomination from an Australian state/territory government OR sponsorship by an eligible relative living in a designated regional area."
+    },
+    "visa_190": {
+        "visa_subclass": "190",
+        "visa_name": "Skilled Nominated Visa",
+        "additional_evidence_items": [
+            {
+                "id": "EV190_NOMINATION",
+                "title": "State or territory government nomination",
+                "description": "A valid nomination from an Australian state or territory government for the nominated occupation.",
+                "examples": [
+                    "Nomination outcome letter from state/territory government",
+                    "Confirmatory email from state/territory skills migration program"
+                ],
+                "document_types": [
+                    "nomination_letter"
+                ],
+                "risk_category": "eligibility"
+            }
+        ],
+        "additional_requirements": [
+            {
+                "id": "REQ190_NOMINATION",
+                "title": "State or territory nomination",
+                "description": "The applicant must hold a valid nomination from an Australian state or territory government.",
+                "legal_source": "Migration Regulations 1994 — Clause 190.211",
+                "evidence_items": [
+                    "EV190_NOMINATION"
+                ],
+                "risk_flags": [
+                    "RF190_NOMINATION_MISSING"
+                ]
+            }
+        ],
+        "additional_flags": [
+            {
+                "flag_id": "RF190_NOMINATION_MISSING",
+                "visa": {
+                    "subclass": "190",
+                    "name": "Skilled Nominated Visa"
+                },
+                "title": "State or territory nomination not confirmed",
+                "trigger_schema": {
+                    "all": [
+                        {
+                            "field": "nomination_required",
+                            "operator": "==",
+                            "value": true
+                        },
+                        {
+                            "field": "nomination_present",
+                            "operator": "==",
+                            "value": false
+                        }
+                    ]
+                },
+                "why_it_matters": "The Subclass 190 visa requires a valid state/territory nomination. Without it, the application cannot proceed regardless of points score.",
+                "actions": [
+                    "Confirm your nomination application has been submitted and approved",
+                    "Upload the nomination outcome letter",
+                    "Ensure your occupation and skills assessment match the state's requirements at time of nomination"
+                ],
+                "evidence_examples": [
+                    "Nomination outcome letter from state migration program",
+                    "Skills assessment matching the nominated occupation"
+                ],
+                "severity": "critical",
+                "sources": {
+                    "legislation": "Migration Regulations 1994 — Clause 190.211",
+                    "homeaffairs": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-nominated-190"
+                }
+            },
+            {
+                "flag_id": "RF190_POINTS_MISCALCULATION",
+                "visa": {
+                    "subclass": "190",
+                    "name": "Skilled Nominated Visa"
+                },
+                "title": "Points claimed may exceed what evidence supports",
+                "trigger_schema": {
+                    "left_field": "claimed_points",
+                    "operator": ">",
+                    "right_field": "evidenced_points"
+                },
+                "why_it_matters": "Like the 189, the 190 uses a points test. Nominated applicants receive 5 bonus points from nomination, but all other claimed points must still be evidenced.",
+                "actions": [
+                    "Recalculate points including the 5-point nomination bonus",
+                    "Verify each point claim against supporting documents"
+                ],
+                "evidence_examples": [
+                    "Nomination letter (already provides 5 points)",
+                    "Employment reference letters covering claimed experience period",
+                    "English test result matching bandwidth claimed"
+                ],
+                "severity": "critical",
+                "sources": {
+                    "legislation": "Migration Regulations 1994 — Schedule 6D",
+                    "homeaffairs": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-nominated-190/points-test"
+                }
+            }
+        ]
+    },
+    "visa_491": {
+        "visa_subclass": "491",
+        "visa_name": "Skilled Work Regional (Provisional) Visa",
+        "additional_evidence_items": [
+            {
+                "id": "EV491_NOMINATION_OR_SPONSORSHIP",
+                "title": "State/territory nomination OR eligible relative sponsorship",
+                "description": "Either a valid nomination from an Australian state or territory government, or sponsorship by an eligible relative living and working in a designated regional area.",
+                "examples": [
+                    "Nomination outcome letter from state/territory government",
+                    "Eligible relative sponsorship approval",
+                    "Evidence that relative lives in a designated regional area"
+                ],
+                "document_types": [
+                    "nomination_letter",
+                    "sponsorship_approval"
+                ],
+                "risk_category": "eligibility"
+            }
+        ],
+        "additional_requirements": [
+            {
+                "id": "REQ491_NOMINATION_SPONSORSHIP",
+                "title": "State nomination or eligible relative sponsorship",
+                "description": "The applicant must hold a valid state/territory nomination or sponsorship by an eligible relative in a regional area.",
+                "legal_source": "Migration Regulations 1994 — Clause 491.211",
+                "evidence_items": [
+                    "EV491_NOMINATION_OR_SPONSORSHIP"
+                ],
+                "risk_flags": [
+                    "RF491_NOMINATION_SPONSORSHIP_MISSING"
+                ]
+            },
+            {
+                "id": "REQ491_REGIONAL_COMMITMENT",
+                "title": "Live and work in designated regional area",
+                "description": "491 holders must live and work (or study) in a designated regional area of Australia for at least 3 years before being eligible for the permanent pathway (191).",
+                "legal_source": "Migration Regulations 1994 — Clause 491.612",
+                "evidence_items": [],
+                "risk_flags": [
+                    "RF491_REGIONAL_REQUIREMENT_UNCLEAR"
+                ]
+            }
+        ],
+        "additional_flags": [
+            {
+                "flag_id": "RF491_NOMINATION_SPONSORSHIP_MISSING",
+                "visa": {
+                    "subclass": "491",
+                    "name": "Skilled Work Regional (Provisional) Visa"
+                },
+                "title": "Nomination or relative sponsorship not confirmed",
+                "trigger_schema": {
+                    "all": [
+                        {
+                            "field": "nomination_or_sponsorship_required",
+                            "operator": "==",
+                            "value": true
+                        },
+                        {
+                            "field": "nomination_or_sponsorship_present",
+                            "operator": "==",
+                            "value": false
+                        }
+                    ]
+                },
+                "why_it_matters": "The 491 requires either state/territory nomination or sponsorship by an eligible relative in a regional area. Without one of these, the application cannot proceed.",
+                "actions": [
+                    "Confirm whether you are applying via state nomination or relative sponsorship",
+                    "Upload the nomination or sponsorship approval letter",
+                    "Ensure your relative's regional address is documented if applying via sponsorship"
+                ],
+                "evidence_examples": [
+                    "Nomination outcome letter",
+                    "Eligible relative sponsorship confirmation",
+                    "Proof of relative's residence in designated regional area"
+                ],
+                "severity": "critical",
+                "sources": {
+                    "legislation": "Migration Regulations 1994 — Clause 491.211",
+                    "homeaffairs": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-work-regional-491"
+                }
+            },
+            {
+                "flag_id": "RF491_REGIONAL_REQUIREMENT_UNCLEAR",
+                "visa": {
+                    "subclass": "491",
+                    "name": "Skilled Work Regional (Provisional) Visa"
+                },
+                "title": "Understanding of regional living requirement unclear",
+                "trigger_schema": {
+                    "field": "regional_requirement_acknowledged",
+                    "operator": "==",
+                    "value": false
+                },
+                "why_it_matters": "The 491 is a provisional visa — to become eligible for permanent residency (Subclass 191), holders must live and work in a designated regional area for at least 3 years. Not understanding this requirement can lead to unmet conditions and consequences for future visa options.",
+                "actions": [
+                    "Confirm the intended regional area is on the designated list",
+                    "Plan employment and accommodation in a qualifying regional area",
+                    "Understand the pathway from 491 to 191 Permanent Residence"
+                ],
+                "evidence_examples": [
+                    "Job offer in designated regional area",
+                    "Lease or accommodation in designated regional area",
+                    "Evidence of intended relocation"
+                ],
+                "severity": "medium",
+                "sources": {
+                    "legislation": "Migration Regulations 1994 — Clause 491.612",
+                    "homeaffairs": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-work-regional-491/living-and-working-regionally"
+                }
+            },
+            {
+                "flag_id": "RF491_POINTS_MISCALCULATION",
+                "visa": {
+                    "subclass": "491",
+                    "name": "Skilled Work Regional (Provisional) Visa"
+                },
+                "title": "Points claimed may exceed what evidence supports",
+                "trigger_schema": {
+                    "left_field": "claimed_points",
+                    "operator": ">",
+                    "right_field": "evidenced_points"
+                },
+                "why_it_matters": "The 491 uses the same points test as 189/190. Nomination or sponsorship provides 15 bonus points, but all other claimed points must still be evidenced.",
+                "actions": [
+                    "Recalculate points including the 15-point regional nomination/sponsorship bonus",
+                    "Verify each point claim with supporting documents"
+                ],
+                "evidence_examples": [
+                    "Nomination/sponsorship letter (provides 15 points)",
+                    "Employment references covering claimed experience",
+                    "English test result"
+                ],
+                "severity": "critical",
+                "sources": {
+                    "legislation": "Migration Regulations 1994 — Schedule 6D",
+                    "homeaffairs": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-work-regional-491/points-test"
+                }
+            }
+        ]
+    }
+}
