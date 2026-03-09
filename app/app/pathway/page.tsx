@@ -15,6 +15,15 @@ export const metadata: Metadata = {
 
 const VISA_GROUPS = [
     {
+        subclass: "600",
+        name: "Visitor visa",
+        complexity: "🟢" as const,
+        complexityLabel: "Lower complexity",
+        applicantType: "Tourists, family visitors, and short-stay business travellers",
+        keyRisks: ["Genuine visitor intent (600.211)", "Financial capacity", "Ties to home country"],
+        cta: "Build your checklist →",
+    },
+    {
         subclass: "500",
         name: "Student visa",
         complexity: "🟡" as const,

@@ -1,0 +1,180 @@
+{
+    "version": "1.0",
+    "description": "Mapping of visa subclasses to relevant refusal-risk categories and flag priorities used by the KangaVisa readiness engine.",
+    "subclasses": {
+        "600": {
+            "visa_name": "Visitor Visa",
+            "priority_categories": [
+                "intent",
+                "home_ties",
+                "financial_capacity",
+                "consistency"
+            ],
+            "secondary_categories": [
+                "evidence_completeness",
+                "integrity"
+            ],
+            "typical_refusal_drivers": [
+                "genuine visitor concerns",
+                "weak home country ties",
+                "insufficient funds",
+                "unclear travel purpose"
+            ],
+            "recommended_flags": [
+                "RF_INTENT_GENERIC_STATEMENT",
+                "RF_INTENT_TRAVEL_PURPOSE_UNCLEAR",
+                "RF_HOME_TIES_WEAK_EMPLOYMENT",
+                "RF_HOME_TIES_WEAK_FAMILY",
+                "RF_FINANCIAL_FUNDS_LOW",
+                "RF_FINANCIAL_DEPOSITS_UNEXPLAINED",
+                "RF_TIMELINE_CONFLICT",
+                "RF_UNDISCLOSED_HISTORY"
+            ]
+        },
+        "417": {
+            "visa_name": "Working Holiday Visa",
+            "priority_categories": [
+                "eligibility",
+                "financial_capacity",
+                "consistency"
+            ],
+            "secondary_categories": [
+                "intent",
+                "integrity"
+            ],
+            "typical_refusal_drivers": [
+                "age eligibility",
+                "financial capacity",
+                "previous visa compliance"
+            ],
+            "recommended_flags": [
+                "RF_FINANCIAL_FUNDS_LOW",
+                "RF_TIMELINE_CONFLICT",
+                "RF_UNDISCLOSED_HISTORY"
+            ]
+        },
+        "482": {
+            "visa_name": "Temporary Skill Shortage Visa",
+            "priority_categories": [
+                "eligibility",
+                "evidence_completeness",
+                "consistency"
+            ],
+            "secondary_categories": [
+                "financial_capacity",
+                "integrity"
+            ],
+            "typical_refusal_drivers": [
+                "nomination inconsistencies",
+                "occupation mismatch",
+                "salary compliance",
+                "documentation gaps"
+            ],
+            "recommended_flags": [
+                "RF_SKILLS_ASSESSMENT_MISSING",
+                "RF_TIMELINE_CONFLICT",
+                "RF_PRIMARY_DOCUMENT_MISSING",
+                "RF_ADDRESS_MISMATCH",
+                "RF_FALSE_INFORMATION_RISK"
+            ]
+        },
+        "485": {
+            "visa_name": "Temporary Graduate Visa",
+            "priority_categories": [
+                "eligibility",
+                "timing",
+                "evidence_completeness",
+                "consistency"
+            ],
+            "secondary_categories": [
+                "financial_capacity",
+                "integrity"
+            ],
+            "typical_refusal_drivers": [
+                "application timing errors",
+                "missing police checks",
+                "incorrect stream selection"
+            ],
+            "recommended_flags": [
+                "RF_TIMING_WINDOW_RISK",
+                "RF_STREAM_SELECTION_RISK",
+                "RF_PRIMARY_DOCUMENT_MISSING",
+                "RF_TIMELINE_GAP",
+                "RF_TRANSLATION_MISSING"
+            ]
+        },
+        "500": {
+            "visa_name": "Student Visa",
+            "priority_categories": [
+                "intent",
+                "financial_capacity",
+                "consistency"
+            ],
+            "secondary_categories": [
+                "home_ties",
+                "evidence_completeness",
+                "integrity"
+            ],
+            "typical_refusal_drivers": [
+                "genuine student concerns",
+                "financial evidence gaps",
+                "weak study rationale",
+                "inconsistent education history"
+            ],
+            "recommended_flags": [
+                "RF_INTENT_GENERIC_STATEMENT",
+                "RF_INTENT_COURSE_ALIGNMENT",
+                "RF_FINANCIAL_FUNDS_LOW",
+                "RF_FINANCIAL_DEPOSITS_UNEXPLAINED",
+                "RF_TIMELINE_CONFLICT",
+                "RF_TIMELINE_GAP",
+                "RF_NAME_VARIATION"
+            ]
+        },
+        "820": {
+            "visa_name": "Partner Visa (Onshore)",
+            "priority_categories": [
+                "evidence_completeness",
+                "consistency",
+                "integrity"
+            ],
+            "secondary_categories": [
+                "financial_capacity"
+            ],
+            "typical_refusal_drivers": [
+                "insufficient relationship evidence",
+                "timeline inconsistencies",
+                "sponsor eligibility issues"
+            ],
+            "recommended_flags": [
+                "RF_RELATIONSHIP_EVIDENCE_WEAK",
+                "RF_TIMELINE_CONFLICT",
+                "RF_ADDRESS_MISMATCH",
+                "RF_PRIMARY_DOCUMENT_MISSING",
+                "RF_FALSE_INFORMATION_RISK"
+            ]
+        },
+        "189": {
+            "visa_name": "Skilled Independent Visa",
+            "priority_categories": [
+                "eligibility",
+                "evidence_completeness",
+                "consistency"
+            ],
+            "secondary_categories": [
+                "integrity"
+            ],
+            "typical_refusal_drivers": [
+                "points miscalculation",
+                "invalid skills assessment",
+                "employment evidence inconsistencies"
+            ],
+            "recommended_flags": [
+                "RF_POINTS_CALCULATION_RISK",
+                "RF_SKILLS_ASSESSMENT_MISSING",
+                "RF_TIMELINE_CONFLICT",
+                "RF_PRIMARY_DOCUMENT_MISSING"
+            ]
+        }
+    }
+}

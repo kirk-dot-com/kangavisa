@@ -1,0 +1,290 @@
+[
+    {
+        "flag_id": "FLAG-600-GV-WEAK-PURPOSE",
+        "visa": {
+            "subclass": "600",
+            "stream": null
+        },
+        "title": "Weak or vague travel purpose",
+        "trigger_schema": {
+            "conditions": [
+                "travel_purpose_statement = none OR vague",
+                "itinerary_provided = false"
+            ]
+        },
+        "why_it_matters": "Under clause 600.211, decision makers assess whether the applicant genuinely intends to visit Australia temporarily. A vague or missing travel purpose is one of the most common reasons for Visitor Visa refusal. Officers look for a credible, specific explanation of why the applicant is coming to Australia and what they will do here.",
+        "actions": [
+            "Write a clear travel purpose statement describing your reason for visiting Australia",
+            "Provide a day-by-day or week-by-week itinerary of planned activities",
+            "Attach supporting documents such as tour bookings, event registrations, or a conference invitation",
+            "If visiting for business, include meeting schedules or a letter from your Australian business contact"
+        ],
+        "evidence_examples": [
+            "Personal statement explaining travel purpose",
+            "Flight and hotel booking confirmations",
+            "Tour or activity bookings",
+            "Conference registration or business meeting schedule"
+        ],
+        "severity": "warning",
+        "effective": {
+            "from": "1994-09-01",
+            "to": null
+        },
+        "sources": {
+            "legal": [
+                {
+                    "authority": "FRL_REGS",
+                    "citation": "Schedule 2, clause 600.211",
+                    "frl_title_id": "F2022C00125"
+                }
+            ],
+            "operational": [
+                {
+                    "authority": "HOMEAFFAIRS_PAGE",
+                    "url": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/visitor-600"
+                }
+            ]
+        }
+    },
+    {
+        "flag_id": "FLAG-600-GV-WEAK-TIES",
+        "visa": {
+            "subclass": "600",
+            "stream": null
+        },
+        "title": "Insufficient evidence of ties to home country",
+        "trigger_schema": {
+            "conditions": [
+                "home_country_ties_evidence = none OR weak",
+                "employment_letter_provided = false",
+                "property_evidence_provided = false"
+            ]
+        },
+        "why_it_matters": "Decision makers assess whether the applicant is likely to return home after their visit. Weak ties to the home country — such as no stable employment, no property, no family dependants, or a history of overstaying visas — significantly increase refusal risk under the genuine visitor test (clause 600.211).",
+        "actions": [
+            "Provide an employment contract or letter from your employer confirming your role and approved leave",
+            "Include evidence of property ownership, mortgage, or long-term lease in your home country",
+            "Document family responsibilities such as dependant children or elderly relatives in your care",
+            "If self-employed, provide business registration documents and evidence of ongoing operations"
+        ],
+        "evidence_examples": [
+            "Employment contract and leave approval letter",
+            "Property title or mortgage statement",
+            "Business registration or tax filing showing ongoing business",
+            "Family relationship documents (birth certificates, dependant declarations)"
+        ],
+        "severity": "warning",
+        "effective": {
+            "from": "1994-09-01",
+            "to": null
+        },
+        "sources": {
+            "legal": [
+                {
+                    "authority": "FRL_REGS",
+                    "citation": "Schedule 2, clause 600.211",
+                    "frl_title_id": "F2022C00125"
+                }
+            ],
+            "operational": [
+                {
+                    "authority": "HOMEAFFAIRS_PAGE",
+                    "url": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/visitor-600"
+                }
+            ]
+        }
+    },
+    {
+        "flag_id": "FLAG-600-GV-POOR-TRAVEL-HISTORY",
+        "visa": {
+            "subclass": "600",
+            "stream": null
+        },
+        "title": "Limited or concerning travel history",
+        "trigger_schema": {
+            "conditions": [
+                "previous_international_travel = none",
+                "prior_visa_overstay = true"
+            ]
+        },
+        "why_it_matters": "Travel history is a key factor in genuine visitor assessments. Applicants with no international travel history may face greater scrutiny. Any prior visa overstay or immigration non-compliance — in Australia or another country — significantly increases the risk of refusal.",
+        "actions": [
+            "Include all passport pages showing entry and exit stamps from previous international travel",
+            "If you have no prior travel history, provide additional evidence of home-country ties and financial stability",
+            "If you have a prior overstay, address it directly in a statement explaining the circumstances",
+            "Obtain a travel history record or immigration clearance letter from relevant authorities if available"
+        ],
+        "evidence_examples": [
+            "Passport scans showing entry and exit stamps",
+            "Previous visa labels or approval letters",
+            "Travel history record or immigration clearance certificate",
+            "Statutory declaration addressing any prior non-compliance (if applicable)"
+        ],
+        "severity": "risk",
+        "effective": {
+            "from": "1994-09-01",
+            "to": null
+        },
+        "sources": {
+            "legal": [
+                {
+                    "authority": "FRL_REGS",
+                    "citation": "Schedule 2, clause 600.211; Public Interest Criterion 4013",
+                    "frl_title_id": "F2022C00125"
+                }
+            ],
+            "operational": [
+                {
+                    "authority": "HOMEAFFAIRS_PAGE",
+                    "url": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/visitor-600"
+                }
+            ]
+        }
+    },
+    {
+        "flag_id": "FLAG-600-FIN-INSUFFICIENT-FUNDS",
+        "visa": {
+            "subclass": "600",
+            "stream": null
+        },
+        "title": "Insufficient funds for intended length of stay",
+        "trigger_schema": {
+            "conditions": [
+                "bank_statement_balance = low OR absent",
+                "income_evidence_provided = false"
+            ]
+        },
+        "why_it_matters": "While there is no fixed statutory dollar threshold for Visitor Visa financial capacity, decision makers assess whether the applicant can genuinely support themselves during the proposed visit without working unlawfully or relying on social support. Low bank balances relative to the proposed stay length or an inability to explain income sources increases refusal risk.",
+        "actions": [
+            "Provide at least 3 months of recent bank statements showing consistent balance",
+            "Include evidence of income: payslips, tax returns, or business revenue statements",
+            "If a sponsor is supporting the trip, obtain a signed financial support letter and their own bank statements",
+            "Ensure the financial evidence is consistent with the stated length of stay"
+        ],
+        "evidence_examples": [
+            "Three to six months of bank statements with explanatory notes for large movements",
+            "Recent payslips (last 2–3 months)",
+            "Tax return or assessment notice from home country revenue authority",
+            "Sponsor financial support letter with evidence of sponsor capacity"
+        ],
+        "severity": "warning",
+        "effective": {
+            "from": "1994-09-01",
+            "to": null
+        },
+        "sources": {
+            "legal": [
+                {
+                    "authority": "FRL_REGS",
+                    "citation": "Schedule 2, clause 600.211; Public Interest Criterion 4011",
+                    "frl_title_id": "F2022C00125"
+                }
+            ],
+            "operational": [
+                {
+                    "authority": "HOMEAFFAIRS_PAGE",
+                    "url": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/visitor-600"
+                }
+            ]
+        }
+    },
+    {
+        "flag_id": "FLAG-600-FIN-UNVERIFIABLE-RECORDS",
+        "visa": {
+            "subclass": "600",
+            "stream": null
+        },
+        "title": "Financial records appear inconsistent or unverifiable",
+        "trigger_schema": {
+            "conditions": [
+                "bank_statement_large_unexplained_deposits = true",
+                "income_does_not_match_stated_employment = true"
+            ]
+        },
+        "why_it_matters": "Decision makers flag financial evidence that is inconsistent or hard to verify — for example, large recent deposits that do not match stated income, or statements from informal financial institutions without clear provenance. This can indicate borrowed funds or fabricated records, which may be treated as evidence of deception under s109 of the Migration Act.",
+        "actions": [
+            "Explain any large or unusual deposits with a covering note or supporting documentation",
+            "Use statements from regulated, named financial institutions wherever possible",
+            "Ensure your stated employment and income are consistent with the financial records you submit",
+            "If you received a gift or loan, document it with a letter and the source party's own financials"
+        ],
+        "evidence_examples": [
+            "Bank statements with annotated explanation of large deposits",
+            "Gift or loan letter with supporting evidence of the source party's capacity",
+            "Payslips and employer confirmation consistent with bank deposits",
+            "Tax records matching stated income"
+        ],
+        "severity": "risk",
+        "effective": {
+            "from": "1994-09-01",
+            "to": null
+        },
+        "sources": {
+            "legal": [
+                {
+                    "authority": "FRL_ACT",
+                    "citation": "Migration Act 1958, s 109 (incorrect information)",
+                    "frl_title_id": "C2004A01381"
+                },
+                {
+                    "authority": "FRL_REGS",
+                    "citation": "Public Interest Criterion 4011",
+                    "frl_title_id": "F2022C00125"
+                }
+            ],
+            "operational": [
+                {
+                    "authority": "HOMEAFFAIRS_PAGE",
+                    "url": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/visitor-600"
+                }
+            ]
+        }
+    },
+    {
+        "flag_id": "FLAG-600-INV-WEAK-HOST-EVIDENCE",
+        "visa": {
+            "subclass": "600",
+            "stream": null
+        },
+        "title": "Weak or missing host invitation evidence",
+        "trigger_schema": {
+            "conditions": [
+                "travel_purpose_type = visiting_family_or_friends",
+                "host_invitation_provided = false"
+            ]
+        },
+        "why_it_matters": "When the stated purpose of the visit is to see an Australian resident (family or friends), decision makers look for corroborating evidence from the host. Without an invitation letter or proof of the host's Australian status, the travel purpose is harder to verify, which can undermine the overall genuine visitor assessment.",
+        "actions": [
+            "Ask your Australian host to provide a signed invitation letter explaining the relationship and the purpose of the visit",
+            "Include a copy of the host's Australian passport, visa, or citizenship documentation",
+            "Provide evidence of the relationship: photos, correspondence history, or family documents",
+            "If the host is sponsoring costs, include their financial evidence too"
+        ],
+        "evidence_examples": [
+            "Signed invitation letter from the Australian host",
+            "Copy of host's Australian passport or permanent residency visa",
+            "Photos or correspondence demonstrating the ongoing relationship",
+            "Birth certificate or marriage certificate (for family visits)"
+        ],
+        "severity": "warning",
+        "effective": {
+            "from": "1994-09-01",
+            "to": null
+        },
+        "sources": {
+            "legal": [
+                {
+                    "authority": "FRL_REGS",
+                    "citation": "Schedule 2, clause 600.211",
+                    "frl_title_id": "F2022C00125"
+                }
+            ],
+            "operational": [
+                {
+                    "authority": "HOMEAFFAIRS_PAGE",
+                    "url": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/visitor-600"
+                }
+            ]
+        }
+    }
+]

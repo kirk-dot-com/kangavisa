@@ -1,0 +1,243 @@
+[
+    {
+        "requirement_id": "REQ-600-GV-001",
+        "visa": {
+            "subclass": "600",
+            "stream": null
+        },
+        "requirement_type": "genuine",
+        "title": "Genuine Visitor",
+        "plain_english": "The applicant must demonstrate an intention to stay temporarily in Australia and comply with visa conditions. Decision makers assess travel purpose, home-country ties, travel history, immigration compliance record, and economic circumstances. This is a balance-of-factors test.",
+        "effective": {
+            "from": "1994-09-01",
+            "to": null
+        },
+        "legal_basis": [
+            {
+                "authority": "FRL_REGS",
+                "citation": "Schedule 2, clause 600.211",
+                "frl_title_id": "F2022C00125",
+                "series": "Migration Regulations 1994",
+                "notes": "Primary genuine visitor requirement for Subclass 600."
+            }
+        ],
+        "operational_basis": [
+            {
+                "authority": "HOMEAFFAIRS_PAGE",
+                "url": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/visitor-600",
+                "title": "Visitor visa (subclass 600)",
+                "last_checked": "2025-02-01"
+            }
+        ],
+        "rule_logic": {
+            "inputs": [
+                "travel_purpose",
+                "home_country_ties",
+                "travel_history",
+                "immigration_compliance_record",
+                "economic_circumstances"
+            ],
+            "outputs": [
+                "RF600_WEAK_TRAVEL_PURPOSE",
+                "RF600_INSUFFICIENT_HOME_TIES",
+                "RF600_POOR_TRAVEL_HISTORY"
+            ],
+            "logic_notes": "Balance-of-factors test. KangaVisa must not frame as pass/fail. Raises flags where weak evidence is detected across any input dimension."
+        },
+        "evidence_items": [
+            "EV600_TRAVEL_PURPOSE",
+            "EV600_HOME_COUNTRY_TIES",
+            "EV600_TRAVEL_HISTORY"
+        ],
+        "confidence": "high",
+        "last_reviewed_at": "2025-02-01T00:00:00Z"
+    },
+    {
+        "requirement_id": "REQ-600-FIN-001",
+        "visa": {
+            "subclass": "600",
+            "stream": null
+        },
+        "requirement_type": "financial",
+        "title": "Financial Capacity",
+        "plain_english": "The applicant must demonstrate the ability to financially support their travel and stay in Australia without recourse to public funds. Evidence should show sufficient funds relative to the planned length of stay.",
+        "effective": {
+            "from": "1994-09-01",
+            "to": null
+        },
+        "legal_basis": [
+            {
+                "authority": "FRL_REGS",
+                "citation": "Schedule 2, clause 600.211; Public Interest Criterion 4011",
+                "frl_title_id": "F2022C00125",
+                "series": "Migration Regulations 1994",
+                "notes": "Financial capacity assessed as part of the overall genuine visitor and public interest criteria."
+            }
+        ],
+        "operational_basis": [
+            {
+                "authority": "HOMEAFFAIRS_PAGE",
+                "url": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/visitor-600",
+                "title": "Visitor visa (subclass 600) — financial requirements",
+                "last_checked": "2025-02-01"
+            }
+        ],
+        "rule_logic": {
+            "inputs": [
+                "bank_statement_balance",
+                "income_evidence",
+                "sponsor_financial_support"
+            ],
+            "outputs": [
+                "RF600_INSUFFICIENT_FUNDS",
+                "RF600_UNVERIFIABLE_FINANCIAL_RECORDS"
+            ],
+            "logic_notes": "No fixed statutory threshold. Decision maker exercises discretion based on duration and circumstances. Flag when evidence is absent or inconsistent."
+        },
+        "evidence_items": [
+            "EV600_FINANCIAL_CAPACITY"
+        ],
+        "confidence": "high",
+        "last_reviewed_at": "2025-02-01T00:00:00Z"
+    },
+    {
+        "requirement_id": "REQ-600-ID-001",
+        "visa": {
+            "subclass": "600",
+            "stream": null
+        },
+        "requirement_type": "identity",
+        "title": "Identity Confirmation",
+        "plain_english": "The applicant must provide documents confirming their identity. A valid passport is the primary identity document. National ID or birth certificate may be required in some circumstances.",
+        "effective": {
+            "from": "1994-09-01",
+            "to": null
+        },
+        "legal_basis": [
+            {
+                "authority": "FRL_ACT",
+                "citation": "Migration Act 1958, s 256",
+                "frl_title_id": "C2004A01381",
+                "series": "Migration Act 1958",
+                "notes": "Identity requirements apply broadly across all visa classes."
+            }
+        ],
+        "operational_basis": [
+            {
+                "authority": "HOMEAFFAIRS_PAGE",
+                "url": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/visitor-600",
+                "title": "Visitor visa (subclass 600) — identity",
+                "last_checked": "2025-02-01"
+            }
+        ],
+        "rule_logic": {
+            "inputs": [
+                "passport_valid",
+                "name_consistency"
+            ],
+            "outputs": [
+                "RF600_IDENTITY_MISMATCH"
+            ],
+            "logic_notes": "Flag if name on application differs from identity documents, or if passport is expired or near-expiry relative to intended stay."
+        },
+        "evidence_items": [
+            "EV600_IDENTITY"
+        ],
+        "confidence": "high",
+        "last_reviewed_at": "2025-02-01T00:00:00Z"
+    },
+    {
+        "requirement_id": "REQ-600-PLAN-001",
+        "visa": {
+            "subclass": "600",
+            "stream": null
+        },
+        "requirement_type": "other",
+        "title": "Clear Travel Plan",
+        "plain_english": "The applicant should provide a reasonable explanation of their intended travel activities in Australia, including proposed dates, accommodation, and activities. A credible travel plan supports the genuine visitor assessment.",
+        "effective": {
+            "from": "1994-09-01",
+            "to": null
+        },
+        "legal_basis": [
+            {
+                "authority": "FRL_REGS",
+                "citation": "Schedule 2, clause 600.211",
+                "frl_title_id": "F2022C00125",
+                "series": "Migration Regulations 1994",
+                "notes": "Assessed as part of the overall genuine visitor determination. No separate standalone clause — departmental evidentiary practice."
+            }
+        ],
+        "operational_basis": [
+            {
+                "authority": "HOMEAFFAIRS_PAGE",
+                "url": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/visitor-600",
+                "title": "Visitor visa (subclass 600) — travel plans",
+                "last_checked": "2025-02-01"
+            }
+        ],
+        "rule_logic": {
+            "inputs": [
+                "itinerary_provided",
+                "accommodation_confirmed",
+                "activity_plan_credible"
+            ],
+            "outputs": [
+                "RF600_UNCLEAR_TRAVEL_PLAN"
+            ],
+            "logic_notes": "Flag if no itinerary is provided, or if the stated purpose is vague relative to proposed length of stay."
+        },
+        "evidence_items": [
+            "EV600_ITINERARY"
+        ],
+        "confidence": "medium",
+        "last_reviewed_at": "2025-02-01T00:00:00Z"
+    },
+    {
+        "requirement_id": "REQ-600-INV-001",
+        "visa": {
+            "subclass": "600",
+            "stream": null
+        },
+        "requirement_type": "other",
+        "title": "Invitation Support (Visiting Family or Friends)",
+        "plain_english": "If the applicant is visiting an Australian resident, evidence from the host may be required. This includes an invitation letter and proof of the host's status in Australia. Not required for all applicants — only when the primary travel purpose is to visit a host.",
+        "effective": {
+            "from": "1994-09-01",
+            "to": null
+        },
+        "legal_basis": [
+            {
+                "authority": "FRL_REGS",
+                "citation": "Schedule 2, clause 600.211",
+                "frl_title_id": "F2022C00125",
+                "series": "Migration Regulations 1994",
+                "notes": "Assessed as part of genuine visitor determination. Departmental evidentiary guidance applies."
+            }
+        ],
+        "operational_basis": [
+            {
+                "authority": "HOMEAFFAIRS_PAGE",
+                "url": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/visitor-600",
+                "title": "Visitor visa (subclass 600) — visiting family or friends",
+                "last_checked": "2025-02-01"
+            }
+        ],
+        "rule_logic": {
+            "inputs": [
+                "travel_purpose_type",
+                "host_invitation_provided",
+                "host_status_in_australia"
+            ],
+            "outputs": [
+                "RF600_WEAK_HOST_EVIDENCE"
+            ],
+            "logic_notes": "Only applies when travel_purpose_type = 'visiting_family_or_friends'. Flag if invitation letter is absent or host status is not evidenced."
+        },
+        "evidence_items": [
+            "EV600_INVITATION"
+        ],
+        "confidence": "medium",
+        "last_reviewed_at": "2025-02-01T00:00:00Z"
+    }
+]

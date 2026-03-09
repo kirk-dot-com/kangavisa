@@ -1,0 +1,563 @@
+{
+    "version": "1.0",
+    "engine": "kangavisa_rules_engine",
+    "description": "Deterministic rules used to trigger KangaVisa readiness flags. Rules generate risk indicators, not legal determinations.",
+    "rules": [
+        {
+            "id": "R001",
+            "flag": "RF_TIMELINE_GAP",
+            "description": "Large unexplained timeline gap",
+            "condition": {
+                "field": "largest_timeline_gap_days",
+                "operator": ">",
+                "value": 90
+            },
+            "applies_to": [
+                "500",
+                "485",
+                "189",
+                "190",
+                "491",
+                "600",
+                "820"
+            ]
+        },
+        {
+            "id": "R002",
+            "flag": "RF_TIMELINE_GAP",
+            "description": "Multiple moderate timeline gaps",
+            "condition": {
+                "field": "timeline_gap_count_30d",
+                "operator": ">=",
+                "value": 2
+            },
+            "applies_to": [
+                "500",
+                "485",
+                "189",
+                "190",
+                "491"
+            ]
+        },
+        {
+            "id": "R003",
+            "flag": "RF_TIMELINE_CONFLICT",
+            "description": "Conflicting employment dates",
+            "condition": {
+                "field": "employment_dates_consistent",
+                "operator": "==",
+                "value": false
+            },
+            "applies_to": [
+                "500",
+                "485",
+                "189",
+                "190",
+                "491",
+                "600"
+            ]
+        },
+        {
+            "id": "R004",
+            "flag": "RF_TIMELINE_CONFLICT",
+            "description": "Travel history conflicts detected",
+            "condition": {
+                "field": "travel_history_consistent",
+                "operator": "==",
+                "value": false
+            },
+            "applies_to": [
+                "600",
+                "417",
+                "462",
+                "500"
+            ]
+        },
+        {
+            "id": "R005",
+            "flag": "RF_FINANCIAL_FUNDS_LOW",
+            "description": "Available funds lower than estimated trip cost",
+            "condition": {
+                "left_field": "available_funds",
+                "operator": "<",
+                "right_field": "estimated_trip_cost"
+            },
+            "applies_to": [
+                "600",
+                "417",
+                "462"
+            ]
+        },
+        {
+            "id": "R006",
+            "flag": "RF_FINANCIAL_FUNDS_LOW",
+            "description": "Available funds lower than estimated study cost",
+            "condition": {
+                "left_field": "available_funds",
+                "operator": "<",
+                "right_field": "estimated_study_cost"
+            },
+            "applies_to": [
+                "500"
+            ]
+        },
+        {
+            "id": "R007",
+            "flag": "RF_FINANCIAL_DEPOSITS_UNEXPLAINED",
+            "description": "Large unexplained bank deposit",
+            "condition": {
+                "field": "largest_recent_deposit_ratio",
+                "operator": ">",
+                "value": 0.35
+            },
+            "applies_to": [
+                "600",
+                "500",
+                "417",
+                "462"
+            ]
+        },
+        {
+            "id": "R008",
+            "flag": "RF_FINANCIAL_DEPOSITS_UNEXPLAINED",
+            "description": "Multiple unexplained deposits",
+            "condition": {
+                "field": "unexplained_deposit_count",
+                "operator": ">=",
+                "value": 2
+            },
+            "applies_to": [
+                "600",
+                "500"
+            ]
+        },
+        {
+            "id": "R009",
+            "flag": "RF_FINANCIAL_DOCS_INCOMPLETE",
+            "description": "Bank statement coverage too short",
+            "condition": {
+                "field": "bank_statement_months",
+                "operator": "<",
+                "value": 3
+            },
+            "applies_to": [
+                "600",
+                "500",
+                "417",
+                "462",
+                "485"
+            ]
+        },
+        {
+            "id": "R010",
+            "flag": "RF_FINANCIAL_SPONSOR_WEAK",
+            "description": "Sponsor letter missing",
+            "condition": {
+                "all": [
+                    {
+                        "field": "financial_support_sponsored",
+                        "operator": "==",
+                        "value": true
+                    },
+                    {
+                        "field": "sponsor_letter_present",
+                        "operator": "==",
+                        "value": false
+                    }
+                ]
+            },
+            "applies_to": [
+                "600",
+                "500"
+            ]
+        },
+        {
+            "id": "R011",
+            "flag": "RF_HOME_TIES_WEAK_EMPLOYMENT",
+            "description": "Employment evidence missing",
+            "condition": {
+                "field": "employment_evidence_present",
+                "operator": "==",
+                "value": false
+            },
+            "applies_to": [
+                "600",
+                "500"
+            ]
+        },
+        {
+            "id": "R012",
+            "flag": "RF_HOME_TIES_WEAK_EMPLOYMENT",
+            "description": "No leave approval evidence",
+            "condition": {
+                "all": [
+                    {
+                        "field": "currently_employed",
+                        "operator": "==",
+                        "value": true
+                    },
+                    {
+                        "field": "leave_approval_present",
+                        "operator": "==",
+                        "value": false
+                    }
+                ]
+            },
+            "applies_to": [
+                "600"
+            ]
+        },
+        {
+            "id": "R013",
+            "flag": "RF_HOME_TIES_WEAK_FAMILY",
+            "description": "Family ties claimed but not evidenced",
+            "condition": {
+                "all": [
+                    {
+                        "field": "family_ties_claimed",
+                        "operator": "==",
+                        "value": true
+                    },
+                    {
+                        "field": "family_ties_evidence_present",
+                        "operator": "==",
+                        "value": false
+                    }
+                ]
+            },
+            "applies_to": [
+                "600",
+                "500"
+            ]
+        },
+        {
+            "id": "R014",
+            "flag": "RF_HOME_TIES_PROPERTY_MISSING",
+            "description": "Assets claimed but not evidenced",
+            "condition": {
+                "all": [
+                    {
+                        "field": "assets_claimed",
+                        "operator": "==",
+                        "value": true
+                    },
+                    {
+                        "field": "asset_docs_present",
+                        "operator": "==",
+                        "value": false
+                    }
+                ]
+            },
+            "applies_to": [
+                "600",
+                "500"
+            ]
+        },
+        {
+            "id": "R015",
+            "flag": "RF_INTENT_GENERIC_STATEMENT",
+            "description": "Personal statement very short",
+            "condition": {
+                "field": "statement_word_count",
+                "operator": "<",
+                "value": 120
+            },
+            "applies_to": [
+                "600",
+                "500",
+                "485"
+            ]
+        },
+        {
+            "id": "R016",
+            "flag": "RF_INTENT_COURSE_ALIGNMENT",
+            "description": "Weak study alignment score",
+            "condition": {
+                "field": "course_alignment_score",
+                "operator": "<",
+                "value": 0.5
+            },
+            "applies_to": [
+                "500",
+                "485"
+            ]
+        },
+        {
+            "id": "R017",
+            "flag": "RF_INTENT_TRAVEL_PURPOSE_UNCLEAR",
+            "description": "Travel itinerary missing",
+            "condition": {
+                "field": "travel_itinerary_present",
+                "operator": "==",
+                "value": false
+            },
+            "applies_to": [
+                "600"
+            ]
+        },
+        {
+            "id": "R018",
+            "flag": "RF_EVIDENCE_PRIMARY_DOC_MISSING",
+            "description": "Passport not uploaded",
+            "condition": {
+                "field": "passport_uploaded",
+                "operator": "==",
+                "value": false
+            },
+            "applies_to": [
+                "600",
+                "500",
+                "485",
+                "482",
+                "820",
+                "309",
+                "417",
+                "462",
+                "189",
+                "190",
+                "491"
+            ]
+        },
+        {
+            "id": "R019",
+            "flag": "RF_TRANSLATION_MISSING",
+            "description": "Non-English document without translation",
+            "condition": {
+                "field": "non_english_docs_missing_translation",
+                "operator": ">",
+                "value": 0
+            },
+            "applies_to": [
+                "600",
+                "500",
+                "485",
+                "482",
+                "820",
+                "309"
+            ]
+        },
+        {
+            "id": "R020",
+            "flag": "RF_RELATIONSHIP_EVIDENCE_WEAK",
+            "description": "Insufficient partner evidence pillars",
+            "condition": {
+                "field": "relationship_pillars_present",
+                "operator": "<",
+                "value": 3
+            },
+            "applies_to": [
+                "820",
+                "801",
+                "309",
+                "100"
+            ]
+        },
+        {
+            "id": "R021",
+            "flag": "RF_POINTS_CALCULATION_RISK",
+            "description": "Claimed points exceed evidence",
+            "condition": {
+                "left_field": "claimed_points",
+                "operator": ">",
+                "right_field": "evidenced_points"
+            },
+            "applies_to": [
+                "189",
+                "190",
+                "491"
+            ]
+        },
+        {
+            "id": "R022",
+            "flag": "RF_SKILLS_ASSESSMENT_MISSING",
+            "description": "Skills assessment missing",
+            "condition": {
+                "all": [
+                    {
+                        "field": "skills_assessment_required",
+                        "operator": "==",
+                        "value": true
+                    },
+                    {
+                        "field": "skills_assessment_present",
+                        "operator": "==",
+                        "value": false
+                    }
+                ]
+            },
+            "applies_to": [
+                "189",
+                "190",
+                "491"
+            ]
+        },
+        {
+            "id": "R023",
+            "flag": "RF_TIMING_WINDOW_RISK",
+            "description": "Application timing window short",
+            "condition": {
+                "field": "days_remaining_lodgement_window",
+                "operator": "<",
+                "value": 30
+            },
+            "applies_to": [
+                "485",
+                "417",
+                "462"
+            ]
+        },
+        {
+            "id": "R024",
+            "flag": "RF_TIMING_WINDOW_RISK",
+            "description": "Police check missing for timing-sensitive visa",
+            "condition": {
+                "all": [
+                    {
+                        "field": "police_check_required",
+                        "operator": "==",
+                        "value": true
+                    },
+                    {
+                        "field": "police_check_present",
+                        "operator": "==",
+                        "value": false
+                    }
+                ]
+            },
+            "applies_to": [
+                "485"
+            ]
+        },
+        {
+            "id": "R025",
+            "flag": "RF_ELIGIBILITY_STREAM_WRONG",
+            "description": "Selected visa stream does not match applicant profile",
+            "condition": {
+                "field": "stream_profile_match",
+                "operator": "==",
+                "value": false
+            },
+            "applies_to": [
+                "485",
+                "600",
+                "500"
+            ]
+        },
+        {
+            "id": "R026",
+            "flag": "RF_ELIGIBILITY_NOMINATION_ALIGNMENT",
+            "description": "Role mismatch between nomination and contract",
+            "condition": {
+                "field": "nomination_role_matches_contract",
+                "operator": "==",
+                "value": false
+            },
+            "applies_to": [
+                "482"
+            ]
+        },
+        {
+            "id": "R027",
+            "flag": "RF_ELIGIBILITY_NOMINATION_ALIGNMENT",
+            "description": "Salary mismatch between nomination and contract",
+            "condition": {
+                "field": "nomination_salary_matches_contract",
+                "operator": "==",
+                "value": false
+            },
+            "applies_to": [
+                "482"
+            ]
+        },
+        {
+            "id": "R028",
+            "flag": "RF_NAME_VARIATION",
+            "description": "Name inconsistency across documents",
+            "condition": {
+                "field": "identity_name_consistent",
+                "operator": "==",
+                "value": false
+            },
+            "applies_to": [
+                "600",
+                "500",
+                "485",
+                "482",
+                "820",
+                "309"
+            ]
+        },
+        {
+            "id": "R029",
+            "flag": "RF_ADDRESS_MISMATCH",
+            "description": "Address mismatch across records",
+            "condition": {
+                "field": "address_history_consistent",
+                "operator": "==",
+                "value": false
+            },
+            "applies_to": [
+                "500",
+                "820",
+                "309"
+            ]
+        },
+        {
+            "id": "R030",
+            "flag": "RF_FALSE_INFORMATION_RISK",
+            "description": "Multiple contradictions detected",
+            "condition": {
+                "field": "contradiction_count",
+                "operator": ">=",
+                "value": 2
+            },
+            "applies_to": [
+                "all"
+            ]
+        },
+        {
+            "id": "R031",
+            "flag": "RF_UNDISCLOSED_HISTORY",
+            "description": "Previous visa refusal detected but not declared",
+            "condition": {
+                "all": [
+                    {
+                        "field": "refusal_detected",
+                        "operator": "==",
+                        "value": true
+                    },
+                    {
+                        "field": "refusal_declared",
+                        "operator": "==",
+                        "value": false
+                    }
+                ]
+            },
+            "applies_to": [
+                "600",
+                "500",
+                "417",
+                "462",
+                "189",
+                "190",
+                "491"
+            ]
+        },
+        {
+            "id": "R032",
+            "flag": "RF_UNDISCLOSED_HISTORY",
+            "description": "Travel history incomplete",
+            "condition": {
+                "field": "travel_history_complete",
+                "operator": "==",
+                "value": false
+            },
+            "applies_to": [
+                "600",
+                "417",
+                "462",
+                "500"
+            ]
+        }
+    ]
+}

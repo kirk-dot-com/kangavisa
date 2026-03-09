@@ -1,0 +1,118 @@
+[
+    {
+        "id": "EV600_TRAVEL_PURPOSE",
+        "title": "Travel purpose statement",
+        "description": "A written explanation describing why the applicant intends to travel to Australia.",
+        "examples": [
+            "Tourism itinerary",
+            "Family visit explanation",
+            "Business meeting schedule"
+        ],
+        "document_types": [
+            "personal_statement",
+            "invitation_letter",
+            "travel_itinerary"
+        ],
+        "risk_category": "genuine_visitor"
+    },
+    {
+        "id": "EV600_FINANCIAL_CAPACITY",
+        "title": "Financial capacity evidence",
+        "description": "Evidence that the applicant has sufficient funds to support their travel and stay in Australia.",
+        "examples": [
+            "Recent bank statements",
+            "Payslips",
+            "Tax returns",
+            "Sponsor financial support letter"
+        ],
+        "document_types": [
+            "bank_statement",
+            "payslip",
+            "tax_return",
+            "financial_support_letter"
+        ],
+        "risk_category": "financial_capacity"
+    },
+    {
+        "id": "EV600_HOME_COUNTRY_TIES",
+        "title": "Evidence of ties to home country",
+        "description": "Documents demonstrating strong incentives to return to the applicant's home country.",
+        "examples": [
+            "Employment contract",
+            "Leave approval letter",
+            "Property ownership documents",
+            "University enrolment confirmation"
+        ],
+        "document_types": [
+            "employment_letter",
+            "leave_letter",
+            "property_title",
+            "education_enrolment"
+        ],
+        "risk_category": "genuine_visitor"
+    },
+    {
+        "id": "EV600_TRAVEL_HISTORY",
+        "title": "Previous travel history",
+        "description": "Evidence of international travel demonstrating compliance with visa conditions in other countries.",
+        "examples": [
+            "Passport pages with entry stamps",
+            "Previous visas",
+            "Exit records"
+        ],
+        "document_types": [
+            "passport_scan",
+            "visa_label",
+            "travel_history_record"
+        ],
+        "risk_category": "travel_history"
+    },
+    {
+        "id": "EV600_IDENTITY",
+        "title": "Identity documents",
+        "description": "Documents confirming the applicant's identity.",
+        "examples": [
+            "Passport bio page",
+            "National identity card",
+            "Birth certificate"
+        ],
+        "document_types": [
+            "passport",
+            "national_id",
+            "birth_certificate"
+        ],
+        "risk_category": "identity"
+    },
+    {
+        "id": "EV600_INVITATION",
+        "title": "Invitation from Australian host (if applicable)",
+        "description": "Evidence from an Australian resident inviting the applicant to visit.",
+        "examples": [
+            "Invitation letter",
+            "Proof of relationship",
+            "Host passport or visa copy"
+        ],
+        "document_types": [
+            "invitation_letter",
+            "relationship_evidence",
+            "host_identity"
+        ],
+        "risk_category": "sponsorship"
+    },
+    {
+        "id": "EV600_ITINERARY",
+        "title": "Proposed travel itinerary",
+        "description": "A planned outline of travel dates and intended activities while in Australia.",
+        "examples": [
+            "Flight bookings",
+            "Hotel reservations",
+            "Tour bookings"
+        ],
+        "document_types": [
+            "flight_booking",
+            "hotel_booking",
+            "travel_plan"
+        ],
+        "risk_category": "travel_plan"
+    }
+]

@@ -1,0 +1,282 @@
+{
+    "version": "1.0",
+    "product": "KangaVisa",
+    "description": "Reusable risk flag templates mapped to common Australian visa refusal patterns. Used for readiness guidance, not outcome prediction.",
+    "risk_categories": [
+        "intent",
+        "home_ties",
+        "financial_capacity",
+        "consistency",
+        "evidence_completeness",
+        "eligibility",
+        "integrity"
+    ],
+    "flags": [
+        {
+            "id": "RF_INTENT_GENERIC_STATEMENT",
+            "category": "intent",
+            "title": "Purpose statement appears generic",
+            "severity": "high",
+            "description": "The personal statement explaining the purpose of travel, study, or relationship appears short or generic.",
+            "why_it_matters": "Decision makers assess whether the applicant's stated purpose is credible and consistent.",
+            "suggested_actions": [
+                "Write a clear purpose statement specific to your situation",
+                "Explain why Australia is relevant to your plans",
+                "Support your explanation with documents where possible"
+            ]
+        },
+        {
+            "id": "RF_INTENT_COURSE_ALIGNMENT",
+            "category": "intent",
+            "title": "Course choice may not align with background",
+            "severity": "high",
+            "description": "The proposed study program appears unrelated to previous education or work history.",
+            "why_it_matters": "Weak course alignment can make the study plan harder to assess.",
+            "suggested_actions": [
+                "Explain the career reasoning behind the course choice",
+                "Show how the course fits future employment plans"
+            ]
+        },
+        {
+            "id": "RF_INTENT_TRAVEL_PURPOSE_UNCLEAR",
+            "category": "intent",
+            "title": "Travel purpose unclear",
+            "severity": "medium",
+            "description": "The reason for travel is not clearly supported by documents or itinerary.",
+            "why_it_matters": "An unclear travel purpose can reduce confidence that the visit is temporary.",
+            "suggested_actions": [
+                "Provide a clear itinerary",
+                "Explain the purpose of the visit"
+            ]
+        },
+        {
+            "id": "RF_HOME_TIES_WEAK_EMPLOYMENT",
+            "category": "home_ties",
+            "title": "Weak employment ties to home country",
+            "severity": "high",
+            "description": "Employment evidence is missing or does not clearly show ongoing work commitments.",
+            "why_it_matters": "Strong employment ties can support the intention to return home.",
+            "suggested_actions": [
+                "Provide employer letter",
+                "Include leave approval evidence",
+                "Upload recent payslips"
+            ]
+        },
+        {
+            "id": "RF_HOME_TIES_WEAK_FAMILY",
+            "category": "home_ties",
+            "title": "Family ties not documented",
+            "severity": "medium",
+            "description": "Family relationships in the home country are not clearly described or supported.",
+            "why_it_matters": "Family connections may help demonstrate reasons to return home.",
+            "suggested_actions": [
+                "Explain family circumstances",
+                "Provide family relationship evidence"
+            ]
+        },
+        {
+            "id": "RF_HOME_TIES_PROPERTY_MISSING",
+            "category": "home_ties",
+            "title": "Property or asset ties unclear",
+            "severity": "medium",
+            "description": "Property or long-term asset ties are not documented.",
+            "why_it_matters": "Assets can demonstrate ongoing commitments outside Australia.",
+            "suggested_actions": [
+                "Upload property title or lease",
+                "Explain financial commitments"
+            ]
+        },
+        {
+            "id": "RF_FINANCIAL_FUNDS_LOW",
+            "category": "financial_capacity",
+            "title": "Available funds may be insufficient",
+            "severity": "high",
+            "description": "Financial evidence suggests funds may not cover travel or study costs.",
+            "why_it_matters": "Applicants generally need to show they can support themselves during their stay.",
+            "suggested_actions": [
+                "Provide additional bank statements",
+                "Explain financial support arrangements"
+            ]
+        },
+        {
+            "id": "RF_FINANCIAL_DEPOSITS_UNEXPLAINED",
+            "category": "financial_capacity",
+            "title": "Large bank deposits unexplained",
+            "severity": "high",
+            "description": "Recent large deposits appear without supporting explanation.",
+            "why_it_matters": "Unexplained funds can reduce confidence in financial records.",
+            "suggested_actions": [
+                "Explain source of funds",
+                "Provide supporting documents"
+            ]
+        },
+        {
+            "id": "RF_FINANCIAL_SPONSOR_WEAK",
+            "category": "financial_capacity",
+            "title": "Sponsor financial support unclear",
+            "severity": "medium",
+            "description": "Sponsor financial capacity is not fully evidenced.",
+            "why_it_matters": "Where financial support is provided, it should be clearly documented.",
+            "suggested_actions": [
+                "Upload sponsor bank statements",
+                "Provide support letter"
+            ]
+        },
+        {
+            "id": "RF_TIMELINE_CONFLICT",
+            "category": "consistency",
+            "title": "Timeline conflict detected",
+            "severity": "high",
+            "description": "Dates across documents appear inconsistent.",
+            "why_it_matters": "Conflicting timelines can reduce confidence in the information provided.",
+            "suggested_actions": [
+                "Create a single timeline summary",
+                "Correct inconsistencies"
+            ]
+        },
+        {
+            "id": "RF_TIMELINE_GAP",
+            "category": "consistency",
+            "title": "Unexplained timeline gap",
+            "severity": "medium",
+            "description": "Periods of time are not accounted for in employment, study, or travel history.",
+            "why_it_matters": "Timeline gaps can lead to additional questions during assessment.",
+            "suggested_actions": [
+                "Explain the gap",
+                "Provide supporting evidence"
+            ]
+        },
+        {
+            "id": "RF_NAME_VARIATION",
+            "category": "consistency",
+            "title": "Name variation across documents",
+            "severity": "medium",
+            "description": "Different names or spellings appear across documents.",
+            "why_it_matters": "Identity consistency helps prevent confusion during assessment.",
+            "suggested_actions": [
+                "Provide name change documentation",
+                "Explain variations"
+            ]
+        },
+        {
+            "id": "RF_ADDRESS_MISMATCH",
+            "category": "consistency",
+            "title": "Address history inconsistent",
+            "severity": "medium",
+            "description": "Addresses listed across documents do not align.",
+            "why_it_matters": "Consistent address history helps establish credibility.",
+            "suggested_actions": [
+                "Provide a clear address history",
+                "Upload supporting records"
+            ]
+        },
+        {
+            "id": "RF_PRIMARY_DOCUMENT_MISSING",
+            "category": "evidence_completeness",
+            "title": "Primary document missing",
+            "severity": "high",
+            "description": "A core document required for the visa subclass has not been uploaded.",
+            "why_it_matters": "Missing primary evidence may leave key requirements unsupported.",
+            "suggested_actions": [
+                "Review checklist",
+                "Upload the missing document"
+            ]
+        },
+        {
+            "id": "RF_TRANSLATION_MISSING",
+            "category": "evidence_completeness",
+            "title": "Document translation missing",
+            "severity": "medium",
+            "description": "Non-English documents appear without translation.",
+            "why_it_matters": "Translated documents help ensure information can be assessed clearly.",
+            "suggested_actions": [
+                "Upload certified translation",
+                "Include original document"
+            ]
+        },
+        {
+            "id": "RF_RELATIONSHIP_EVIDENCE_WEAK",
+            "category": "evidence_completeness",
+            "title": "Relationship evidence limited",
+            "severity": "high",
+            "description": "Evidence across financial, household, social, and commitment areas appears limited.",
+            "why_it_matters": "Partner visa applications rely on multiple forms of relationship evidence.",
+            "suggested_actions": [
+                "Add financial and household evidence",
+                "Provide joint documentation"
+            ]
+        },
+        {
+            "id": "RF_POINTS_CALCULATION_RISK",
+            "category": "eligibility",
+            "title": "Points claim may be incorrect",
+            "severity": "critical",
+            "description": "Points claimed may not match supporting evidence.",
+            "why_it_matters": "Incorrect points claims can affect eligibility for skilled pathways.",
+            "suggested_actions": [
+                "Recalculate points",
+                "Verify supporting evidence"
+            ]
+        },
+        {
+            "id": "RF_SKILLS_ASSESSMENT_MISSING",
+            "category": "eligibility",
+            "title": "Skills assessment missing",
+            "severity": "high",
+            "description": "A skills assessment has not been provided where expected.",
+            "why_it_matters": "Skilled migration pathways often require skills assessment evidence.",
+            "suggested_actions": [
+                "Upload skills assessment",
+                "Confirm occupation alignment"
+            ]
+        },
+        {
+            "id": "RF_STREAM_SELECTION_RISK",
+            "category": "eligibility",
+            "title": "Selected visa stream may not match circumstances",
+            "severity": "medium",
+            "description": "Applicant information may align better with another visa stream.",
+            "why_it_matters": "Incorrect stream selection can create unnecessary complications.",
+            "suggested_actions": [
+                "Review pathway options",
+                "Confirm stream requirements"
+            ]
+        },
+        {
+            "id": "RF_TIMING_WINDOW_RISK",
+            "category": "eligibility",
+            "title": "Application timing risk",
+            "severity": "high",
+            "description": "Eligibility may depend on timing windows approaching expiry.",
+            "why_it_matters": "Some visas require applications within strict timing rules.",
+            "suggested_actions": [
+                "Confirm key deadlines",
+                "Prepare documents early"
+            ]
+        },
+        {
+            "id": "RF_FALSE_INFORMATION_RISK",
+            "category": "integrity",
+            "title": "Information appears inconsistent or misleading",
+            "severity": "critical",
+            "description": "Application data appears inconsistent across documents.",
+            "why_it_matters": "Incorrect or misleading information can have serious consequences under migration law.",
+            "suggested_actions": [
+                "Review all documents carefully",
+                "Correct inconsistencies before submission"
+            ]
+        },
+        {
+            "id": "RF_UNDISCLOSED_HISTORY",
+            "category": "integrity",
+            "title": "Previous visa history may be missing",
+            "severity": "high",
+            "description": "Past visas or refusals may not be documented.",
+            "why_it_matters": "Accurate disclosure helps maintain credibility in the application.",
+            "suggested_actions": [
+                "Include previous visa records",
+                "Add explanation where necessary"
+            ]
+        }
+    ]
+}

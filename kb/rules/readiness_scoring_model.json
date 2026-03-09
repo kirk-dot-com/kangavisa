@@ -1,0 +1,113 @@
+{
+    "version": "1.0",
+    "model": "kangavisa_readiness_v1",
+    "description": "Scoring model used to generate the KangaVisa readiness scorecard. Scores represent preparation completeness, not visa outcome prediction.",
+    "score_components": {
+        "evidence_coverage": {
+            "weight": 0.35,
+            "description": "How many required evidence checklist items are supported by documents.",
+            "formula": "supported_evidence_items / total_required_evidence_items",
+            "display_name": "Evidence Coverage",
+            "ui_icon": "folder-check"
+        },
+        "timeline_completeness": {
+            "weight": 0.20,
+            "description": "Completeness and continuity of the applicant timeline.",
+            "formula": "1 - (largest_timeline_gap_days / 365)",
+            "display_name": "Timeline Completeness",
+            "ui_icon": "calendar"
+        },
+        "consistency_score": {
+            "weight": 0.20,
+            "description": "Consistency across documents and declarations.",
+            "formula": "1 - (consistency_flag_count * 0.1)",
+            "display_name": "Consistency",
+            "ui_icon": "check-circle"
+        },
+        "risk_flags": {
+            "weight": 0.25,
+            "description": "Impact of triggered readiness flags.",
+            "formula": "1 - (weighted_flag_penalty)",
+            "display_name": "Risk Indicators",
+            "ui_icon": "alert-triangle"
+        }
+    },
+    "flag_penalties": {
+        "critical": 0.20,
+        "high": 0.12,
+        "medium": 0.07,
+        "low": 0.03
+    },
+    "flag_severity_mapping": {
+        "RF_FALSE_INFORMATION_RISK": "critical",
+        "RF_UNDISCLOSED_HISTORY": "critical",
+        "RF_POINTS_CALCULATION_RISK": "high",
+        "RF_RELATIONSHIP_EVIDENCE_WEAK": "high",
+        "RF_ELIGIBILITY_STREAM_WRONG": "high",
+        "RF_ELIGIBILITY_NOMINATION_ALIGNMENT": "high",
+        "RF_TIMELINE_GAP": "medium",
+        "RF_TIMELINE_CONFLICT": "medium",
+        "RF_FINANCIAL_FUNDS_LOW": "medium",
+        "RF_HOME_TIES_WEAK_EMPLOYMENT": "medium",
+        "RF_HOME_TIES_WEAK_FAMILY": "medium",
+        "RF_FINANCIAL_DOCS_INCOMPLETE": "low",
+        "RF_TRANSLATION_MISSING": "low",
+        "RF_INTENT_GENERIC_STATEMENT": "low",
+        "RF_INTENT_TRAVEL_PURPOSE_UNCLEAR": "low"
+    },
+    "score_calculation": {
+        "method": "weighted_components",
+        "steps": [
+            "calculate evidence coverage score",
+            "calculate timeline completeness score",
+            "calculate consistency score",
+            "calculate risk flag penalty",
+            "apply component weights",
+            "sum weighted values"
+        ],
+        "final_score_formula": "(evidence_coverage * 0.35) + (timeline_completeness * 0.20) + (consistency_score * 0.20) + (risk_flags * 0.25)"
+    },
+    "score_bands": {
+        "excellent": {
+            "min": 0.85,
+            "label": "Strong readiness",
+            "description": "Most evidence is present and few risk indicators exist."
+        },
+        "good": {
+            "min": 0.70,
+            "label": "Moderate readiness",
+            "description": "Application preparation is progressing well but some areas need attention."
+        },
+        "needs_work": {
+            "min": 0.50,
+            "label": "Preparation gaps",
+            "description": "Several evidence or consistency gaps exist."
+        },
+        "early_stage": {
+            "min": 0.0,
+            "label": "Early preparation",
+            "description": "Evidence collection has not yet begun or key documents are missing."
+        }
+    },
+    "ui_output": {
+        "scorecard_fields": [
+            "readiness_score",
+            "evidence_coverage_percent",
+            "unresolved_flags_count",
+            "timeline_gaps_count",
+            "last_updated"
+        ],
+        "progress_bars": [
+            "Evidence Coverage",
+            "Timeline Completeness",
+            "Consistency",
+            "Risk Indicators"
+        ]
+    },
+    "safety_rules": [
+        "Do not label scores as approval probability.",
+        "Do not predict visa outcome.",
+        "Always accompany score with explanation of flags.",
+        "Encourage users to review unresolved flags."
+    ]
+}
