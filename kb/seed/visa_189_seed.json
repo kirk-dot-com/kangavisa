@@ -1,0 +1,312 @@
+{
+    "visa_subclass": "189",
+    "visa_name": "Skilled Independent Visa",
+    "evidence_items": [
+        {
+            "id": "EV189_SKILLS_ASSESSMENT",
+            "title": "Skills assessment from relevant assessing body",
+            "description": "A positive skills assessment from the relevant occupational assessing authority confirming the applicant's qualifications and experience are suitable for their nominated occupation.",
+            "examples": [
+                "Engineers Australia skills assessment",
+                "VETASSESS assessment outcome letter",
+                "ACS (Australian Computer Society) assessment",
+                "AHPRA registration (health professions)"
+            ],
+            "document_types": [
+                "skills_assessment_outcome",
+                "registration_certificate"
+            ],
+            "risk_category": "eligibility"
+        },
+        {
+            "id": "EV189_POINTS_TEST_INVITATION",
+            "title": "Invitation to Apply (ITA) from SkillSelect",
+            "description": "An Invitation to Apply for the Subclass 189 visa received through SkillSelect based on the applicant's points score.",
+            "examples": [
+                "SkillSelect Invitation to Apply letter",
+                "Expression of Interest (EOI) submission confirmation"
+            ],
+            "document_types": [
+                "invitation_letter",
+                "system_confirmation"
+            ],
+            "risk_category": "eligibility"
+        },
+        {
+            "id": "EV189_ENGLISH_TEST",
+            "title": "English language test result",
+            "description": "An official English test result demonstrating the required level of English proficiency for the points score claimed.",
+            "examples": [
+                "IELTS Academic — minimum 6.0 each band for 10 points, 7.0 for 20 points",
+                "PTE Academic score report",
+                "TOEFL iBT score report",
+                "OET result letter"
+            ],
+            "document_types": [
+                "english_test_result"
+            ],
+            "risk_category": "eligibility"
+        },
+        {
+            "id": "EV189_EMPLOYMENT_EVIDENCE",
+            "title": "Employment history evidence",
+            "description": "Documentation of skilled employment in the nominated occupation used to claim experience points.",
+            "examples": [
+                "Reference letters from employers (on letterhead)",
+                "Payslips showing role and dates",
+                "Employment contracts",
+                "Statutory declarations from supervisors"
+            ],
+            "document_types": [
+                "employer_letter",
+                "payslip",
+                "employment_contract",
+                "statutory_declaration"
+            ],
+            "risk_category": "eligibility"
+        },
+        {
+            "id": "EV189_QUALIFICATIONS",
+            "title": "Academic qualifications",
+            "description": "Degree certificates and transcripts supporting the qualifications claimed in the EOI and points test.",
+            "examples": [
+                "Bachelor degree certificate",
+                "Masters degree certificate",
+                "Academic transcripts",
+                "Statement of attainment"
+            ],
+            "document_types": [
+                "degree_certificate",
+                "academic_transcript"
+            ],
+            "risk_category": "evidence_completeness"
+        },
+        {
+            "id": "EV189_HEALTH_EXAM",
+            "title": "Health examination",
+            "description": "Completed health examination conducted by an approved panel physician, submitted to Home Affairs via the HAP system.",
+            "examples": [
+                "HAP ID confirmation",
+                "Panel physician booking confirmation"
+            ],
+            "document_types": [
+                "health_exam_confirmation"
+            ],
+            "risk_category": "eligibility"
+        },
+        {
+            "id": "EV189_POLICE_CHECK",
+            "title": "Police clearance certificate",
+            "description": "Police clearance certificates from Australia and all countries where the applicant has lived for 12 months or more in the past 10 years.",
+            "examples": [
+                "Australian Federal Police (AFP) national police check",
+                "Overseas police clearance certificates",
+                "Certified translations for non-English certificates"
+            ],
+            "document_types": [
+                "police_clearance",
+                "certified_translation"
+            ],
+            "risk_category": "character"
+        }
+    ],
+    "requirements": [
+        {
+            "id": "REQ189_INVITATION",
+            "title": "Valid invitation to apply",
+            "description": "The applicant must have received a valid Invitation to Apply (ITA) through SkillSelect.",
+            "legal_source": "Migration Regulations 1994 — Clause 189.211",
+            "evidence_items": [
+                "EV189_POINTS_TEST_INVITATION"
+            ],
+            "risk_flags": [
+                "RF_TIMING_WINDOW_RISK"
+            ]
+        },
+        {
+            "id": "REQ189_SKILLS_ASSESSMENT",
+            "title": "Positive skills assessment",
+            "description": "The applicant must hold a positive skills assessment from the relevant authority for their nominated occupation.",
+            "legal_source": "Migration Regulations 1994 — Clause 189.213",
+            "evidence_items": [
+                "EV189_SKILLS_ASSESSMENT"
+            ],
+            "risk_flags": [
+                "RF_SKILLS_ASSESSMENT_MISSING"
+            ]
+        },
+        {
+            "id": "REQ189_POINTS_SCORE",
+            "title": "Minimum points score",
+            "description": "The applicant must have a points score of at least 65 (the minimum threshold) at the time of invitation.",
+            "legal_source": "Migration Regulations 1994 — Clause 189.214",
+            "evidence_items": [
+                "EV189_EMPLOYMENT_EVIDENCE",
+                "EV189_QUALIFICATIONS",
+                "EV189_ENGLISH_TEST"
+            ],
+            "risk_flags": [
+                "RF_POINTS_CALCULATION_RISK"
+            ]
+        },
+        {
+            "id": "REQ189_ENGLISH",
+            "title": "English language proficiency",
+            "description": "The applicant must demonstrate at least Competent English (minimum IELTS 6.0 in each band or equivalent).",
+            "legal_source": "Migration Regulations 1994 — Clause 189.215",
+            "evidence_items": [
+                "EV189_ENGLISH_TEST"
+            ],
+            "risk_flags": [
+                "RF_PRIMARY_DOCUMENT_MISSING"
+            ]
+        },
+        {
+            "id": "REQ189_HEALTH",
+            "title": "Health requirement",
+            "description": "The applicant and any dependants must meet the health requirement.",
+            "legal_source": "Migration Regulations 1994 — Clause 189.225",
+            "evidence_items": [
+                "EV189_HEALTH_EXAM"
+            ],
+            "risk_flags": []
+        },
+        {
+            "id": "REQ189_CHARACTER",
+            "title": "Character requirement",
+            "description": "The applicant must meet the character requirements under Section 501 of the Migration Act.",
+            "legal_source": "Migration Act 1958 — Section 501",
+            "evidence_items": [
+                "EV189_POLICE_CHECK"
+            ],
+            "risk_flags": [
+                "RF_UNDISCLOSED_HISTORY"
+            ]
+        }
+    ],
+    "flags": [
+        {
+            "flag_id": "RF189_POINTS_MISCALCULATION",
+            "visa": {
+                "subclass": "189",
+                "name": "Skilled Independent Visa"
+            },
+            "title": "Points claimed may exceed what evidence supports",
+            "trigger_schema": {
+                "left_field": "claimed_points",
+                "operator": ">",
+                "right_field": "evidenced_points"
+            },
+            "why_it_matters": "Points claimed in your EOI must be supported by evidence at the time of invitation and application. Claiming points you cannot evidence — for experience, qualifications, or English — can lead to refusal.",
+            "actions": [
+                "Recalculate your points against the official points test schedule",
+                "Confirm each point claim is backed by a document",
+                "Pay particular attention to overseas employment — reference letters must clearly state dates, role, and hours"
+            ],
+            "evidence_examples": [
+                "Detailed reference letters from all employers",
+                "Payslips covering claimed employment period",
+                "English test result matching the points band claimed",
+                "Degree certificates matching qualification points claimed"
+            ],
+            "severity": "critical",
+            "sources": {
+                "legislation": "Migration Regulations 1994 — Schedule 6D (Points test)",
+                "homeaffairs": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-independent-189/points-test"
+            }
+        },
+        {
+            "flag_id": "RF189_SKILLS_ASSESSMENT_INVALID",
+            "visa": {
+                "subclass": "189",
+                "name": "Skilled Independent Visa"
+            },
+            "title": "Skills assessment may be invalid or expired",
+            "trigger_schema": {
+                "all": [
+                    {
+                        "field": "skills_assessment_present",
+                        "operator": "==",
+                        "value": true
+                    },
+                    {
+                        "field": "skills_assessment_valid",
+                        "operator": "==",
+                        "value": false
+                    }
+                ]
+            },
+            "why_it_matters": "Skills assessments have validity periods (typically 3 years). An expired or invalid assessment means the core eligibility requirement cannot be met.",
+            "actions": [
+                "Check the validity date on your assessment outcome letter",
+                "Apply for a reassessment if your assessment has expired",
+                "Confirm the assessing body is correct for your occupation and visa subclass"
+            ],
+            "evidence_examples": [
+                "Skills assessment outcome letter (showing validity period)",
+                "Reassessment application confirmation"
+            ],
+            "severity": "critical",
+            "sources": {
+                "legislation": "Migration Regulations 1994 — Clause 189.213",
+                "homeaffairs": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-independent-189/who-can-apply"
+            }
+        },
+        {
+            "flag_id": "RF189_EMPLOYMENT_GAP",
+            "visa": {
+                "subclass": "189",
+                "name": "Skilled Independent Visa"
+            },
+            "title": "Employment history has unexplained gaps",
+            "trigger_schema": {
+                "field": "largest_timeline_gap_days",
+                "operator": ">",
+                "value": 90
+            },
+            "why_it_matters": "Gaps in skilled employment can reduce points claims and raise questions about continuous skilled work experience.",
+            "actions": [
+                "Account for all gaps with a written explanation",
+                "Document any periods of study, self-employment, or travel",
+                "Ensure payslips and reference letters cover the full claimed employment period without gaps"
+            ],
+            "evidence_examples": [
+                "Explanation letter for any gaps",
+                "Statutory declarations from supervisors",
+                "Study or travel records for gap periods"
+            ],
+            "severity": "high",
+            "sources": {
+                "legislation": "Migration Regulations 1994 — Schedule 6D",
+                "homeaffairs": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-independent-189"
+            }
+        },
+        {
+            "flag_id": "RF189_ENGLISH_EXPIRY",
+            "visa": {
+                "subclass": "189",
+                "name": "Skilled Independent Visa"
+            },
+            "title": "English test result may be expired",
+            "trigger_schema": {
+                "field": "english_test_valid",
+                "operator": "==",
+                "value": false
+            },
+            "why_it_matters": "English test results must be valid (typically within 3 years of the test date) at the time of application. An expired test means points cannot be claimed for English proficiency.",
+            "actions": [
+                "Check the expiry date of your English test result",
+                "Book a resit if your result has or will expire before you expect to lodge",
+                "Consider sitting a higher-band test to maximise English points while eligible"
+            ],
+            "evidence_examples": [
+                "Current IELTS / PTE / TOEFL score report within validity period"
+            ],
+            "severity": "high",
+            "sources": {
+                "legislation": "Migration Regulations 1994 — Clause 189.215",
+                "homeaffairs": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skilled-independent-189/documents"
+            }
+        }
+    ]
+}

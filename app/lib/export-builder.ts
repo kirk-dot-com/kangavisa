@@ -110,6 +110,108 @@ export function computeWeightedCoverage(
     return totalWeight > 0 ? Math.round((doneWeight / totalWeight) * 100) : 0;
 }
 
+// ---------------------------------------------------------------------------
+// 4-component readiness score (readiness_scoring_model.json v1.0)
+// ---------------------------------------------------------------------------
+
+export interface ReadinessScore {
+    /** 0–100 overall readiness score */
+    score: number;
+    /** "Strong readiness" | "Moderate readiness" | "Preparation gaps" | "Early preparation" */
+    band: string;
+    /** Component scores 0–1 */
+    components: {
+        evidenceCoverage: number;
+        timelineCompleteness: number;
+        consistencyScore: number;
+        riskIndicators: number;
+    };
+}
+
+/** Flag penalty weights from readiness_scoring_model.json */
+const FLAG_PENALTIES: Record<string, number> = {
+    critical: 0.20,
+    high: 0.12,
+    medium: 0.07,
+    low: 0.03,
+};
+
+/**
+ * Compute the 4-component KangaVisa readiness score.
+ *
+ * Formula (from readiness_scoring_model.json):
+ *   score = (evidenceCoverage × 0.35) + (timelineCompleteness × 0.20)
+ *         + (consistencyScore × 0.20) + (riskIndicators × 0.25)
+ *
+ * Timeline and consistency default to 1.0 (neutral) when not yet collected.
+ * This ensures the score degrades gracefully as more signals become available.
+ */
+export function computeReadinessScore(
+    itemStates: ChecklistItemState[],
+    evidenceItems: EvidenceItem[],
+    options?: {
+        /** 0–365: largest gap in days. Default 0 (no gaps detected). */
+        largestTimelineGapDays?: number;
+        /** Count of consistency flags triggered. Default 0. */
+        consistencyFlagCount?: number;
+        /** Array of {severity: 'critical'|'high'|'medium'|'low'} for triggered flags */
+        triggeredFlags?: Array<{ severity: string }>;
+    }
+): ReadinessScore {
+    const opts = options ?? {};
+
+    // Component 1 — evidence coverage (0–1)
+    const totalWeight = (() => {
+        const priorityMap = new Map(evidenceItems.map((e) => [e.evidence_id, e.priority]));
+        const applicable = itemStates.filter((s) => s.status !== "na");
+        return applicable.reduce((sum, s) => sum + priorityWeight(priorityMap.get(s.evidence_id) ?? 3), 0);
+    })();
+    const doneWeight = (() => {
+        const priorityMap = new Map(evidenceItems.map((e) => [e.evidence_id, e.priority]));
+        return itemStates
+            .filter((s) => s.status === "done")
+            .reduce((sum, s) => sum + priorityWeight(priorityMap.get(s.evidence_id) ?? 3), 0);
+    })();
+    const evidenceCoverage = totalWeight > 0 ? doneWeight / totalWeight : 0;
+
+    // Component 2 — timeline completeness (0–1). Neutral (1.0) if not collected yet.
+    const gapDays = opts.largestTimelineGapDays ?? 0;
+    const timelineCompleteness = Math.max(0, 1 - gapDays / 365);
+
+    // Component 3 — consistency (0–1). Neutral (1.0) if not collected.
+    const consistencyFlagCount = opts.consistencyFlagCount ?? 0;
+    const consistencyScore = Math.max(0, 1 - consistencyFlagCount * 0.1);
+
+    // Component 4 — risk flag penalty (0–1).
+    const triggeredFlags = opts.triggeredFlags ?? [];
+    const penalty = Math.min(
+        1,
+        triggeredFlags.reduce((sum, f) => sum + (FLAG_PENALTIES[f.severity] ?? 0), 0)
+    );
+    const riskIndicators = 1 - penalty;
+
+    // Weighted sum
+    const raw =
+        evidenceCoverage * 0.35 +
+        timelineCompleteness * 0.20 +
+        consistencyScore * 0.20 +
+        riskIndicators * 0.25;
+
+    const score = Math.round(raw * 100);
+
+    const band =
+        score >= 85 ? "Strong readiness"
+            : score >= 70 ? "Moderate readiness"
+                : score >= 50 ? "Preparation gaps"
+                    : "Early preparation";
+
+    return {
+        score,
+        band,
+        components: { evidenceCoverage, timelineCompleteness, consistencyScore, riskIndicators },
+    };
+}
+
 export function buildExportPayload(
     pkg: KBPackage,
     itemStates: ChecklistItemState[],

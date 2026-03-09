@@ -1,0 +1,159 @@
+{
+    "visa_subclass": "485",
+    "visa_name": "Temporary Graduate Visa",
+    "flags": [
+        {
+            "flag_id": "RF485_TIMING_WINDOW_RISK",
+            "visa": {
+                "subclass": "485",
+                "name": "Temporary Graduate Visa"
+            },
+            "title": "Application timing may be outside the lodgement window",
+            "trigger_schema": {
+                "field": "days_remaining_lodgement_window",
+                "operator": "<",
+                "value": 30
+            },
+            "why_it_matters": "The Temporary Graduate visa must be lodged within a defined window after completing studies. Missing this window means becoming ineligible for this pathway.",
+            "actions": [
+                "Confirm your course completion date and calculate the lodgement window",
+                "Lodge as early as possible once eligible",
+                "Ensure you hold a bridging visa if your current visa expires before lodgement"
+            ],
+            "evidence_examples": [
+                "Course completion letter",
+                "Academic transcript showing final semester",
+                "CoE showing expected completion date"
+            ],
+            "severity": "critical",
+            "sources": {
+                "legislation": "Migration Regulations 1994 — Schedule 2, Clause 485.212",
+                "homeaffairs": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-graduate-485"
+            }
+        },
+        {
+            "flag_id": "RF485_STREAM_SELECTION_RISK",
+            "visa": {
+                "subclass": "485",
+                "name": "Temporary Graduate Visa"
+            },
+            "title": "Selected visa stream may not match your circumstances",
+            "trigger_schema": {
+                "field": "stream_profile_match",
+                "operator": "==",
+                "value": false
+            },
+            "why_it_matters": "The 485 visa has two streams: Graduate Work (for specific skilled occupations) and Post-Study Work (for higher degree holders). Selecting the wrong stream can result in ineligibility.",
+            "actions": [
+                "Confirm which stream applies to your qualification and occupation",
+                "Graduate Work stream requires an occupation on the relevant skilled occupation list",
+                "Post-Study Work stream requires an Australian degree (Bachelor, Masters or Doctoral)"
+            ],
+            "evidence_examples": [
+                "Degree certificate specifying qualification level",
+                "Skills assessment (Graduate Work stream)",
+                "Academic transcript confirming Australian institution"
+            ],
+            "severity": "high",
+            "sources": {
+                "legislation": "Migration Regulations 1994 — Clauses 485.214, 485.215",
+                "homeaffairs": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-graduate-485/temporary-graduate-visa-485-streams"
+            }
+        },
+        {
+            "flag_id": "RF485_POLICE_CHECK_MISSING",
+            "visa": {
+                "subclass": "485",
+                "name": "Temporary Graduate Visa"
+            },
+            "title": "Police check may be missing or expired",
+            "trigger_schema": {
+                "all": [
+                    {
+                        "field": "police_check_required",
+                        "operator": "==",
+                        "value": true
+                    },
+                    {
+                        "field": "police_check_present",
+                        "operator": "==",
+                        "value": false
+                    }
+                ]
+            },
+            "why_it_matters": "Applicants who have spent 12 or more months in certain countries must provide a police clearance certificate. Missing or expired police checks are a common cause of processing delays.",
+            "actions": [
+                "Obtain police clearance certificates from all countries where you have lived for 12+ months",
+                "Ensure each certificate is current — most must be obtained within 12 months of application",
+                "Include certified translations for non-English certificates"
+            ],
+            "evidence_examples": [
+                "Australian Federal Police (AFP) check",
+                "Overseas police clearance certificate",
+                "Certified translation if non-English"
+            ],
+            "severity": "high",
+            "sources": {
+                "legislation": "Migration Regulations 1994 — Character requirements, Clause 485.225",
+                "homeaffairs": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-graduate-485/documents"
+            }
+        },
+        {
+            "flag_id": "RF485_ENGLISH_EVIDENCE_WEAK",
+            "visa": {
+                "subclass": "485",
+                "name": "Temporary Graduate Visa"
+            },
+            "title": "English language evidence may be insufficient or expired",
+            "trigger_schema": {
+                "field": "english_evidence_valid",
+                "operator": "==",
+                "value": false
+            },
+            "why_it_matters": "The 485 visa requires evidence of functional English. IELTS/PTE/TOEFL scores expire. Native English speakers or Australian degree holders may be exempt but should confirm their exemption basis.",
+            "actions": [
+                "Confirm whether your English test result is still valid",
+                "Check if you qualify for an exemption (e.g. citizen of English-speaking country, Australian degree completed in English)",
+                "Resit the English test if your scores have expired"
+            ],
+            "evidence_examples": [
+                "IELTS, PTE, TOEFL, OET, or Cambridge test result",
+                "Passport from English-speaking country (if exempt)",
+                "Letter confirming degree delivered in English"
+            ],
+            "severity": "medium",
+            "sources": {
+                "legislation": "Migration Regulations 1994 — Clause 485.222",
+                "homeaffairs": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-graduate-485/documents"
+            }
+        },
+        {
+            "flag_id": "RF485_HEALTH_EXAM_MISSING",
+            "visa": {
+                "subclass": "485",
+                "name": "Temporary Graduate Visa"
+            },
+            "title": "Health examination not completed",
+            "trigger_schema": {
+                "field": "health_exam_completed",
+                "operator": "==",
+                "value": false
+            },
+            "why_it_matters": "All 485 applicants must meet health requirements. Health examinations are conducted by approved panel physicians and results are submitted directly to Home Affairs.",
+            "actions": [
+                "Book a health examination with an approved panel physician",
+                "Complete the examination early — results can take several weeks",
+                "Check if results from a recent related visa application can be reused"
+            ],
+            "evidence_examples": [
+                "HAP ID confirming health examination booked",
+                "Confirmation from panel physician"
+            ],
+            "severity": "medium",
+            "sources": {
+                "legislation": "Migration Regulations 1994 — Clause 485.223",
+                "homeaffairs": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/temporary-graduate-485/documents"
+            }
+        }
+    ]
+}

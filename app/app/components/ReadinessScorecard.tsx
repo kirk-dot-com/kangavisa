@@ -7,14 +7,17 @@
  */
 
 import styles from "./ReadinessScorecard.module.css";
+import type { ReadinessScore } from "../../lib/export-builder";
 
 interface ReadinessScorecardProps {
     totalItems: number;
     doneItems: number;
     unresolvedFlags: number;
     visaName: string;
-    lastUpdated?: string | null; // ISO date of most recent source retrieved_at
-    weightedPct?: number;        // Priority-weighted coverage % (optional)
+    lastUpdated?: string | null;
+    weightedPct?: number;
+    /** Full 4-component readiness score from computeReadinessScore() */
+    readinessScore?: ReadinessScore;
 }
 
 export default function ReadinessScorecard({
@@ -24,6 +27,7 @@ export default function ReadinessScorecard({
     visaName,
     lastUpdated,
     weightedPct,
+    readinessScore,
 }: ReadinessScorecardProps) {
     const coveragePct =
         totalItems > 0 ? Math.round((doneItems / totalItems) * 100) : 0;
@@ -47,6 +51,17 @@ export default function ReadinessScorecard({
                     {visaName} — based on evidence coverage and open flags
                 </p>
             </div>
+
+            {/* 4-component readiness score — shown when computeReadinessScore() data is available */}
+            {readinessScore && (
+                <div className={styles.score_band}>
+                    <span className={`mono ${styles.score_number}`}>{readinessScore.score}%</span>
+                    <span className={`badge ${readinessScore.score >= 85 ? "badge--success"
+                            : readinessScore.score >= 70 ? "badge--warning"
+                                : "badge--risk"
+                        }`}>{readinessScore.band}</span>
+                </div>
+            )}
 
             <div className={styles.metrics}>
                 {/* Coverage */}
