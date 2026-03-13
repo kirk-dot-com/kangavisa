@@ -628,11 +628,9 @@ Branch:       main → a88699f (pushed)
 
 | File | Status |
 |---|---|
-| `kb/migrations/requirement_unique_title_v1.sql` | ✅ Created |
+| `kb/migrations/requirement_unique_title_v1.sql` | ✅ Created + applied |
 
 Adds `CREATE UNIQUE INDEX IF NOT EXISTS requirement_visa_title_uk ON requirement (visa_id, title)` — prevents future seed re-runs from creating duplicate requirement rows (root cause of the 485/820 doubling in Sprint 16).
-
-> ⚠️ **Action required:** Apply in Supabase → SQL Editor before running any other seed scripts this sprint.
 
 ---
 
@@ -640,20 +638,13 @@ Adds `CREATE UNIQUE INDEX IF NOT EXISTS requirement_visa_title_uk ON requirement
 
 | File | Status |
 |---|---|
-| `kb/migrations/seed_visitor_600_v1.sql` | ✅ Created |
+| `kb/migrations/seed_visitor_600_v1.sql` | ✅ Created + applied |
 
-Idempotent seed (`ON CONFLICT DO NOTHING`) covering:
+Idempotent seed covering:
 - **5 requirements:** Genuine Visitor, Financial Capacity, Identity Confirmation, Clear Travel Plan, Invitation Support (Visiting Family or Friends)
 - **8 evidence items** mapped to each requirement
 - **6 flag templates** (warning/risk) with legal citations and actionable guidance
-- **1 `kb_release` row** (`kb-v20260314-visitor-600`) → resets the staleness banner
-
-Uses `ON CONFLICT ON CONSTRAINT requirement_visa_title_uk DO NOTHING` — requires P1 applied first.
-
-> ⚠️ **Action required (in order):**
-> 1. Apply `requirement_unique_title_v1.sql` first
-> 2. Then apply `seed_visitor_600_v1.sql`
-> 3. Verify with queries at the bottom of the seed file (expect: 5 requirements, 8 evidence items, 6 flags)
+- **1 `kb_release` row** (`kb-v20260314-visitor-600`) → staleness banner reset
 
 ---
 
@@ -666,23 +657,15 @@ Already fully implemented from Sprint 12 — `KBStalenessAlert.tsx` component + 
 ### Current test status
 ```
 tsc --noEmit:  0 errors
-Branch:       main (uncommitted — Sprint 17 migrations ready to commit)
+Branch:       main → b3c2d5f (pushed)
+Supabase:     requirement_unique_title_v1 ✅ · seed_visitor_600_v1 ✅
 ```
 
 ---
 
 ### Next session — Sprint 18 priorities
 
-**Priority 1 — Apply Sprint 17 migrations to Supabase (~20m)**
-1. Apply `requirement_unique_title_v1.sql` in Supabase SQL Editor
-2. Apply `seed_visitor_600_v1.sql` in Supabase SQL Editor
-3. Verify counts (queries embedded at bottom of seed file)
-
-**Priority 2 — Commit Sprint 17 work (~5m)**
-- `git add -A && git commit -m "Sprint 17: unique constraint migration + Visitor 600 seed"`
-- `git push`
-
-**Priority 3 — End-to-end test on a fresh 189 session**
+**Priority 1 — End-to-end test on a fresh 189 session**
 - Sign in as a real/test user
 - Navigate to `/pathway` → select 189 Skilled Independent
 - Create a new case session, tick 3–4 items
@@ -690,8 +673,17 @@ Branch:       main (uncommitted — Sprint 17 migrations ready to commit)
 - Download PDF and DOCX — confirm files open correctly
 - Test AskBar on `/checklist/189` — verify KB-grounded response
 
-**Priority 4 — End-to-end test on Visitor 600**
-- Once seed is applied, navigate to `/checklist/600`
+**Priority 2 — End-to-end test on Visitor 600**
+- Navigate to `/checklist/600`
 - Verify 5 requirements and 8 evidence items load
 - Confirm AskBar prompt chips for 600 appear and return a KB-grounded answer
+
+**Priority 3 — Home Affairs + data.gov.au watchers** (rolled from Sprint 14)
+- Build `workers/kangavisa_workers/homeaffairs_watcher.py` — scrape Home Affairs visa pages + PDFs, section-level diff
+- Build `workers/kangavisa_workers/datagov_watcher.py` — dataset metadata + CSV snapshot
+- Combine FRL + HA + DG into `workers/run_watchers.py` single entrypoint
+
+**Priority 4 — Weekly scheduler** (rolled from Sprint 14)
+- Add `schedule: cron: '0 20 * * 0'` trigger to `.github/workflows/ci.yml`
+- Job: `pip install -e '.[dev]' && python workers/run_watchers.py`
 
