@@ -2,6 +2,16 @@
 
 ---
 
+## Standing Design References
+
+These documents should be consulted when designing any new feature.
+
+| Document | Purpose |
+|---|---|
+| [`kb/strategy/visitor_visa_data_strategy.md`](kb/strategy/visitor_visa_data_strategy.md) | How to use visitor visa volume data across the platform — onboarding copy, GovData datasets, funnel strategy, rules engine calibration, responsible UI patterns, investor storytelling. |
+
+---
+
 ## Session: 2026-02-23
 
 ### What we achieved
@@ -607,4 +617,81 @@ Branch:       main → a88699f (pushed)
 **Priority 5 — End-to-end test on a fresh session**
 - Sign in as a real user, create a 189 case, tick items, open Export page
 - Verify readiness band shows (not just weighted %)
+
+---
+
+## Session: 2026-03-14
+
+### What we achieved — Sprint 17
+
+#### P1 — Unique constraint on `requirement (visa_id, title)`
+
+| File | Status |
+|---|---|
+| `kb/migrations/requirement_unique_title_v1.sql` | ✅ Created |
+
+Adds `CREATE UNIQUE INDEX IF NOT EXISTS requirement_visa_title_uk ON requirement (visa_id, title)` — prevents future seed re-runs from creating duplicate requirement rows (root cause of the 485/820 doubling in Sprint 16).
+
+> ⚠️ **Action required:** Apply in Supabase → SQL Editor before running any other seed scripts this sprint.
+
+---
+
+#### P2 — Visitor (600) full KB seed
+
+| File | Status |
+|---|---|
+| `kb/migrations/seed_visitor_600_v1.sql` | ✅ Created |
+
+Idempotent seed (`ON CONFLICT DO NOTHING`) covering:
+- **5 requirements:** Genuine Visitor, Financial Capacity, Identity Confirmation, Clear Travel Plan, Invitation Support (Visiting Family or Friends)
+- **8 evidence items** mapped to each requirement
+- **6 flag templates** (warning/risk) with legal citations and actionable guidance
+- **1 `kb_release` row** (`kb-v20260314-visitor-600`) → resets the staleness banner
+
+Uses `ON CONFLICT ON CONSTRAINT requirement_visa_title_uk DO NOTHING` — requires P1 applied first.
+
+> ⚠️ **Action required (in order):**
+> 1. Apply `requirement_unique_title_v1.sql` first
+> 2. Then apply `seed_visitor_600_v1.sql`
+> 3. Verify with queries at the bottom of the seed file (expect: 5 requirements, 8 evidence items, 6 flags)
+
+---
+
+#### P3 — KB staleness banner
+
+Already fully implemented from Sprint 12 — `KBStalenessAlert.tsx` component + data hook wired in `dashboard/page.tsx`. The `kb_release` row inserted by the 600 seed will reset the 30-day staleness clock.
+
+---
+
+### Current test status
+```
+tsc --noEmit:  0 errors
+Branch:       main (uncommitted — Sprint 17 migrations ready to commit)
+```
+
+---
+
+### Next session — Sprint 18 priorities
+
+**Priority 1 — Apply Sprint 17 migrations to Supabase (~20m)**
+1. Apply `requirement_unique_title_v1.sql` in Supabase SQL Editor
+2. Apply `seed_visitor_600_v1.sql` in Supabase SQL Editor
+3. Verify counts (queries embedded at bottom of seed file)
+
+**Priority 2 — Commit Sprint 17 work (~5m)**
+- `git add -A && git commit -m "Sprint 17: unique constraint migration + Visitor 600 seed"`
+- `git push`
+
+**Priority 3 — End-to-end test on a fresh 189 session**
+- Sign in as a real/test user
+- Navigate to `/pathway` → select 189 Skilled Independent
+- Create a new case session, tick 3–4 items
+- Open `/export/189` — verify readiness band shows (not just weighted %)
+- Download PDF and DOCX — confirm files open correctly
+- Test AskBar on `/checklist/189` — verify KB-grounded response
+
+**Priority 4 — End-to-end test on Visitor 600**
+- Once seed is applied, navigate to `/checklist/600`
+- Verify 5 requirements and 8 evidence items load
+- Confirm AskBar prompt chips for 600 appear and return a KB-grounded answer
 
