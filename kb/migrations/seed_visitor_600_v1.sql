@@ -111,7 +111,7 @@ LATERAL (VALUES
     )
 ) AS r(req_type, title, plain_english, legal_basis, operational_basis, effective_from, effective_to, rule_logic, confidence, last_reviewed_at)
 WHERE vs.subclass_code = '600' AND vs.stream IS NULL
-ON CONFLICT ON CONSTRAINT requirement_visa_title_uk DO NOTHING;
+ON CONFLICT (visa_id, title) DO NOTHING;
 
 
 -- ─────────────────────────────────────────────────────────────────────
@@ -164,7 +164,7 @@ CROSS JOIN LATERAL (VALUES
     ('Financial Capacity',
      'Income evidence (payslips, tax returns, or sponsor letter)',
      'Supports the source of funds and confirms the financial capacity evidence is genuine and verifiable.',
-     '["Recent payslips (past 2–3 months)","Tax return or assessment notice from home country"],["Sponsor financial support letter with supporting financial documents (if a sponsor is paying)"]',
+     '["Recent payslips (past 2–3 months)","Tax return or assessment notice from home country","Sponsor financial support letter with supporting financial documents (if a sponsor is paying)"]',
      '["Income stated on application does not match payslips","No tax records to corroborate self-employment income","Sponsor letter not accompanied by the sponsor''s own financial evidence"]',
      1, '1994-09-01', NULL),
     -- Identity Confirmation evidence
