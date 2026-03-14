@@ -877,3 +877,49 @@ Tests:  79 passed · 0 failed
 - Confirm KB staleness banner reflects latest release tag
 - Ask an AskBar question and confirm KB-grounded badge appears
 
+---
+
+## Session: 2026-03-14 (Sprint 22)
+
+### What we achieved — Sprint 22
+
+**482 Employer Sponsored visa** (`805fbcb`)
+- 3 requirements: Approved Nomination, Approved Standard Business Sponsor, Occupation on Eligible List
+- 4 evidence items: signed employment contract, market salary rate evidence, ASIC business registration, detailed position description
+- 4 flag templates: TSMIT salary (risk), occupation not on list (risk), SAF levy (warning), employment conditions (warning)
+
+**485 Temporary Graduate visa** (`5c787e5`)
+- 3 requirements: Genuine Temporary Entrant, Australian Qualification Requirement (6-month window), English Language Proficiency
+- 4 evidence items: award certificate, academic transcript, eCoE, English test result
+- 5 flag templates: lodgement window (risk), stream mismatch (warning), police check (warning), English expired (warning), health exam (warning)
+
+**AskBar chips** — updated 482 (TSMIT focus) and 485 (stream/timing focus); fixed duplicate key lint (`b3a2674`)
+
+```
+Commits: 805fbcb / 5c787e5 / b3a2674 → main
+tsc: 0 errors | tests: 79 passed
+```
+
+> **Action required:** Apply migrations in Supabase SQL Editor in order:
+> 1. `seed_employer_sponsored_482_v1.sql` → Expected: 3 req · 4 evidence · 4 flags
+> 2. `seed_temporary_graduate_485_v1.sql` → Expected: 3 req · 4 evidence · 5 flags
+
+---
+
+### Next session — Sprint 23 priorities
+
+**Priority 1 — Apply 482 migration + verify**
+- Expected: 3 requirements, 4 evidence items, 4 flags
+
+**Priority 2 — Apply 485 migration + verify**
+- Expected: 3 requirements, 4 evidence items, 5 flags
+
+**Priority 3 — 500 Student visa seed migration**
+- `kb/seed/visa_500_requirements.json`, `visa_500_evidence_items.json`, `visa_500_flags.json` all exist
+- Create `kb/migrations/seed_student_500_v1.sql`
+
+**Priority 4 — Authenticated E2E: Dashboard + AskBar**
+- Log in to the running app, open `/dashboard`
+- Confirm KB staleness banner reflects latest release tag
+- Ask an AskBar question on any visa checklist and confirm KB-grounded badge
+
