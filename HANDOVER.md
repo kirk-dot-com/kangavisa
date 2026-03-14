@@ -835,19 +835,46 @@ Tests:  79 passed · 0 failed
 
 ---
 
-### Next session — Sprint 21 priorities
+## Session: 2026-03-14 (Sprint 21)
 
-**Priority 1 — Authenticated E2E: Dashboard + AskBar**
-- Log in to the running app
-- Open `/dashboard` — confirm KB staleness banner shows `kb-v20260314-partner-309` (or similar)
-- Ask an AskBar question on `/checklist/820` or `/checklist/600` and verify KB-grounded response
+### What we achieved — Sprint 21
 
-**Priority 3 — Export page E2E: subclass 189**
-- Navigate to `/export/189`
-- Verify readiness band shows
-- Download PDF and DOCX — confirm files open correctly
+**E2E browser tests — all PASS**
 
-**Priority 4 — 417 working holiday seed data (SQL migration)**
-- `kb/seed/visa_417_requirements.json` + `visa_417_evidence_items.json` already exist
-- Create `kb/migrations/seed_working_holiday_417_v1.sql` following the 309/820 pattern
+| Test | Page | Result | Notes |
+|---|---|---|---|
+| Export 189 | `/export/189` | ✅ PASS | PDF, DOCX, CSV buttons present; readiness hidden for unauth (expected) |
+| Export 820 | `/export/820` | ✅ PASS | 4 requirements + 11 evidence items displayed correctly |
+| AskBar 600 | `/checklist/600` | ✅ PASS | 3 prompt chips visible; KB-grounded response with badge confirmed |
+| Flags 820 | `/flags/820` | ✅ PASS | 8 flags active (3 pre-existing + 5 from sprint 20) |
+
+**417 Working Holiday visa migration** (`98aef79`)
+- 3 requirements: Genuine Holiday Intention, Specified Work (2nd/3rd grant), Financial Threshold
+- 4 evidence items: payslips, TFN statement, employer letter, bank savings statements
+- 4 flag templates: work days short (risk), regional area ineligible (warning), cash-in-hand (risk), financial threshold (warning)
+- `tsc --noEmit`: 0 errors | tests: 79 passed
+
+> **Action required:** Apply `seed_working_holiday_417_v1.sql` in Supabase SQL Editor.
+> Expected: 3 requirements · 4 evidence items · 4 flag templates.
+
+---
+
+### Next session — Sprint 22 priorities
+
+**Priority 1 — Apply 417 migration + verify**
+- Paste `seed_working_holiday_417_v1.sql` into Supabase SQL Editor
+- Expected: 3 requirements, 4 evidence items, 4 flags
+
+**Priority 2 — 482 Employer Sponsored seed migration**
+- `kb/seed/visa_482_requirements.json` + `visa_482_evidence_items.json` already exist
+- Create `kb/migrations/seed_employer_sponsored_482_v1.sql`
+
+**Priority 3 — 485 Temporary Graduate seed migration**
+- `kb/seed/visa_485_requirements.json`, `visa_485_evidence_items.json`, `visa_485_flags.json` all exist
+- Create `kb/migrations/seed_temporary_graduate_485_v1.sql`
+
+**Priority 4 — Authenticated E2E: Dashboard KB staleness banner**
+- Log in to the running app, open `/dashboard`
+- Confirm KB staleness banner reflects latest release tag
+- Ask an AskBar question and confirm KB-grounded badge appears
 
