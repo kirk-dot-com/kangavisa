@@ -771,32 +771,30 @@ Commit: 947728c → main
 Tests:  79 passed · 0 failed
 ```
 
-> **Action required:** Apply `seed_partner_820_v1.sql` in Supabase SQL Editor and verify counts (see verification queries at end of file).
+> ✅ **Applied 2026-03-14.** Verified counts: 4 requirements · 11 evidence items (6 pre-existing + 5 new) · 8 flag templates (3 pre-existing + 5 new). `ON CONFLICT DO NOTHING` ran cleanly.
 
 ---
 
 ### Next session — Sprint 20 priorities
 
-**Priority 1 — Apply 820 migration + verify**
-- Open Supabase SQL Editor → paste `kb/migrations/seed_partner_820_v1.sql`
-- Run the 4 verification queries at the bottom of the file
-- Expected: 4 requirements, 5 evidence items, 5 flag templates
-
-**Priority 2 — E2E test: 189 Skilled Independent (manual ~30m)**
+**Priority 1 — E2E test: 189 Skilled Independent (manual ~30m)**
 - Sign in → Pathway → select subclass 189
 - Create a case session, tick 3–4 items
 - Open `/export/189` — verify readiness band shows
 - Download PDF + DOCX — confirm files open
 - AskBar on `/checklist/189` — verify KB-grounded response
 
-**Priority 3 — E2E test: Visitor 600 (manual ~15m)**
+**Priority 2 — E2E test: Visitor 600 (manual ~15m)**
 - Navigate to `/checklist/600`
 - Verify 5 requirements, 8 evidence items load
 - AskBar prompt chips for 600 show and return a KB-grounded answer
 
-**Priority 4 — E2E test: Partner 820 (manual ~15m, after P1)**
+**Priority 3 — E2E test: Partner 820 (manual ~15m)**
 - Navigate to `/checklist/820`
-- Verify 4 requirements, 5 evidence items load
+- Verify 4 requirements present (Genuine Relationship, Eligible Sponsor, Health, Character)
 - AskBar on 820 returns grounded response mentioning reg 1.15A
 
+**Priority 4 — 309/100 offshore partner visa seed data**
+- Create `kb/migrations/seed_partner_309_v1.sql` for the offshore partner pathway
+- Source: `kb/seed/` — check for existing 309 seed files, create if missing
 
