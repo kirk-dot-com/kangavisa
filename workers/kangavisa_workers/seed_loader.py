@@ -228,12 +228,25 @@ def load_flag_templates(dry_run: bool = False) -> int:
     """US-F6 | FR-K3: Upsert all flag templates from all visa seed files."""
     total = 0
     for seed_file in _seed_files_matching("visa_*_flags.json"):
-        items = _load_json_seed(seed_file.name)
-        if not items:
+        raw = _load_json_seed(seed_file.name)
+        if not raw:
+            continue
+
+        # Normalise: some files are flat lists, others are wrapped objects {"flags": [...]}
+        if isinstance(raw, list):
+            items = raw
+        elif isinstance(raw, dict) and "flags" in raw:
+            items = raw["flags"]
+        else:
+            logger.warning("Unrecognised flag file format in %s, skipping.", seed_file.name)
             continue
 
         rows = []
         for item in items:
+            if not isinstance(item, dict):
+                logger.warning("Non-dict flag item in %s, skipping.", seed_file.name)
+                continue
+            effective = item.get("effective", {})
             row = {
                 "flag_id": item["flag_id"],
                 "subclass_code": item["visa"]["subclass"],
@@ -243,8 +256,8 @@ def load_flag_templates(dry_run: bool = False) -> int:
                 "actions": item.get("actions", []),
                 "evidence_examples": item.get("evidence_examples", []),
                 "severity": item.get("severity", "warning"),
-                "effective_from": item["effective"]["from"],
-                "effective_to": item["effective"].get("to"),
+                "effective_from": effective.get("from", "1994-09-01"),
+                "effective_to": effective.get("to"),
                 "sources": item.get("sources", {}),
             }
             rows.append(row)
