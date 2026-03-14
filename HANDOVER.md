@@ -938,8 +938,7 @@ tsc: 0 errors | tests: 79 passed
 Commit: 37a0935 → main | tsc: 0 errors
 ```
 
-> **Action required:** Apply `seed_student_500_v1.sql` in Supabase SQL Editor.
-> Expected: 5 requirements · 2 evidence items · 3 flag templates.
+> ✅ **Applied 2026-03-14.** Verified: 5 requirements · 4 evidence items (2 pre-existing + 2 new) · 6 flag templates (3 pre-existing + 3 new).
 
 ---
 
