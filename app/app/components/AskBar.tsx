@@ -28,9 +28,14 @@ const PROMPT_CHIPS: Record<string, string[]> = {
         "What are the timing risks I should watch for?",
     ],
     "482": [
-        "What nomination evidence should my sponsor provide?",
-        "How do I demonstrate my salary meets the threshold?",
-        "What work history documents does the 482 require?",
+        "What nomination evidence should my employer provide for a 482 visa?",
+        "How do I confirm my salary meets the TSMIT for a 482 nomination?",
+        "What is the SAF levy and how much does my employer need to pay?",
+    ],
+    "485": [
+        "How long after finishing my degree do I have to lodge a 485 application?",
+        "What English test result do I need for the 485 visa?",
+        "What is the difference between the Graduate Work and Post-Study Work streams?",
     ],
     "417": [
         "What documents prove I did specified work for a second grant?",
