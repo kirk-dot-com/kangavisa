@@ -687,3 +687,63 @@ Supabase:     requirement_unique_title_v1 ✅ · seed_visitor_600_v1 ✅
 - Add `schedule: cron: '0 20 * * 0'` trigger to `.github/workflows/ci.yml`
 - Job: `pip install -e '.[dev]' && python workers/run_watchers.py`
 
+---
+
+## Session: 2026-03-14 (Sprint 18)
+
+### What we achieved — Sprint 18
+
+All P3/P4 infrastructure (watchers + CI scheduler) was already implemented. Sprint 18 focused on correctness and test coverage.
+
+#### Bug fixes
+
+| File | Fix |
+|---|---|
+| `kangavisa_workers/homeaffairs_watcher.py` | `"initial_snapshot"` → `"new_instrument"` (invalid `kb_change_type` enum value) |
+| `kangavisa_workers/datagov_watcher.py` | Same enum fix; first run now uses `"new_instrument"`, subsequent changes use `"dataset_update"` |
+| `kangavisa_workers/seed_loader.py` | `load_flag_templates` — now handles both flat-list and wrapped `{"flags": [...]}` JSON formats |
+| `kangavisa_workers/seed_loader.py` | `_seed_files_matching` — now skips SQL-seeded visa files (600, 189, 190, 491) |
+
+#### New tests
+
+| File | Tests added |
+|---|---|
+| `tests/test_homeaffairs_watcher.py` | 8 tests: `extract_sections`, `fetch_homeaffairs`, no-change path, change-detected path, `new_instrument` enum guard |
+| `tests/test_datagov_watcher.py` | 7 tests: `fetch_dataset_metadata`, `success=false` error, no-change path, change-detected path, `new_instrument` enum guard, US-G4 `metadata_json` fields |
+
+#### Test results
+
+```
+pytest (--ignore=tests/test_db.py):  73 passed · 0 failed
+tsc --noEmit:                        0 errors
+Commit:                              8e72227 → main (pushed)
+```
+
+> **Note on `test_db.py`**: These 6 tests require live `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` env vars. They are excluded from the local run but pass in CI where secrets are injected via `kb-watcher` job. Pre-existing — not introduced this sprint.
+
+---
+
+### Next session — Sprint 19 priorities
+
+**Priority 1 — End-to-end test on a fresh 189 session (manual ~30m)**
+- Sign in as a real/test user
+- Navigate to `/pathway` → select 189 Skilled Independent
+- Create a new case session, tick 3–4 items
+- Open `/export/189` — verify readiness band shows (not just weighted %)
+- Download PDF and DOCX — confirm files open correctly
+- Test AskBar on `/checklist/189` — verify KB-grounded response
+
+**Priority 2 — End-to-end test on Visitor 600 (manual ~15m)**
+- Navigate to `/checklist/600`
+- Verify 5 requirements and 8 evidence items load
+- Confirm AskBar prompt chips for 600 appear and return a KB-grounded answer
+
+**Priority 3 — Fix `test_db.py` to use monkeypatching instead of live env vars**
+- Remove `os.environ` dependency from `test_db.py` — use `monkeypatch` to inject `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY`
+- All 6 `test_db` tests should then pass locally without secrets
+
+**Priority 4 — Add 820 seed data to Supabase (SQL migration)**
+- Create `kb/migrations/seed_partner_820_v1.sql` following the 600 pattern
+- Source: `kb/seed/visa_820_requirements.json`, `visa_820_evidence_items.json`, `visa_820_flags.json`
+- Apply in Supabase SQL Editor + verify counts
+
