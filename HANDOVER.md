@@ -956,3 +956,63 @@ Commit: 37a0935 → main | tsc: 0 errors
 - Log in, open `/dashboard` — check KB staleness banner
 - Ask AskBar question on any checklist — KB-grounded response + badge
 
+---
+
+## Session: 2026-03-14 (Sprint 24)
+
+### What we achieved — Sprint 24
+
+**189 Skilled Independent migration** (`3506c0c`)
+- 6 requirements: Valid ITA, Positive Skills Assessment, Minimum Points Score (65+), English Proficiency, Health (PIC 4005), Character (s.501)
+- 7 evidence items: skills assessment, ITA, English test, employment history, qualifications, health exam HAP ID, police clearance
+- 4 flag templates: points miscalculation (risk), skills assessment invalid/expired (risk), employment gaps 90+ days (warning), English test expired (warning)
+
+**190/491 Skilled Nominated/Regional migration** (`3506c0c`)
+- **190**: 1 additional requirement (State/Territory Nomination), 1 evidence item (nomination letter), 2 flags (nomination missing risk, points miscalculation risk)
+- **491**: 2 additional requirements (Nomination/Sponsorship, Regional Living Commitment), 1 evidence item (nomination or sponsorship letter), 3 flags (nomination/sponsorship missing risk, regional requirement unclear warning, points miscalculation risk)
+
+```
+Commit: 3506c0c → main | tsc: 0 errors
+```
+
+> **Action required (in order):**
+> 1. Apply `seed_skilled_independent_189_v1.sql` — Expected: 6 req · 7 ev · 4 flags
+> 2. Apply `seed_skilled_nominated_190_491_v1.sql` — Expected 190: 1/1/2 · Expected 491: 2/1/3
+
+---
+
+### KB Coverage — Full picture after Sprint 24
+
+| Visa | Subclass | Reqs | Evidence | Flags | Applied |
+|---|---|---|---|---|---|
+| Visitor | 600 | (SQL-seeded) | ✅ |
+| Skilled Independent | 189 | 6 | 7 | 4 | ⏳ pending |
+| Skilled Nominated | 190 | 1* | 1* | 2* | ⏳ pending |
+| Skilled Regional | 491 | 2* | 1* | 3* | ⏳ pending |
+| Partner onshore | 820 | 4 | 11 | 8 | ✅ |
+| Partner offshore | 309 | 4 | 6 | 5 | ✅ |
+| Working Holiday | 417 | 3 | 8 | 4 | ✅ |
+| Employer Sponsored | 482/SID | 3 | 4 | 4 | ✅ |
+| Temp Graduate | 485 | 3 | 8 | 9 | ✅ |
+| Student | 500 | 5 | 4 | 6 | ✅ |
+
+*190/491 counts are supplemental to the 189 shared core.
+
+---
+
+### Next session — Sprint 25 priorities
+
+**Priority 1 — Apply 189 migration + verify**
+- Expected: 6 req, 7 evidence, 4 flags
+
+**Priority 2 — Apply 190/491 migration + verify**
+- Expected 190: 1 req, 1 evidence, 2 flags
+- Expected 491: 2 req, 1 evidence, 3 flags
+
+**Priority 3 — Authenticated E2E: Dashboard + AskBar**
+- Log in, open `/dashboard` — verify KB staleness banner
+- Ask AskBar on any checklist — confirm KB-grounded response + badge
+
+**Priority 4 — Export page refinement**
+- Test `/export/189` download (PDF, DOCX) — confirm readiness scorecard appears after login
+
