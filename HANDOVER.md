@@ -975,9 +975,10 @@ Commit: 37a0935 → main | tsc: 0 errors
 Commit: 3506c0c → main | tsc: 0 errors
 ```
 
-> **Action required (in order):**
-> 1. Apply `seed_skilled_independent_189_v1.sql` — Expected: 6 req · 7 ev · 4 flags
-> 2. Apply `seed_skilled_nominated_190_491_v1.sql` — Expected 190: 1/1/2 · Expected 491: 2/1/3
+> ✅ **Applied 2026-03-14.** Verified: 6 requirements · 14 evidence items (7 pre-existing + 7 new) · 8 flag templates (4 pre-existing + 4 new).
+
+> **Action required (next):** Apply `seed_skilled_nominated_190_491_v1.sql`
+> Expected 190: 1 req · 1 ev · 2 flags | 491: 2 req · 1 ev · 3 flags
 
 ---
 
