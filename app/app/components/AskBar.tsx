@@ -22,11 +22,6 @@ const PROMPT_CHIPS: Record<string, string[]> = {
         "What are the most common evidence gaps for a 500 visa?",
         "When does my English test score need to be valid until?",
     ],
-    "485": [
-        "What documents do I need at time of lodgement?",
-        "How do I prove my qualification meets 485 requirements?",
-        "What are the timing risks I should watch for?",
-    ],
     "482": [
         "What nomination evidence should my employer provide for a 482 visa?",
         "How do I confirm my salary meets the TSMIT for a 482 nomination?",
