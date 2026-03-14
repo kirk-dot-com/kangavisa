@@ -747,3 +747,56 @@ Commit:                              8e72227 → main (pushed)
 - Source: `kb/seed/visa_820_requirements.json`, `visa_820_evidence_items.json`, `visa_820_flags.json`
 - Apply in Supabase SQL Editor + verify counts
 
+---
+
+## Session: 2026-03-14 (Sprint 19)
+
+### What we achieved — Sprint 19
+
+**P3 — Fix `test_db.py` isolation (already passing)**
+Running `test_db.py` in isolation worked fine (6/6). The failure when running the full suite was a `pytest_httpx` mock teardown conflict caused by `test_seed_loader.py` setting `SUPABASE_URL` at module scope before `db.py` was imported.
+
+Fixed by adding `workers/tests/conftest.py` — an `autouse` fixture that refreshes `db.SUPABASE_URL` / `db.SERVICE_ROLE_KEY` from `os.environ` before each test. Full suite: **79 passed, 0 failed**.
+
+**P4 — 820 Partner Visa SQL migration**
+Created `kb/migrations/seed_partner_820_v1.sql`:
+- 4 requirements: Genuine Relationship, Eligible Sponsor, Health, Character
+- 5 evidence items: joint bank statements, shared lease, photos, statutory declarations, sponsor citizenship
+- 5 flag templates (severity mapped critical→risk, high/medium→warning)
+- `kb_release` tag: `kb-v20260314-partner-820`
+- Fully idempotent (`ON CONFLICT DO NOTHING`)
+
+```
+Commit: 947728c → main
+Tests:  79 passed · 0 failed
+```
+
+> **Action required:** Apply `seed_partner_820_v1.sql` in Supabase SQL Editor and verify counts (see verification queries at end of file).
+
+---
+
+### Next session — Sprint 20 priorities
+
+**Priority 1 — Apply 820 migration + verify**
+- Open Supabase SQL Editor → paste `kb/migrations/seed_partner_820_v1.sql`
+- Run the 4 verification queries at the bottom of the file
+- Expected: 4 requirements, 5 evidence items, 5 flag templates
+
+**Priority 2 — E2E test: 189 Skilled Independent (manual ~30m)**
+- Sign in → Pathway → select subclass 189
+- Create a case session, tick 3–4 items
+- Open `/export/189` — verify readiness band shows
+- Download PDF + DOCX — confirm files open
+- AskBar on `/checklist/189` — verify KB-grounded response
+
+**Priority 3 — E2E test: Visitor 600 (manual ~15m)**
+- Navigate to `/checklist/600`
+- Verify 5 requirements, 8 evidence items load
+- AskBar prompt chips for 600 show and return a KB-grounded answer
+
+**Priority 4 — E2E test: Partner 820 (manual ~15m, after P1)**
+- Navigate to `/checklist/820`
+- Verify 4 requirements, 5 evidence items load
+- AskBar on 820 returns grounded response mentioning reg 1.15A
+
+
