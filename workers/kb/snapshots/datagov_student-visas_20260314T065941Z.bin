@@ -1,0 +1,1 @@
+{"id": "student-visas", "metadata_modified": "2025-03-01T00:00:00.000000", "resources": [{"format": "CSV", "id": "res-001", "name": "Student visa grants 2024"}, {"format": "CSV", "id": "res-002", "name": "Student visa refusals 2024"}, {"format": "CSV", "id": "res-003", "name": "Student visa grants 2025"}], "title": "Student Visas"}
