@@ -902,8 +902,7 @@ tsc: 0 errors | tests: 79 passed
 
 > ✅ **Applied 2026-03-14.** Verified: 3 requirements · 4 evidence items · 4 flag templates.
 
-> **Action required:** Apply `seed_temporary_graduate_485_v1.sql` in Supabase SQL Editor.
-> Expected: 3 requirements · 4 evidence items · 5 flag templates.
+> ✅ **Applied 2026-03-14.** Verified: 3 requirements · 8 evidence items (4 pre-existing + 4 new) · 9 flag templates (4 pre-existing + 5 new).
 
 ---
 
