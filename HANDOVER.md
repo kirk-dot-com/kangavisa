@@ -854,8 +854,7 @@ Tests:  79 passed · 0 failed
 - 4 flag templates: work days short (risk), regional area ineligible (warning), cash-in-hand (risk), financial threshold (warning)
 - `tsc --noEmit`: 0 errors | tests: 79 passed
 
-> **Action required:** Apply `seed_working_holiday_417_v1.sql` in Supabase SQL Editor.
-> Expected: 3 requirements · 4 evidence items · 4 flag templates.
+> ✅ **Applied 2026-03-14.** Verified counts: 3 requirements · 8 evidence items (4 pre-existing + 4 new) · 4 flag templates.
 
 ---
 
