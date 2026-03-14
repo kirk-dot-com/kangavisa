@@ -142,7 +142,24 @@ def _load_json_seed(filename: str) -> list[dict]:
 
 
 def _seed_files_matching(pattern: str) -> list[Path]:
-    return sorted(SEED_DIR.glob(pattern))
+    """
+    Return sorted seed files matching *pattern*, excluding visas whose data
+    is loaded via SQL migration rather than seed_loader (e.g. 600).
+    """
+    # Visas seeded via SQL migrations — their JSON files use a different
+    # schema and must not be processed by seed_loader.
+    SQL_SEEDED_VISAS = {"600", "189", "190", "491"}
+    files = []
+    for path in sorted(SEED_DIR.glob(pattern)):
+        # Extract visa code from filename, e.g. "visa_600_evidence_items.json" → "600"
+        parts = path.stem.split("_")  # ["visa", "600", "evidence", "items"]
+        visa_code = parts[1] if len(parts) >= 2 else ""
+        if visa_code in SQL_SEEDED_VISAS:
+            logger.debug("Skipping %s — seeded via SQL migration", path.name)
+            continue
+        files.append(path)
+    return files
+
 
 
 def load_requirements(dry_run: bool = False) -> int:
