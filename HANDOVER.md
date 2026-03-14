@@ -831,18 +831,13 @@ Commit: 1740f43 → main
 Tests:  79 passed · 0 failed
 ```
 
-> **Action required:** Apply `seed_partner_309_v1.sql` in Supabase SQL Editor.
-> Expected: 4 requirements · 6 evidence items · 5 flag templates.
+> ✅ **Applied 2026-03-14.** Verified counts: 4 requirements · 6 evidence items · 5 flag templates.
 
 ---
 
 ### Next session — Sprint 21 priorities
 
-**Priority 1 — Apply 309 migration + verify**
-- Open Supabase SQL Editor → paste `seed_partner_309_v1.sql`
-- Expected: 4 requirements, 6 evidence items, 5 flags
-
-**Priority 2 — Authenticated E2E: Dashboard + AskBar**
+**Priority 1 — Authenticated E2E: Dashboard + AskBar**
 - Log in to the running app
 - Open `/dashboard` — confirm KB staleness banner shows `kb-v20260314-partner-309` (or similar)
 - Ask an AskBar question on `/checklist/820` or `/checklist/600` and verify KB-grounded response
