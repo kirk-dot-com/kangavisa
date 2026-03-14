@@ -977,8 +977,9 @@ Commit: 3506c0c → main | tsc: 0 errors
 
 > ✅ **Applied 2026-03-14.** Verified: 6 requirements · 14 evidence items (7 pre-existing + 7 new) · 8 flag templates (4 pre-existing + 4 new).
 
-> **Action required (next):** Apply `seed_skilled_nominated_190_491_v1.sql`
-> Expected 190: 1 req · 1 ev · 2 flags | 491: 2 req · 1 ev · 3 flags
+> ✅ **190 applied 2026-03-14.** Verified: 1 req · 2 evidence (1 pre + 1 new) · 4 flags (2 pre + 2 new).
+
+> ✅ **491 applied 2026-03-14.** Verified: 3 req (1 pre + 2 new) · 3 evidence (2 pre + 1 new) · 6 flags (3 pre + 3 new).
 
 ---
 
