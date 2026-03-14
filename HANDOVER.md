@@ -923,3 +923,37 @@ tsc: 0 errors | tests: 79 passed
 - Confirm KB staleness banner reflects latest release tag
 - Ask an AskBar question on any visa checklist and confirm KB-grounded badge
 
+---
+
+## Session: 2026-03-14 (Sprint 23)
+
+### What we achieved — Sprint 23
+
+**500 Student visa migration** (`37a0935`)
+- 5 requirements: Genuine Student (balance-of-factors), English (LIN 19/051), Financial Capacity (LIN 18/036), Health (PIC 4005), Character (s.501)
+- 2 evidence items: CoE (Genuine Student), Approved English Test Result
+- 3 flag templates: weak home ties (warning), course inconsistent with prior study (warning), English score below threshold (risk)
+
+```
+Commit: 37a0935 → main | tsc: 0 errors
+```
+
+> **Action required:** Apply `seed_student_500_v1.sql` in Supabase SQL Editor.
+> Expected: 5 requirements · 2 evidence items · 3 flag templates.
+
+---
+
+### Next session — Sprint 24 priorities
+
+**Priority 1 — Apply 500 migration + verify**
+- Paste `seed_student_500_v1.sql` into Supabase SQL Editor
+- Expected: 5 requirements, 2 evidence items, 3 flags
+
+**Priority 2 — KB coverage audit**
+- Identify which visa subclasses now have full data in DB
+- Check `kb/seed/visa_190_491_seed.json` — convert to SQL migration
+
+**Priority 3 — Authenticated E2E: Dashboard + AskBar live**
+- Log in, open `/dashboard` — check KB staleness banner
+- Ask AskBar question on any checklist — KB-grounded response + badge
+
