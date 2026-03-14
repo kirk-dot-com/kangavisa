@@ -900,9 +900,10 @@ Commits: 805fbcb / 5c787e5 / b3a2674 → main
 tsc: 0 errors | tests: 79 passed
 ```
 
-> **Action required:** Apply migrations in Supabase SQL Editor in order:
-> 1. `seed_employer_sponsored_482_v1.sql` → Expected: 3 req · 4 evidence · 4 flags
-> 2. `seed_temporary_graduate_485_v1.sql` → Expected: 3 req · 4 evidence · 5 flags
+> ✅ **Applied 2026-03-14.** Verified: 3 requirements · 4 evidence items · 4 flag templates.
+
+> **Action required:** Apply `seed_temporary_graduate_485_v1.sql` in Supabase SQL Editor.
+> Expected: 3 requirements · 4 evidence items · 5 flag templates.
 
 ---
 
