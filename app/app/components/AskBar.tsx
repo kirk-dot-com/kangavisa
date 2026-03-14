@@ -37,6 +37,11 @@ const PROMPT_CHIPS: Record<string, string[]> = {
         "How do I show financial capacity for the 417 visa?",
         "What regional work evidence is accepted?",
     ],
+    "309": [
+        "How do we show our relationship is genuine while living in different countries?",
+        "What ongoing contact evidence does Home Affairs expect for a 309 visa?",
+        "How long do police clearances stay valid during 309 processing?",
+    ],
     "820": [
         "What are the four pillars of relationship evidence?",
         "What financial evidence shows a genuine relationship?",
