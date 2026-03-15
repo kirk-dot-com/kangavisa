@@ -988,9 +988,9 @@ Commit: 3506c0c → main | tsc: 0 errors
 | Visa | Subclass | Reqs | Evidence | Flags | Applied |
 |---|---|---|---|---|---|
 | Visitor | 600 | (SQL-seeded) | ✅ |
-| Skilled Independent | 189 | 6 | 7 | 4 | ⏳ pending |
-| Skilled Nominated | 190 | 1* | 1* | 2* | ⏳ pending |
-| Skilled Regional | 491 | 2* | 1* | 3* | ⏳ pending |
+| Skilled Independent | 189 | 6 | 7 | 4 | ✅ |
+| Skilled Nominated | 190 | 1* | 1* | 6* | ✅ |
+| Skilled Regional | 491 | 3* | 1* | 9* | ✅ |
 | Partner onshore | 820 | 4 | 11 | 8 | ✅ |
 | Partner offshore | 309 | 4 | 6 | 5 | ✅ |
 | Working Holiday | 417 | 3 | 8 | 4 | ✅ |
@@ -998,23 +998,65 @@ Commit: 3506c0c → main | tsc: 0 errors
 | Temp Graduate | 485 | 3 | 8 | 9 | ✅ |
 | Student | 500 | 5 | 4 | 6 | ✅ |
 
-*190/491 counts are supplemental to the 189 shared core.
+*190/491 counts include pre-existing rows from seed_mvp_visas_v1 plus new rows from seed_skilled_nominated_190_491_v1.
 
 ---
 
-### Next session — Sprint 25 priorities
+## Session: 2026-03-15
 
-**Priority 1 — Apply 189 migration + verify**
-- Expected: 6 req, 7 evidence, 4 flags
+### What we achieved — Sprint 25
 
-**Priority 2 — Apply 190/491 migration + verify**
-- Expected 190: 1 req, 1 evidence, 2 flags
-- Expected 491: 2 req, 1 evidence, 3 flags
+#### P0 — Production launch on kanga-visa.com 🚀
 
-**Priority 3 — Authenticated E2E: Dashboard + AskBar**
-- Log in, open `/dashboard` — verify KB staleness banner
-- Ask AskBar on any checklist — confirm KB-grounded response + badge
+| Item | Detail | Status |
+|---|---|---|
+| Registered `kanga-visa.com` | Custom domain via registrar | ✅ |
+| Vercel project created | Connected to `main` branch of GitHub repo | ✅ |
+| Fixed Vercel config | Framework Preset → **Next.js**; Root Directory → **`app`** | ✅ |
+| Added all env vars to Vercel | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `OPENAI_API_KEY` | ✅ |
+| Site live | `https://kanga-visa.com` returns the KangaVisa landing page | ✅ |
 
-**Priority 4 — Export page refinement**
-- Test `/export/189` download (PDF, DOCX) — confirm readiness scorecard appears after login
+#### P1 — 189 Skilled Independent migration applied
+
+| Migration | Verified counts | Status |
+|---|---|---|
+| `seed_skilled_independent_189_v1.sql` | 6 requirements ✅ | ✅ Applied |
+
+#### P2 — 190/491 Skilled Nominated/Regional migration applied
+
+| Migration | Verified counts | Status |
+|---|---|---|
+| `seed_skilled_nominated_190_491_v1.sql` | 190: 1 req · 6 flags ✅ | ✅ Applied |
+| | 491: 3 req · 9 flags ✅ | ✅ Applied |
+
+> Higher flag/req counts reflect pre-existing rows from `seed_mvp_visas_v1.sql` (Sprint 16) — `ON CONFLICT DO NOTHING` ran cleanly.
+
+**KB is now fully seeded across all 10 visa subclasses.** ✅
+
+---
+
+### Next session — Sprint 26 priorities
+
+**Priority 1 — Supabase Auth URL Configuration**
+- Supabase → Authentication → URL Configuration
+- Set **Site URL** to `https://kanga-visa.com`
+- Add `https://kanga-visa.com/**` to **Redirect URLs**
+- Ensures auth email links (signup confirm, password reset) work correctly on production
+
+**Priority 2 — Rotate secrets (security)**
+- Regenerate Supabase publishable + secret keys (they were briefly visible in a session)
+- Regenerate OpenAI API key
+- Update all 4 env vars in Vercel after rotating
+
+**Priority 3 — Authenticated E2E on production**
+- Sign up as a real user on `kanga-visa.com`
+- Navigate to `/pathway` → select 189 Skilled Independent
+- Create a case session, tick 3–4 items
+- Open `/export/189` — verify readiness band shows
+- Download PDF + DOCX — confirm files open correctly
+- AskBar on `/checklist/189` — verify KB-grounded response + badge
+
+**Priority 4 — Analytics + monitoring**
+- Enable Vercel Analytics (one-click in Vercel dashboard)
+- Consider adding Supabase's built-in query performance monitoring
 
