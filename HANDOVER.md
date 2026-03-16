@@ -1060,3 +1060,82 @@ Commit: 3506c0c → main | tsc: 0 errors
 - Enable Vercel Analytics (one-click in Vercel dashboard)
 - Consider adding Supabase's built-in query performance monitoring
 
+---
+
+## Session: 2026-03-16
+
+### What we achieved — Sprint 26
+
+#### P0 — CI KB Watcher fixed (`765c036`)
+
+| Item | Detail | Status |
+|---|---|---|
+| Root cause diagnosed | GitHub Actions secrets `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` were never added to the repo → `db._headers()` raised `EnvironmentError` on every scheduled run since March 2, caught silently, all 13 watcher targets failed → `sys.exit(1)` | ✅ |
+| `workers/run_watchers.py` | Pre-flight secrets check at startup — exits immediately with a clear message pointing to GitHub Settings if secrets are missing | ✅ |
+| `workers/run_watchers.py` | Fatal vs transient error distinction: `EnvironmentError` → `fatal=True` always fails CI; network/HTTP exceptions → `fatal=False` logged as WARNING, do NOT fail CI | ✅ |
+| `workers/run_watchers.py` | `sys.exit(1)` now only fires on fatal errors or 100% failure rate — individual target blips no longer spam the inbox | ✅ |
+| Tests | 73 passed · 0 failed | ✅ |
+
+> ⚠️ **Action still required:** Add `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` to GitHub Actions repository secrets (Settings → Secrets and variables → Actions → New repository secret). The code fix alone does not make the watcher succeed.
+
+#### P1 — Sprint 27 UX Architecture: Evidence Drafting & Confidence Scorecard (designed)
+
+Designed the architecture for transforming checklist items from status toggles into guided drafting tools.
+
+Key decisions:
+- **Three panel types:** Narrative (AI-assessed), Documentary (rule-based), Quantitative (deterministic)
+- **Quality-weighted scoring:** Not started 0% → Draft added 30% → Adequate 70% → Strong 100%
+- **Phase 1 requires zero schema changes:** `note` column already exists in `checklist_item_state` and API already accepts it — just needs to be surfaced in the UI
+- **DB migration only needed for Phase 2** (`assessment_json`, `assessed_at` columns on `checklist_item_state`)
+
+---
+
+### Current test status
+```
+pytest (--ignore=tests/test_db.py):  73 passed · 0 failed
+tsc --noEmit:                        0 errors
+Commit:                              765c036 → main (pushed)
+```
+
+---
+
+### ⚠️ Actions required before next session
+
+1. **Add GitHub Actions secrets** (unblocks watcher):
+   - Go to: github.com/kirk-dot-com/kangavisa/settings/secrets/actions
+   - Add `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`
+
+2. **Rotate secrets** (security — keys briefly visible in a session):
+   - Regenerate Supabase publishable + secret keys
+   - Regenerate OpenAI API key
+   - Update all env vars in Vercel first, then GitHub secrets
+
+3. **Supabase Auth URL config** (production auth emails):
+   - Supabase → Authentication → URL Configuration
+   - Set **Site URL** to `https://kanga-visa.com`
+   - Add `https://kanga-visa.com/**` to **Redirect URLs**
+
+---
+
+### Next session — Sprint 27 priorities
+
+**Priority 1 — Phase 1: Evidence drafting expansion (~2–3h, no schema change)**
+- Make `ChecklistItem` label clickable → expands inline accordion panel
+- `<textarea>` wired to existing `note` field, auto-saves on blur via existing `PATCH /api/sessions/[sessionId]/items`
+- Status auto-advances to `in_progress` when user starts typing
+- Score factor: non-empty `note` → 0.3 in `computeReadinessScore()`
+- Delivers the "something to write in" interaction the user expected
+
+**Priority 2 — Phase 2: AI assessment endpoint (~3–4h)**
+- `POST /api/sessions/[sessionId]/items/[evidenceId]/assess`
+- DB migration: `draft_content`, `assessment_json`, `assessed_at` columns
+- `[Assess my draft →]` button → inline GPT-4o-mini assessment (Weak / Adequate / Strong + gaps list)
+- `AssessmentBadge` component + per-requirement scorecard breakdown
+
+**Priority 3 — Home Affairs "Check Twice, Submit Once" data**
+- Add `https://immi.homeaffairs.gov.au/check-twice-submit-once/visitor-visa` as a tracked KB source
+- Validate/extend `visa_600` evidence items against its checklist
+
+**Priority 4 — Authenticated E2E on production** (rolled from Sprint 26)
+- Sign up on kanga-visa.com, create a 189 session, tick items, export, AskBar
+
