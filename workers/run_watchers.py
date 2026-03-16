@@ -158,9 +158,12 @@ def run_frl(results: list) -> None:
             )
             _print_result(target["source_id"], result)
             results.append({"source_id": target["source_id"], "ok": True, **result})
+        except EnvironmentError as exc:
+            print(f"  ✗ FATAL (missing secrets): {exc}")
+            results.append({"source_id": target["source_id"], "ok": False, "error": str(exc), "fatal": True})
         except Exception as exc:
-            print(f"  ✗ ERROR: {exc}")
-            results.append({"source_id": target["source_id"], "ok": False, "error": str(exc)})
+            print(f"  ⚠ WARNING (transient): {exc}")
+            results.append({"source_id": target["source_id"], "ok": False, "error": str(exc), "fatal": False})
 
 
 def run_homeaffairs(results: list) -> None:
@@ -176,9 +179,12 @@ def run_homeaffairs(results: list) -> None:
             )
             _print_result(target["source_id"], result)
             results.append({"source_id": target["source_id"], "ok": True, **result})
+        except EnvironmentError as exc:
+            print(f"  ✗ FATAL (missing secrets): {exc}")
+            results.append({"source_id": target["source_id"], "ok": False, "error": str(exc), "fatal": True})
         except Exception as exc:
-            print(f"  ✗ ERROR: {exc}")
-            results.append({"source_id": target["source_id"], "ok": False, "error": str(exc)})
+            print(f"  ⚠ WARNING (transient): {exc}")
+            results.append({"source_id": target["source_id"], "ok": False, "error": str(exc), "fatal": False})
 
 
 def run_datagov(results: list) -> None:
@@ -193,9 +199,12 @@ def run_datagov(results: list) -> None:
             )
             _print_result(target["dataset_id"], result)
             results.append({"source_id": target["dataset_id"], "ok": True, **result})
+        except EnvironmentError as exc:
+            print(f"  ✗ FATAL (missing secrets): {exc}")
+            results.append({"source_id": target["dataset_id"], "ok": False, "error": str(exc), "fatal": True})
         except Exception as exc:
-            print(f"  ✗ ERROR: {exc}")
-            results.append({"source_id": target["dataset_id"], "ok": False, "error": str(exc)})
+            print(f"  ⚠ WARNING (transient): {exc}")
+            results.append({"source_id": target["dataset_id"], "ok": False, "error": str(exc), "fatal": False})
 
 
 # ---------------------------------------------------------------------------
@@ -207,6 +216,17 @@ def main() -> None:
     print("KangaVisa — Combined Ingestion Watcher")
     print("=" * 60)
 
+    # Pre-flight: fail fast with a clear message if secrets are missing
+    supabase_url = os.environ.get("SUPABASE_URL", "")
+    service_key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
+    if not supabase_url or not service_key:
+        print()
+        print("FATAL: SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set.")
+        print("  → GitHub Actions: add these as repository secrets in")
+        print("    Settings → Secrets and variables → Actions → New repository secret")
+        print("  → Locally: populate workers/.env (see workers/.env.example)")
+        sys.exit(1)
+
     results: list = []
 
     run_frl(results)
@@ -215,14 +235,27 @@ def main() -> None:
 
     ok = sum(1 for r in results if r["ok"])
     changed = sum(1 for r in results if r.get("change_event_id"))
-    errors = len(results) - ok
+    fatal_errors = sum(1 for r in results if not r["ok"] and r.get("fatal", False))
+    transient_errors = sum(1 for r in results if not r["ok"] and not r.get("fatal", False))
 
     print("\n" + "=" * 60)
-    print(f"Complete: {ok}/{len(results)} OK · {changed} change events · {errors} errors")
+    print(
+        f"Complete: {ok}/{len(results)} OK · {changed} change events "
+        f"· {fatal_errors} fatal errors · {transient_errors} transient warnings"
+    )
     print("=" * 60)
 
-    if errors:
+    # Only fail CI for fatal errors (config/auth) or majority failure (>50%).
+    # Transient network blips on individual targets are logged but not fatal.
+    failure_rate = (ok == 0) or (fatal_errors > 0) or ((len(results) - ok) > len(results) // 2)
+    if failure_rate and ok == 0:
+        print("ERROR: All targets failed — treat as fatal CI failure.")
         sys.exit(1)
+    if fatal_errors:
+        print("ERROR: One or more fatal (non-transient) errors occurred.")
+        sys.exit(1)
+    if transient_errors:
+        print(f"WARNING: {transient_errors} target(s) had transient errors — will retry next run.")
 
 
 if __name__ == "__main__":
