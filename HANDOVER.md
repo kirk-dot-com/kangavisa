@@ -1211,3 +1211,54 @@ Root cause: `supabase.ts` used `@supabase/supabase-js` `createClient` (localStor
 - Add `https://immi.homeaffairs.gov.au/check-twice-submit-once/visitor-visa` as tracked KB source
 - Validate/extend `visa_600` evidence items
 
+---
+
+## Session wrap-up: 2026-03-20 (continued)
+
+### Additional fixes applied in production testing
+
+#### DB migrations (both applied to Supabase ✅)
+| Migration | Reason |
+|---|---|
+| `kb/migrations/case_session_v1.sql` | `case_session` table never created — sessions API returned 500 |
+| `kb/migrations/checklist_item_assessment_v1.sql` | `checklist_item_state` table never created |
+
+#### Auth fixes
+| Fix | Commit |
+|---|---|
+| `lib/supabase.ts` → `createBrowserClient` from `@supabase/ssr` | `5ca906b` |
+| `lib/supabase-server.ts` → added `set`/`remove` cookie handlers | `54d84c6` |
+| `auth/callback/route.ts` — new email confirmation callback route | `54d84c6` |
+| `auth/login/page.tsx` → hard redirect after sign-in | `54d84c6` |
+| `middleware.ts` — Next.js middleware to refresh session cookie on every request | `211fd24` |
+| `ChecklistBodyStandalone.tsx` → dual-path token (server prop + client fallback) | `3e83de9` |
+| `ChecklistItem.tsx` → `data-gramm="false"` on textarea (Grammarly was swallowing blur) | `58179bc` |
+
+#### Verified end-to-end on `kanga-visa.com` ✅
+- Sign in → email initial in header ✅
+- Checklist accordion expands, status auto-advances to `In progress` ✅
+- Notes auto-save on blur — `"X chars saved ✓"` ✅
+- **"Assess my draft →"** button appears at ≥20 chars ✅
+- GPT-4o-mini returns **Weak / Adequate / Strong** correctly ✅
+- **Strong** achieved when draft includes cross-referenced booking refs, matching dates, addresses ✅
+
+---
+
+### Next session — Sprint 28 priorities
+
+**Priority 1 — Fix React hydration warnings (#418/#423)**
+- Caused by `expanded` state in `ChecklistItem` initialising differently server vs client
+- Fix: initialise `expanded` to `false` always, then set in `useEffect` based on `initialNote`
+
+**Priority 2 — AssessmentBadge persistence on reload**
+- Load `assessment_json` from DB on checklist mount (alongside `status` + `note`)
+- Pass to `ChecklistItem` as `initialAssessment` prop
+
+**Priority 3 — Authenticated E2E (189 checklist + export + AskBar)**
+- Test full flow on 189 visa subclass
+- Verify export pack includes notes, readiness score reflects draft credit
+
+**Priority 4 — Home Affairs KB data**
+- Add `https://immi.homeaffairs.gov.au/check-twice-submit-once/visitor-visa`
+- Extend `visa_600` evidence items
+
