@@ -237,6 +237,9 @@ export default function ChecklistItem({
                             value={note}
                             onChange={handleNoteInput}
                             onBlur={handleNoteBlur}
+                            data-gramm="false"
+                            data-gramm_editor="false"
+                            data-enable-grammarly="false"
                         />
                         <div className={styles.draft_footer}>
                             <span className={styles.char_count}>
