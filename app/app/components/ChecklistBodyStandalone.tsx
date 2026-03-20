@@ -8,7 +8,6 @@
  */
 
 import { useState, useEffect, useCallback } from "react";
-import { createClient } from "../../lib/supabase";
 import ChecklistItem from "./ChecklistItem";
 import type { Requirement, EvidenceItem } from "../../lib/kb-service";
 import type { ItemStatus } from "./ChecklistItem";
