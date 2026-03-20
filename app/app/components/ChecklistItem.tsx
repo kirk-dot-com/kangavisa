@@ -4,6 +4,7 @@
 
 import { useState, useRef, useTransition } from "react";
 import styles from "./ChecklistItem.module.css";
+import AssessmentBadge, { type Assessment } from "./AssessmentBadge";
 
 export type ItemStatus = "not_started" | "in_progress" | "done" | "na";
 
@@ -59,6 +60,8 @@ export default function ChecklistItem({
     const [savedChars, setSavedChars] = useState(initialNote.length);
     const [expanded, setExpanded] = useState(initialNote.length > 0);
     const [saving, setSaving] = useState(false);
+    const [assessing, setAssessing] = useState(false);
+    const [assessment, setAssessment] = useState<Assessment | null>(null);
     const [, startTransition] = useTransition();
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -116,6 +119,34 @@ export default function ChecklistItem({
         await patchItem(status, note);
         setSavedChars(note.length);
         setSaving(false);
+    }
+
+    async function handleAssess() {
+        if (!sessionId || !authToken || note.trim().length < 20) return;
+        setAssessing(true);
+        try {
+            const res = await fetch(
+                `/api/sessions/${sessionId}/items/${evidenceId}/assess`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${authToken}`,
+                    },
+                    body: JSON.stringify({
+                        draft_content: note,
+                        evidence_label: label,
+                        what_it_proves: whatItProves,
+                    }),
+                }
+            );
+            const data = await res.json();
+            if (data.assessment) setAssessment(data.assessment as Assessment);
+        } catch {
+            // Non-fatal
+        } finally {
+            setAssessing(false);
+        }
     }
 
     const isDone = status === "done";
@@ -207,13 +238,26 @@ export default function ChecklistItem({
                             onChange={handleNoteInput}
                             onBlur={handleNoteBlur}
                         />
-                        <div className={styles.char_count}>
-                            {saving
-                                ? "Saving…"
-                                : savedChars > 0
-                                    ? `${savedChars} chars saved ✓`
-                                    : "Not yet saved"}
+                        <div className={styles.draft_footer}>
+                            <span className={styles.char_count}>
+                                {saving
+                                    ? "Saving…"
+                                    : savedChars > 0
+                                        ? `${savedChars} chars saved ✓`
+                                        : "Not yet saved"}
+                            </span>
+                            {sessionId && authToken && note.trim().length >= 20 && (
+                                <button
+                                    type="button"
+                                    className={styles.assess_btn}
+                                    onClick={handleAssess}
+                                    disabled={assessing}
+                                >
+                                    {assessing ? "Assessing…" : "Assess my draft →"}
+                                </button>
+                            )}
                         </div>
+                        {assessment && <AssessmentBadge assessment={assessment} />}
                     </div>
                 </div>
             </div>
