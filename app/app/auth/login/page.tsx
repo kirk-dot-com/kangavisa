@@ -2,12 +2,10 @@
 // Login page — redirects to /pathway on success
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { createClient } from "../../../lib/supabase";
 import styles from "../auth.module.css";
 
 export default function LoginPage() {
-    const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
@@ -21,7 +19,8 @@ export default function LoginPage() {
             const supabase = createClient();
             const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
             if (signInError) throw signInError;
-            router.push("/pathway");
+            // Hard redirect — forces full server re-render so AppHeader reads the new cookie session
+            window.location.href = "/pathway";
         } catch (err: unknown) {
             setError(err instanceof Error ? err.message : "Sign-in failed. Check your credentials and try again.");
         } finally {
