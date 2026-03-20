@@ -1168,6 +1168,20 @@ tsc --noEmit: 0 errors
 Commits:      987b852 (P1) · 84cbf63 (P2) → main (pushed)
 ```
 
+#### Auth fix — sign-in session not visible in header (`54d84c6`, `5ca906b`)
+
+Root cause: `supabase.ts` used `@supabase/supabase-js` `createClient` (localStorage only). `AppHeader` is a Server Component reading auth via `@supabase/ssr` cookies — so it never saw the session.
+
+| Fix | Status |
+|---|---|
+| `lib/supabase.ts` — switched to `createBrowserClient` from `@supabase/ssr` (stores session in cookies) | ✅ |
+| `lib/supabase-server.ts` — added `set`/`remove` cookie handlers (was read-only) | ✅ |
+| `auth/callback/route.ts` — new route exchanges email confirmation codes for cookie sessions | ✅ |
+| `auth/login/page.tsx` — `router.push` → `window.location.href` (forces full server re-render) | ✅ |
+| Supabase Auth Email Templates → Confirm signup URL updated to `/auth/callback?code={{ .Token }}` | ✅ (manual) |
+
+**Verified ✅ — sign-in shows email initial in header; sign-out at `/auth/signout` works.**
+
 ---
 
 ### ⚠️ Action required before next session
