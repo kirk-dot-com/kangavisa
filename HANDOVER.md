@@ -1139,3 +1139,61 @@ Commit:                              765c036 → main (pushed)
 **Priority 4 — Authenticated E2E on production** (rolled from Sprint 26)
 - Sign up on kanga-visa.com, create a 189 session, tick items, export, AskBar
 
+---
+
+## Session: 2026-03-20
+
+### What we achieved — Sprint 27
+
+#### P1 — Evidence Drafting Accordion (no schema change) (`987b852`)
+
+| File | Change | Status |
+|---|---|---|
+| `app/components/ChecklistItem.tsx` | Clickable label toggles accordion; `<textarea>` wired to `note` field; auto-saves on blur; auto-advances status `not_started → in_progress` on first keystroke; chevron indicator | ✅ |
+| `app/components/ChecklistItem.module.css` | `label_btn`, `chevron`, `accordion` (max-height transition), `draft_textarea`, `draft_footer`, `char_count`, `assess_btn` | ✅ |
+| `app/components/ChecklistBodyStandalone.tsx` | Loads `note` values from GET items; passes `initialNote` + `onNoteChange` to each `<ChecklistItem>` | ✅ |
+| `app/lib/export-builder.ts` | `computeReadinessScore()`: `in_progress` items with non-empty note score **0.3× priority weight** as draft credit | ✅ |
+
+#### P2 — AI Assessment Endpoint (`84cbf63`)
+
+| File | Change | Status |
+|---|---|---|
+| `kb/migrations/checklist_item_assessment_v1.sql` | `ALTER TABLE checklist_item_state ADD COLUMN draft_content, assessment_json, assessed_at` | ✅ Created (pending Supabase apply) |
+| `app/api/sessions/[sessionId]/items/[evidenceId]/assess/route.ts` | `POST` — GPT-4o-mini structured assessment (Weak/Adequate/Strong + gaps), persists `assessment_json` | ✅ |
+| `app/components/AssessmentBadge.tsx` + `.module.css` | Rating badge + summary + gap bullets rendered inline | ✅ |
+| `app/components/ChecklistItem.tsx` | `[Assess my draft →]` button appears at ≥20 chars when authenticated; calls assess endpoint; renders `<AssessmentBadge>` | ✅ |
+
+```
+tsc --noEmit: 0 errors
+Commits:      987b852 (P1) · 84cbf63 (P2) → main (pushed)
+```
+
+---
+
+### ⚠️ Action required before next session
+
+**Apply P2 migration to Supabase:**
+1. Supabase → SQL Editor
+2. Paste `kb/migrations/checklist_item_assessment_v1.sql`
+3. Run — idempotent (`IF NOT EXISTS`)
+
+---
+
+### Next session — Sprint 28 priorities
+
+**Priority 1 — Apply P2 migration + Assess button E2E**
+- Run `checklist_item_assessment_v1.sql` in Supabase SQL Editor
+- Sign in on `kanga-visa.com`, open a 189 checklist, type a note ≥20 chars
+- Click **Assess my draft →** — confirm Weak/Adequate/Strong badge appears
+
+**Priority 2 — AssessmentBadge persistence on reload**
+- Load `assessment_json` from DB on checklist mount (alongside `status` + `note`)
+- Pass to `ChecklistItem` as `initialAssessment` prop so badge survives page reload
+
+**Priority 3 — Authenticated E2E on production** (rolled from Sprint 26/27)
+- Full flow: sign up → pathway → 189 checklist → tick items → export → AskBar
+
+**Priority 4 — Home Affairs "Check Twice, Submit Once" data** (rolled from Sprint 27)
+- Add `https://immi.homeaffairs.gov.au/check-twice-submit-once/visitor-visa` as tracked KB source
+- Validate/extend `visa_600` evidence items
+
