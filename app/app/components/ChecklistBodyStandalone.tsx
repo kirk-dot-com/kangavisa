@@ -35,6 +35,7 @@ export function ChecklistBodyStandalone({
     const [sessionId, setSessionId] = useState<string | null>(null);
     const [authToken, setAuthToken] = useState<string | null>(null);
     const [itemStates, setItemStates] = useState<Map<string, ItemStatus>>(new Map());
+    const [notesMap, setNotesMap] = useState<Map<string, string>>(new Map());
 
     // Sort requirements
     const sortedReqs = [...requirements].sort(
@@ -76,10 +77,13 @@ export function ChecklistBodyStandalone({
                 if (sid) {
                     const itemsRes = await fetch(`/api/sessions/${sid}/items`, { headers });
                     const stateMap = new Map<string, ItemStatus>();
+                    const notes = new Map<string, string>();
                     for (const item of (await itemsRes.json()).items ?? []) {
                         stateMap.set(item.evidence_id, item.status as ItemStatus);
+                        if (item.note) notes.set(item.evidence_id, item.note);
                     }
                     setItemStates(stateMap);
+                    setNotesMap(notes);
                 }
             } catch {
                 // Degrade gracefully — UI-only mode
@@ -90,6 +94,10 @@ export function ChecklistBodyStandalone({
 
     const handleStatusChange = useCallback((evidenceId: string, status: ItemStatus) => {
         setItemStates((prev) => new Map(prev).set(evidenceId, status));
+    }, []);
+
+    const handleNoteChange = useCallback((evidenceId: string, note: string) => {
+        setNotesMap((prev) => new Map(prev).set(evidenceId, note));
     }, []);
 
     return (
@@ -140,9 +148,11 @@ export function ChecklistBodyStandalone({
                                             commonGaps={item.common_gaps}
                                             priority={item.priority}
                                             initialStatus={itemStates.get(item.evidence_id) ?? "not_started"}
+                                            initialNote={notesMap.get(item.evidence_id) ?? ""}
                                             sessionId={sessionId}
                                             authToken={authToken}
                                             onStatusChange={handleStatusChange}
+                                            onNoteChange={handleNoteChange}
                                         />
                                     ))}
                                 </ul>

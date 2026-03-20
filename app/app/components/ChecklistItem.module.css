@@ -19,6 +19,11 @@
     opacity: 0.85;
 }
 
+.item__expanded {
+    border-color: var(--color-teal);
+    background: var(--color-surface);
+}
+
 /* Cycle button */
 .cycle_btn {
     display: flex;
@@ -66,20 +71,52 @@
     gap: var(--sp-2);
 }
 
+/* Clickable label button */
+.label_btn {
+    all: unset;
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    cursor: pointer;
+    flex: 1;
+    min-width: 0;
+}
+
+.label_btn:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
 .label {
     font-size: var(--text-sm);
     font-weight: var(--fw-semibold);
     color: var(--color-ink);
-    flex: 1;
     display: flex;
     align-items: center;
     gap: var(--sp-2);
+    flex: 1;
+}
+
+.label:hover {
+    color: var(--color-teal);
 }
 
 .label__done {
     text-decoration: line-through;
     color: var(--color-muted);
     font-weight: var(--fw-regular);
+}
+
+.chevron {
+    font-size: 0.6rem;
+    color: var(--color-muted);
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.chevron__open {
+    transform: rotate(90deg);
 }
 
 .priority_dot {
@@ -129,4 +166,60 @@
     flex-direction: column;
     gap: var(--sp-1);
     color: var(--color-slate);
+}
+
+/* Draft accordion */
+.accordion {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.25s ease;
+}
+
+.accordion__open {
+    max-height: 220px;
+}
+
+.accordion_inner {
+    padding-top: var(--sp-3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+}
+
+.draft_label {
+    font-weight: var(--fw-semibold);
+    color: var(--color-slate);
+}
+
+.draft_textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: var(--sp-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-white);
+    color: var(--color-ink);
+    font-family: var(--font-body, inherit);
+    font-size: var(--text-sm);
+    line-height: 1.5;
+    resize: vertical;
+    min-height: 72px;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.draft_textarea:focus {
+    outline: none;
+    border-color: var(--color-teal);
+    box-shadow: 0 0 0 3px var(--color-teal-light, rgba(0, 160, 160, 0.12));
+}
+
+.draft_textarea::placeholder {
+    color: var(--color-muted);
+    font-style: italic;
+}
+
+.char_count {
+    font-size: var(--text-xs, 0.75rem);
+    color: var(--color-muted);
+    text-align: right;
 }

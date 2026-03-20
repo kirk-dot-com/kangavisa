@@ -161,18 +161,25 @@ export function computeReadinessScore(
     const opts = options ?? {};
 
     // Component 1 — evidence coverage (0–1)
+    // Draft credit: in_progress items with a non-empty note score 0.3× their weight.
+    // This rewards users who have started drafting evidence even if not marked Done.
+    const priorityMap = new Map(evidenceItems.map((e) => [e.evidence_id, e.priority]));
     const totalWeight = (() => {
-        const priorityMap = new Map(evidenceItems.map((e) => [e.evidence_id, e.priority]));
         const applicable = itemStates.filter((s) => s.status !== "na");
         return applicable.reduce((sum, s) => sum + priorityWeight(priorityMap.get(s.evidence_id) ?? 3), 0);
     })();
     const doneWeight = (() => {
-        const priorityMap = new Map(evidenceItems.map((e) => [e.evidence_id, e.priority]));
         return itemStates
             .filter((s) => s.status === "done")
             .reduce((sum, s) => sum + priorityWeight(priorityMap.get(s.evidence_id) ?? 3), 0);
     })();
-    const evidenceCoverage = totalWeight > 0 ? doneWeight / totalWeight : 0;
+    const draftWeight = (() => {
+        // Only credit in_progress items that have a non-empty note (actual draft content)
+        return itemStates
+            .filter((s) => s.status === "in_progress" && s.note && s.note.trim().length > 0)
+            .reduce((sum, s) => sum + priorityWeight(priorityMap.get(s.evidence_id) ?? 3) * 0.3, 0);
+    })();
+    const evidenceCoverage = totalWeight > 0 ? (doneWeight + draftWeight) / totalWeight : 0;
 
     // Component 2 — timeline completeness (0–1). Neutral (1.0) if not collected yet.
     const gapDays = opts.largestTimelineGapDays ?? 0;

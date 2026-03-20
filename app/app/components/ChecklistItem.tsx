@@ -1,8 +1,8 @@
 "use client";
 // ChecklistItem.tsx — Client component for a single evidence checklist row
-// US-B3, US-B4 — saves state to /api/sessions/[sessionId]/items
+// US-B3, US-B4 — saves state + note to /api/sessions/[sessionId]/items
 
-import { useState, useTransition } from "react";
+import { useState, useRef, useTransition } from "react";
 import styles from "./ChecklistItem.module.css";
 
 export type ItemStatus = "not_started" | "in_progress" | "done" | "na";
@@ -16,9 +16,11 @@ export interface ChecklistItemProps {
     formatNotes?: string;
     priority: number;
     initialStatus?: ItemStatus;
+    initialNote?: string;
     sessionId: string | null;   // null = unauthenticated, state not persisted
     authToken: string | null;
     onStatusChange?: (evidenceId: string, status: ItemStatus) => void;
+    onNoteChange?: (evidenceId: string, note: string) => void;
 }
 
 const STATUS_ORDER: ItemStatus[] = ["not_started", "in_progress", "done", "na"];
@@ -46,41 +48,81 @@ export default function ChecklistItem({
     formatNotes,
     priority,
     initialStatus = "not_started",
+    initialNote = "",
     sessionId,
     authToken,
     onStatusChange,
+    onNoteChange,
 }: ChecklistItemProps) {
     const [status, setStatus] = useState<ItemStatus>(initialStatus);
+    const [note, setNote] = useState(initialNote);
+    const [savedChars, setSavedChars] = useState(initialNote.length);
+    const [expanded, setExpanded] = useState(initialNote.length > 0);
+    const [saving, setSaving] = useState(false);
     const [, startTransition] = useTransition();
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    async function patchItem(newStatus: ItemStatus, newNote: string) {
+        if (!sessionId || !authToken) return;
+        try {
+            await fetch(`/api/sessions/${sessionId}/items`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${authToken}`,
+                },
+                body: JSON.stringify({
+                    evidence_id: evidenceId,
+                    status: newStatus,
+                    note: newNote || null,
+                }),
+            });
+        } catch {
+            // Non-fatal
+        }
+    }
 
     function cycleStatus() {
         const next = STATUS_ORDER[(STATUS_ORDER.indexOf(status) + 1) % STATUS_ORDER.length];
-        setStatus(next); // optimistic
-        onStatusChange?.(evidenceId, next); // notify parent
+        setStatus(next);
+        onStatusChange?.(evidenceId, next);
+        startTransition(() => { patchItem(next, note); });
+    }
 
-        if (!sessionId || !authToken) return; // unauthenticated — UI only
+    function handleLabelClick() {
+        setExpanded((prev) => !prev);
+        // Focus textarea when opening
+        if (!expanded) {
+            setTimeout(() => textareaRef.current?.focus(), 50);
+        }
+    }
 
-        startTransition(async () => {
-            try {
-                await fetch(`/api/sessions/${sessionId}/items`, {
-                    method: "PATCH",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${authToken}`,
-                    },
-                    body: JSON.stringify({ evidence_id: evidenceId, status: next }),
-                });
-            } catch {
-                // Non-fatal — state already updated optimistically
-            }
-        });
+    function handleNoteInput(e: React.ChangeEvent<HTMLTextAreaElement>) {
+        const val = e.target.value;
+        setNote(val);
+        onNoteChange?.(evidenceId, val);
+
+        // Auto-advance to in_progress on first keystroke
+        if (val.length > 0 && status === "not_started") {
+            const next: ItemStatus = "in_progress";
+            setStatus(next);
+            onStatusChange?.(evidenceId, next);
+        }
+    }
+
+    async function handleNoteBlur() {
+        if (!sessionId || !authToken) return;
+        setSaving(true);
+        await patchItem(status, note);
+        setSavedChars(note.length);
+        setSaving(false);
     }
 
     const isDone = status === "done";
 
     return (
         <li
-            className={`${styles.item} ${isDone ? styles.item__done : ""}`}
+            className={`${styles.item} ${isDone ? styles.item__done : ""} ${expanded ? styles.item__expanded : ""}`}
             aria-label={`Evidence item: ${label}`}
         >
             {/* Status cycle button */}
@@ -98,12 +140,24 @@ export default function ChecklistItem({
             {/* Content */}
             <div className={styles.content}>
                 <div className={styles.top_row}>
-                    <span className={`${styles.label} ${isDone ? styles.label__done : ""}`}>
-                        {priority === 1 && (
-                            <span className={styles.priority_dot} aria-label="High priority" title="High priority" />
-                        )}
-                        {label}
-                    </span>
+                    {/* Clickable label toggles accordion */}
+                    <button
+                        type="button"
+                        className={styles.label_btn}
+                        onClick={handleLabelClick}
+                        aria-expanded={expanded}
+                        aria-controls={`draft-panel-${evidenceId}`}
+                    >
+                        <span className={`${styles.label} ${isDone ? styles.label__done : ""}`}>
+                            {priority === 1 && (
+                                <span className={styles.priority_dot} aria-label="High priority" title="High priority" />
+                            )}
+                            {label}
+                        </span>
+                        <span className={`${styles.chevron} ${expanded ? styles.chevron__open : ""}`} aria-hidden="true">
+                            ▶
+                        </span>
+                    </button>
                     <span className={`badge ${STATUS_BADGE[status]} ${styles.status_badge}`}>
                         {STATUS_LABEL[status]}
                     </span>
@@ -133,6 +187,35 @@ export default function ChecklistItem({
                         </ul>
                     </details>
                 )}
+
+                {/* Draft note accordion panel */}
+                <div
+                    id={`draft-panel-${evidenceId}`}
+                    className={`${styles.accordion} ${expanded ? styles.accordion__open : ""}`}
+                >
+                    <div className={styles.accordion_inner}>
+                        <label className={`caption ${styles.draft_label}`} htmlFor={`note-${evidenceId}`}>
+                            📝 Your draft notes
+                        </label>
+                        <textarea
+                            id={`note-${evidenceId}`}
+                            ref={textareaRef}
+                            className={styles.draft_textarea}
+                            rows={3}
+                            placeholder="Describe what you have, where it's held, and any gaps… (saves automatically)"
+                            value={note}
+                            onChange={handleNoteInput}
+                            onBlur={handleNoteBlur}
+                        />
+                        <div className={styles.char_count}>
+                            {saving
+                                ? "Saving…"
+                                : savedChars > 0
+                                    ? `${savedChars} chars saved ✓`
+                                    : "Not yet saved"}
+                        </div>
+                    </div>
+                </div>
             </div>
         </li>
     );
