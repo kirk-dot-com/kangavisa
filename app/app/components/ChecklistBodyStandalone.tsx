@@ -19,6 +19,8 @@ interface ChecklistBodyProps {
     caseDateStr: string;
     requirements: Requirement[];
     evidenceItems: EvidenceItem[];
+    initialAuthToken?: string | null;
+    initialUserId?: string | null;
 }
 
 const REQ_TYPE_ORDER = [
@@ -31,9 +33,11 @@ export function ChecklistBodyStandalone({
     caseDateStr,
     requirements,
     evidenceItems,
+    initialAuthToken = null,
+    initialUserId = null,
 }: ChecklistBodyProps) {
     const [sessionId, setSessionId] = useState<string | null>(null);
-    const [authToken, setAuthToken] = useState<string | null>(null);
+    const [authToken] = useState<string | null>(initialAuthToken);
     const [itemStates, setItemStates] = useState<Map<string, ItemStatus>>(new Map());
     const [notesMap, setNotesMap] = useState<Map<string, string>>(new Map());
 
@@ -47,13 +51,11 @@ export function ChecklistBodyStandalone({
     useEffect(() => {
         async function init() {
             try {
-                const supabase = createClient();
-                const { data } = await supabase.auth.getSession();
-                const token = data.session?.access_token ?? null;
-                setAuthToken(token);
-                if (!token) return;
+                // authToken comes from the server (reliable cookie read)
+                // Only need to fetch/create session and load item states
+                if (!initialAuthToken) return;
 
-                const headers = { Authorization: `Bearer ${token}` };
+                const headers = { Authorization: `Bearer ${initialAuthToken}` };
 
                 // Get or create session
                 const getRes = await fetch(
@@ -90,7 +92,7 @@ export function ChecklistBodyStandalone({
             }
         }
         init();
-    }, [subclass, caseDateStr]);
+    }, [subclass, caseDateStr, initialAuthToken, initialUserId]);
 
     const handleStatusChange = useCallback((evidenceId: string, status: ItemStatus) => {
         setItemStates((prev) => new Map(prev).set(evidenceId, status));

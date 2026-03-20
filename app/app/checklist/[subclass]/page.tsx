@@ -8,6 +8,7 @@ import { getKBPackage } from "../../../lib/kb-service";
 import ChecklistController from "../../components/ChecklistController";
 import AskBar from "../../components/AskBar";
 import Disclaimer from "../../components/Disclaimer";
+import { createSupabaseServerClient } from "../../../lib/supabase-server";
 import styles from "./checklist.module.css";
 
 interface ChecklistPageProps {
@@ -53,6 +54,16 @@ export default async function ChecklistPage({ params, searchParams }: ChecklistP
             warnings: ["KB service unavailable — check SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY."],
         };
     }
+
+    // Read auth state server-side (reliable — AppHeader does the same)
+    let initialAuthToken: string | null = null;
+    let initialUserId: string | null = null;
+    try {
+        const supabase = createSupabaseServerClient();
+        const { data: { session } } = await supabase.auth.getSession();
+        initialAuthToken = session?.access_token ?? null;
+        initialUserId = session?.user?.id ?? null;
+    } catch { /* unauthenticated — checklist works read-only */ }
 
     const { requirements, evidenceItems, flagTemplates, warnings } = kbPackage;
 
@@ -115,6 +126,8 @@ export default async function ChecklistPage({ params, searchParams }: ChecklistP
                             caseDateStr={caseDateStr}
                             requirements={requirements}
                             evidenceItems={evidenceItems}
+                            initialAuthToken={initialAuthToken}
+                            initialUserId={initialUserId}
                         />
                     )}
 
