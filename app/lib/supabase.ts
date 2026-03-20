@@ -1,20 +1,24 @@
-import { createClient as _createClient } from '@supabase/supabase-js'
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
-
 /**
- * Browser-side Supabase client singleton.
- * Uses the anon key — subject to RLS policies.
+ * supabase.ts — Cookie-aware browser-side Supabase client
+ * Uses @supabase/ssr createBrowserClient which stores sessions in cookies
+ * so that Server Components (e.g. AppHeader) can read the auth state.
  * Safe to use in Client Components.
  */
-export const supabase = _createClient(supabaseUrl, supabaseAnonKey)
+
+import { createBrowserClient } from "@supabase/ssr";
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
 
 /**
- * Factory — returns a fresh browser-side client.
- * Use in Client Components that cannot import the singleton
- * (e.g. auth pages using useRouter hooks).
+ * Factory — returns a cookie-aware browser-side client.
+ * Use in Client Components for auth operations.
  */
 export function createClient() {
-    return _createClient(supabaseUrl, supabaseAnonKey)
+    return createBrowserClient(supabaseUrl, supabaseAnonKey);
 }
+
+/**
+ * Singleton for non-auth reads in Client Components.
+ */
+export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);
