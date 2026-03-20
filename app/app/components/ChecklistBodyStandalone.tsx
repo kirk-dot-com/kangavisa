@@ -8,6 +8,7 @@
  */
 
 import { useState, useEffect, useCallback } from "react";
+import { createClient } from "../../lib/supabase";
 import ChecklistItem from "./ChecklistItem";
 import type { Requirement, EvidenceItem } from "../../lib/kb-service";
 import type { ItemStatus } from "./ChecklistItem";
@@ -36,7 +37,7 @@ export function ChecklistBodyStandalone({
     initialUserId = null,
 }: ChecklistBodyProps) {
     const [sessionId, setSessionId] = useState<string | null>(null);
-    const [authToken] = useState<string | null>(initialAuthToken);
+    const [authToken, setAuthToken] = useState<string | null>(initialAuthToken ?? null);
     const [itemStates, setItemStates] = useState<Map<string, ItemStatus>>(new Map());
     const [notesMap, setNotesMap] = useState<Map<string, string>>(new Map());
 
@@ -50,11 +51,18 @@ export function ChecklistBodyStandalone({
     useEffect(() => {
         async function init() {
             try {
-                // authToken comes from the server (reliable cookie read)
-                // Only need to fetch/create session and load item states
-                if (!initialAuthToken) return;
+                // Get token: prefer server-provided value, fall back to client-side getSession()
+                // (server getSession() can return null even when authenticated)
+                let token = initialAuthToken;
+                if (!token) {
+                    const supabase = createClient();
+                    const { data } = await supabase.auth.getSession();
+                    token = data.session?.access_token ?? null;
+                }
+                if (!token) return;
+                setAuthToken(token);
 
-                const headers = { Authorization: `Bearer ${initialAuthToken}` };
+                const headers = { Authorization: `Bearer ${token}` };
 
                 // Get or create session
                 const getRes = await fetch(
