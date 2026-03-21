@@ -2,7 +2,7 @@
 // ChecklistItem.tsx — Client component for a single evidence checklist row
 // US-B3, US-B4 — saves state + note to /api/sessions/[sessionId]/items
 
-import { useState, useRef, useTransition } from "react";
+import { useState, useEffect, useRef, useTransition } from "react";
 import styles from "./ChecklistItem.module.css";
 import AssessmentBadge, { type Assessment } from "./AssessmentBadge";
 
@@ -18,6 +18,7 @@ export interface ChecklistItemProps {
     priority: number;
     initialStatus?: ItemStatus;
     initialNote?: string;
+    initialAssessment?: Assessment | null;
     sessionId: string | null;   // null = unauthenticated, state not persisted
     authToken: string | null;
     onStatusChange?: (evidenceId: string, status: ItemStatus) => void;
@@ -50,6 +51,7 @@ export default function ChecklistItem({
     priority,
     initialStatus = "not_started",
     initialNote = "",
+    initialAssessment = null,
     sessionId,
     authToken,
     onStatusChange,
@@ -58,12 +60,19 @@ export default function ChecklistItem({
     const [status, setStatus] = useState<ItemStatus>(initialStatus);
     const [note, setNote] = useState(initialNote);
     const [savedChars, setSavedChars] = useState(initialNote.length);
-    const [expanded, setExpanded] = useState(initialNote.length > 0);
+    // P1: always start false (SSR-safe), then open client-side if a note exists
+    const [expanded, setExpanded] = useState(false);
     const [saving, setSaving] = useState(false);
     const [assessing, setAssessing] = useState(false);
-    const [assessment, setAssessment] = useState<Assessment | null>(null);
+    // P2: seed from persisted assessment_json so badge survives reload
+    const [assessment, setAssessment] = useState<Assessment | null>(initialAssessment ?? null);
     const [, startTransition] = useTransition();
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    // P1: open accordion after hydration if item already has a note
+    useEffect(() => {
+        if (initialNote.length > 0) setExpanded(true);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     async function patchItem(newStatus: ItemStatus, newNote: string) {
         if (!sessionId || !authToken) return;

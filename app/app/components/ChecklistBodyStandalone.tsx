@@ -12,6 +12,7 @@ import { createClient } from "../../lib/supabase";
 import ChecklistItem from "./ChecklistItem";
 import type { Requirement, EvidenceItem } from "../../lib/kb-service";
 import type { ItemStatus } from "./ChecklistItem";
+import type { Assessment } from "./AssessmentBadge";
 import styles from "../checklist/[subclass]/checklist.module.css";
 
 interface ChecklistBodyProps {
@@ -40,6 +41,7 @@ export function ChecklistBodyStandalone({
     const [authToken, setAuthToken] = useState<string | null>(initialAuthToken ?? null);
     const [itemStates, setItemStates] = useState<Map<string, ItemStatus>>(new Map());
     const [notesMap, setNotesMap] = useState<Map<string, string>>(new Map());
+    const [assessmentsMap, setAssessmentsMap] = useState<Map<string, Assessment>>(new Map());
 
     // Sort requirements
     const sortedReqs = [...requirements].sort(
@@ -87,12 +89,15 @@ export function ChecklistBodyStandalone({
                     const itemsRes = await fetch(`/api/sessions/${sid}/items`, { headers });
                     const stateMap = new Map<string, ItemStatus>();
                     const notes = new Map<string, string>();
+                    const assessments = new Map<string, Assessment>();
                     for (const item of (await itemsRes.json()).items ?? []) {
                         stateMap.set(item.evidence_id, item.status as ItemStatus);
                         if (item.note) notes.set(item.evidence_id, item.note);
+                        if (item.assessment_json) assessments.set(item.evidence_id, item.assessment_json as Assessment);
                     }
                     setItemStates(stateMap);
                     setNotesMap(notes);
+                    setAssessmentsMap(assessments);
                 }
             } catch {
                 // Degrade gracefully — UI-only mode
@@ -158,6 +163,7 @@ export function ChecklistBodyStandalone({
                                             priority={item.priority}
                                             initialStatus={itemStates.get(item.evidence_id) ?? "not_started"}
                                             initialNote={notesMap.get(item.evidence_id) ?? ""}
+                                            initialAssessment={assessmentsMap.get(item.evidence_id) ?? null}
                                             sessionId={sessionId}
                                             authToken={authToken}
                                             onStatusChange={handleStatusChange}
