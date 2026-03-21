@@ -151,13 +151,28 @@ export default function PathwayPage({ searchParams }: PathwayPageProps) {
                             </div>
 
                             <div className={styles.visa_card__actions}>
-                                <Link
-                                    href={`/checklist/${visa.subclass}?caseDate=${caseDate}`}
-                                    className="btn btn--primary"
-                                    aria-label={`${visa.cta} for ${visa.name}`}
-                                >
-                                    {visa.cta}
-                                </Link>
+                                {visa.subclass === "600" ? (
+                                    <Link
+                                        href="/visitor"
+                                        className="btn btn--primary"
+                                        aria-label={`${visa.cta} for ${visa.name}`}
+                                    >
+                                        {visa.cta}
+                                    </Link>
+                                ) : (
+                                    <div style={{ display: "flex", flexDirection: "column", gap: "var(--sp-1)" }}>
+                                        <Link
+                                            href={`/checklist/${visa.subclass}?caseDate=${caseDate}`}
+                                            className="btn btn--primary"
+                                            aria-label={`${visa.cta} for ${visa.name}`}
+                                        >
+                                            {visa.cta}
+                                        </Link>
+                                        <span className="caption" style={{ color: "var(--color-muted)", textAlign: "center" }}>
+                                            🔒 Sign in to access
+                                        </span>
+                                    </div>
+                                )}
                                 <Link
                                     href={`/flags/${visa.subclass}`}
                                     className="btn btn--ghost"

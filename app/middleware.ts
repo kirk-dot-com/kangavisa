@@ -31,7 +31,19 @@ export async function middleware(req: NextRequest) {
     );
 
     // Refresh session — writes updated cookie to the response
-    await supabase.auth.getUser();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    // Auth gate: /checklist/[subclass] except 600 requires sign-in
+    const pathname = req.nextUrl.pathname;
+    const checklistMatch = pathname.match(/^\/checklist\/(\w+)/);
+    if (checklistMatch) {
+        const subclass = checklistMatch[1];
+        if (subclass !== "600" && !user) {
+            const loginUrl = new URL("/auth/login", req.url);
+            loginUrl.searchParams.set("next", pathname);
+            return NextResponse.redirect(loginUrl);
+        }
+    }
 
     return response;
 }

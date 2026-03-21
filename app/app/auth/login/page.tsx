@@ -1,7 +1,8 @@
 "use client";
-// Login page — redirects to /pathway on success
+// Login page — redirects to ?next or /pathway on success
 import { useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { createClient } from "../../../lib/supabase";
 import styles from "../auth.module.css";
 
@@ -10,6 +11,7 @@ export default function LoginPage() {
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const searchParams = useSearchParams();
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -19,8 +21,11 @@ export default function LoginPage() {
             const supabase = createClient();
             const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
             if (signInError) throw signInError;
+            // Redirect to ?next if present (same-origin paths only), else /pathway
+            const next = searchParams.get("next");
+            const dest = next && next.startsWith("/") ? next : "/pathway";
             // Hard redirect — forces full server re-render so AppHeader reads the new cookie session
-            window.location.href = "/pathway";
+            window.location.href = dest;
         } catch (err: unknown) {
             setError(err instanceof Error ? err.message : "Sign-in failed. Check your credentials and try again.");
         } finally {
