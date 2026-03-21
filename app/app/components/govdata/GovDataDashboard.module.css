@@ -1,0 +1,178 @@
+/* GovDataDashboard.module.css — Sprint 32 */
+
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-6);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Filters bar */
+.filters {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--sp-4);
+    flex-wrap: wrap;
+    padding: var(--sp-4) var(--sp-5);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+}
+
+.filter_group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+}
+
+/* Tab navigation */
+.tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid var(--color-border);
+    overflow-x: auto;
+}
+
+.tab {
+    padding: var(--sp-3) var(--sp-5);
+    font-size: var(--text-sm);
+    font-weight: var(--fw-medium);
+    color: var(--color-muted);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.tab:hover {
+    color: var(--color-navy);
+}
+
+.tab_active {
+    color: var(--color-teal);
+    border-bottom-color: var(--color-teal);
+    font-weight: var(--fw-semibold);
+}
+
+/* Screen layout */
+.screen {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-5);
+    animation: fade-in 0.2s ease;
+}
+
+@keyframes fade-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* KPI row */
+.kpi_row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--sp-4);
+}
+
+/* Chart grid */
+.chart_row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--sp-4);
+}
+
+@media (max-width: 768px) {
+    .chart_row {
+        grid-template-columns: 1fr;
+    }
+}
+
+.chart_card {
+    padding: var(--sp-5);
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+}
+
+.chart_card_wide {
+    flex: 2;
+}
+
+.chart_card_full {
+    padding: var(--sp-5);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-white);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+}
+
+.chart_title {
+    font-size: var(--text-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--color-navy);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Cohort table */
+.table_card {
+    padding: var(--sp-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-3);
+    overflow-x: auto;
+}
+
+.cohort_table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-sm);
+}
+
+.cohort_table th {
+    text-align: left;
+    padding: var(--sp-2) var(--sp-3);
+    color: var(--color-muted);
+    font-weight: var(--fw-semibold);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.cohort_table td {
+    padding: var(--sp-3);
+    color: var(--color-slate);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.risk_badge {
+    background: rgba(239,68,68,0.1);
+    color: var(--color-risk);
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    font-size: var(--text-xs);
+    font-weight: var(--fw-semibold);
+}
+
+.neutral_badge {
+    background: rgba(20,184,166,0.1);
+    color: var(--color-teal);
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    font-size: var(--text-xs);
+    font-weight: var(--fw-semibold);
+}
+
+/* Empty state */
+.empty {
+    padding: var(--sp-10);
+    text-align: center;
+}
