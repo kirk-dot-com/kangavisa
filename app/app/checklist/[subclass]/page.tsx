@@ -8,6 +8,7 @@ import { getKBPackage } from "../../../lib/kb-service";
 import ChecklistController from "../../components/ChecklistController";
 import AskBar from "../../components/AskBar";
 import Disclaimer from "../../components/Disclaimer";
+import VisitorIntakeBanner from "../../components/VisitorIntakeBanner";
 import { createSupabaseServerClient } from "../../../lib/supabase-server";
 import styles from "./checklist.module.css";
 
