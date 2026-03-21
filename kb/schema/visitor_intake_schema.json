@@ -1,0 +1,157 @@
+{
+  "version": "1.0",
+  "schema": "kangavisa_visitor_intake",
+  "description": "Structured intake schema for Visitor visa (Subclass 600) readiness diagnostic. Optimised for low-friction UX, rules engine input, and de-identified analytics (GovData).",
+
+  "stages": {
+
+    "stage_1_pre_email": {
+      "description": "Ultra-light intake before email capture. Must remain ≤60 seconds.",
+      "fields": [
+        {
+          "field_id": "passport_country",
+          "type": "string",
+          "required": true,
+          "label": "Country of passport",
+          "input": "country_select",
+          "analytics_tag": "demographic"
+        },
+        {
+          "field_id": "country_of_residence",
+          "type": "string",
+          "required": true,
+          "label": "Country where you currently live",
+          "input": "country_select",
+          "analytics_tag": "demographic"
+        },
+        {
+          "field_id": "age_band",
+          "type": "string",
+          "required": true,
+          "label": "Age range",
+          "input": "radio",
+          "options": ["18-24", "25-34", "35-44", "45-54", "55+"],
+          "analytics_tag": "demographic"
+        },
+        {
+          "field_id": "trip_duration_band",
+          "type": "string",
+          "required": true,
+          "label": "How long are you planning to stay?",
+          "input": "radio",
+          "options": ["<1 month", "1-3 months", "3+ months"],
+          "analytics_tag": "travel_pattern"
+        },
+        {
+          "field_id": "travel_history",
+          "type": "string",
+          "required": true,
+          "label": "Have you travelled internationally before?",
+          "input": "radio",
+          "options": ["first_time_traveller", "some_travel", "frequent_traveller"],
+          "analytics_tag": "travel_pattern"
+        }
+      ]
+    },
+
+    "stage_2_post_value": {
+      "description": "Captured after value is shown. Drives flag detection and readiness scoring.",
+      "fields": [
+        {
+          "field_id": "financial_confidence",
+          "type": "string",
+          "required": true,
+          "label": "Do you feel confident you can show enough funds for your trip?",
+          "input": "radio",
+          "options": ["yes", "not_sure", "no"],
+          "analytics_tag": "risk_signal"
+        },
+        {
+          "field_id": "employment_status",
+          "type": "string",
+          "required": true,
+          "label": "What best describes your current situation?",
+          "input": "radio",
+          "options": ["employed", "self_employed", "student", "between_jobs", "not_working"],
+          "analytics_tag": "risk_signal"
+        },
+        {
+          "field_id": "documentation_readiness",
+          "type": "string",
+          "required": true,
+          "label": "How prepared are your documents?",
+          "input": "radio",
+          "options": ["none", "some", "most_ready"],
+          "analytics_tag": "readiness_signal"
+        }
+      ]
+    },
+
+    "stage_3_optional_enrichment": {
+      "description": "Optional enrichment layer. Improves DaaS value without impacting conversion.",
+      "fields": [
+        {
+          "field_id": "accommodation_type",
+          "type": "string",
+          "required": false,
+          "label": "Where will you stay?",
+          "input": "radio",
+          "options": ["hotel", "family_or_friends", "mixed", "not_sure"],
+          "analytics_tag": "travel_pattern"
+        },
+        {
+          "field_id": "return_travel_booked",
+          "type": "boolean",
+          "required": false,
+          "label": "Have you booked return travel?",
+          "input": "radio",
+          "options": [true, false],
+          "analytics_tag": "risk_signal"
+        },
+        {
+          "field_id": "travel_companions",
+          "type": "string",
+          "required": false,
+          "label": "Who are you travelling with?",
+          "input": "radio",
+          "options": ["solo", "partner", "family", "group"],
+          "analytics_tag": "travel_pattern"
+        }
+      ]
+    }
+  },
+
+  "derived_signals": {
+    "financial_risk_flag": {
+      "logic": "financial_confidence in ['not_sure', 'no']"
+    },
+    "intent_risk_proxy": {
+      "logic": "travel_history == 'first_time_traveller' AND employment_status in ['between_jobs', 'not_working']"
+    },
+    "documentation_gap_flag": {
+      "logic": "documentation_readiness == 'none'"
+    },
+    "strong_profile_indicator": {
+      "logic": "financial_confidence == 'yes' AND documentation_readiness == 'most_ready'"
+    }
+  },
+
+  "analytics_outputs": {
+    "aggregation_keys": ["passport_country", "country_of_residence", "age_band"],
+    "metrics": [
+      "total_users",
+      "financial_risk_rate",
+      "documentation_gap_rate",
+      "intent_risk_rate",
+      "average_readiness_score"
+    ]
+  },
+
+  "privacy_controls": {
+    "pii_fields": [],
+    "store_age_as_band": true,
+    "no_exact_location_tracking": true,
+    "consent_required_for_analytics": true,
+    "data_usage_note": "All analytics outputs must be aggregated and de-identified. No individual-level data is exposed."
+  }
+}
