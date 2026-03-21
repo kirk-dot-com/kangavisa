@@ -1244,21 +1244,51 @@ Root cause: `supabase.ts` used `@supabase/supabase-js` `createClient` (localStor
 
 ---
 
-### Next session — Sprint 28 priorities
+### Next session — Sprint 28 priorities (COMPLETED ✅)
 
-**Priority 1 — Fix React hydration warnings (#418/#423)**
-- Caused by `expanded` state in `ChecklistItem` initialising differently server vs client
-- Fix: initialise `expanded` to `false` always, then set in `useEffect` based on `initialNote`
+---
 
-**Priority 2 — AssessmentBadge persistence on reload**
-- Load `assessment_json` from DB on checklist mount (alongside `status` + `note`)
-- Pass to `ChecklistItem` as `initialAssessment` prop
+## Session: 2026-03-21
 
-**Priority 3 — Authenticated E2E (189 checklist + export + AskBar)**
-- Test full flow on 189 visa subclass
-- Verify export pack includes notes, readiness score reflects draft credit
+### What we achieved — Sprint 28
 
-**Priority 4 — Home Affairs KB data**
-- Add `https://immi.homeaffairs.gov.au/check-twice-submit-once/visitor-visa`
-- Extend `visa_600` evidence items
+#### P1 — React hydration fix (`a8d61a3`)
+
+| File | Change | Status |
+|---|---|---| 
+| `app/components/ChecklistItem.tsx` | `expanded` now initialises to `false` (SSR-safe); `useEffect` opens accordion client-side if `initialNote` is non-empty | ✅ |
+
+Root cause: `useState(initialNote.length > 0)` disagreed between SSR (no note data) and client → hydration warning. Fix: always render closed on server, expand after hydration.
+
+#### P2 — AssessmentBadge persistence on reload (`a8d61a3`)
+
+| File | Change | Status |
+|---|---|---|
+| `app/components/ChecklistBodyStandalone.tsx` | Parses `assessment_json` from items GET response into `assessmentsMap` | ✅ |
+| `app/components/ChecklistItem.tsx` | `initialAssessment?: Assessment \| null` prop; seeds `assessment` state from it | ✅ |
+
+No schema changes or new API routes — `assessment_json` was already being written by Sprint 27 assess route, just not read back on mount.
+
+```
+tsc --noEmit: 0 errors
+Commit:       a8d61a3 → main (pushed)
+```
+
+---
+
+### Next session — Sprint 29 priorities
+
+**Priority 1 — Authenticated E2E on production (189 + export + AskBar)**
+- Sign in on `kanga-visa.com`, create a 189 session, tick items, type notes, assess
+- Open `/export/189` — verify readiness score with draft credit
+- Download PDF + DOCX — check notes appear
+- AskBar on `/checklist/189` — KB-grounded badge
+
+**Priority 2 — Home Affairs KB data** (rolled from Sprint 27/28)
+- Add `https://immi.homeaffairs.gov.au/check-twice-submit-once/visitor-visa` as tracked KB source
+- Validate/extend `visa_600` evidence items against the checklist
+
+**Priority 3 — Export pack: include draft notes**
+- PDF/DOCX export currently doesn't include item notes — add a "Notes" column to the evidence table
+
 
