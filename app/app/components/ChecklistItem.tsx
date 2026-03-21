@@ -258,15 +258,25 @@ export default function ChecklistItem({
                                         ? `${savedChars} chars saved ✓`
                                         : "Not yet saved"}
                             </span>
-                            {sessionId && authToken && note.trim().length >= 20 && (
-                                <button
-                                    type="button"
-                                    className={styles.assess_btn}
-                                    onClick={handleAssess}
-                                    disabled={assessing}
-                                >
-                                    {assessing ? "Assessing…" : "Assess my draft →"}
-                                </button>
+                            {note.trim().length >= 20 && (
+                                sessionId && authToken ? (
+                                    <button
+                                        type="button"
+                                        className={styles.assess_btn}
+                                        onClick={handleAssess}
+                                        disabled={assessing}
+                                    >
+                                        {assessing ? "Assessing…" : "Assess my draft →"}
+                                    </button>
+                                ) : (
+                                    <a
+                                        href="/auth/signup"
+                                        className={styles.assess_btn}
+                                        style={{ textDecoration: "none", display: "inline-block" }}
+                                    >
+                                        ✨ Get a free AI assessment of this evidence
+                                    </a>
+                                )
                             )}
                         </div>
                         {assessment && <AssessmentBadge assessment={assessment} />}
