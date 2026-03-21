@@ -1,0 +1,120 @@
+/* VisitorIntakeSurvey.module.css — 3-stage intake form styles */
+
+.survey {
+    max-width: 680px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-8);
+}
+
+/* Progress bar */
+.progress_bar {
+    display: flex;
+    gap: var(--sp-2);
+    margin-bottom: var(--sp-2);
+}
+
+.progress_step {
+    flex: 1;
+    height: 4px;
+    border-radius: var(--radius-full);
+    background: var(--color-border);
+    transition: background var(--transition-base);
+}
+
+.progress_step_active {
+    background: var(--color-teal);
+}
+
+/* Stage */
+.stage {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-6);
+    animation: slide-in 0.25s ease;
+}
+
+@keyframes slide-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.stage_header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+}
+
+.stage_label {
+    color: var(--color-teal);
+    font-weight: var(--fw-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+}
+
+/* Fields */
+.fields {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-6);
+}
+
+.field {
+    border: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+}
+
+/* Radio card grid */
+.radio_grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+}
+
+.radio_card {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    padding: var(--sp-2) var(--sp-4);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: var(--text-sm);
+    color: var(--color-slate);
+    background: var(--color-white);
+    transition: border-color var(--transition-fast), color var(--transition-fast), background var(--transition-fast);
+    user-select: none;
+}
+
+.radio_card:hover {
+    border-color: var(--color-teal);
+    color: var(--color-navy);
+}
+
+.radio_card_selected {
+    border-color: var(--color-teal);
+    background: rgba(20, 184, 166, 0.07);
+    color: var(--color-navy);
+    font-weight: var(--fw-semibold);
+}
+
+.radio_input {
+    /* visually hidden but accessible */
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Actions */
+.actions {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-4);
+    flex-wrap: wrap;
+}
