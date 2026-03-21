@@ -56,7 +56,16 @@ export async function POST(req: NextRequest) {
 
         if (error) throw error;
 
-        return NextResponse.json({ ok: true });
+        // Set cookie so middleware can gate /checklist/600 behind this survey.
+        // 90-day expiry — long enough to not re-prompt returning users.
+        const res = NextResponse.json({ ok: true });
+        res.cookies.set("kv_intake_done", "1", {
+            path: "/",
+            maxAge: 60 * 60 * 24 * 90,
+            sameSite: "lax",
+            httpOnly: false, // readable client-side for VisitorIntakeBanner
+        });
+        return res;
     } catch (err) {
         console.error("[POST /api/intake]", err);
         return NextResponse.json({ error: "internal" }, { status: 500 });

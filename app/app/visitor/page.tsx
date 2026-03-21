@@ -1,6 +1,7 @@
 // /visitor — entry point for Visitor visa (600) funnel
 // Free access — no login required. Renders intake survey then redirects to /checklist/600.
-// Sprint 31
+// Survey is now a required gate — middleware redirects /checklist/600 here if kv_intake_done cookie absent.
+// Sprint 31 / Sprint 33 gate update
 
 import type { Metadata } from "next";
 import VisitorIntakeSurvey from "../components/VisitorIntakeSurvey";
@@ -11,7 +12,13 @@ export const metadata: Metadata = {
         "Build a personalised evidence checklist for your Australian Visitor visa (subclass 600). Free — no account required.",
 };
 
-export default function VisitorPage() {
+export default function VisitorPage({
+    searchParams,
+}: {
+    searchParams?: { next?: string };
+}) {
+    const redirectTo = searchParams?.next ?? "/checklist/600";
+
     return (
         <div className="section">
             <div className="container container--content">
@@ -23,7 +30,7 @@ export default function VisitorPage() {
                     </p>
                 </div>
 
-                <VisitorIntakeSurvey />
+                <VisitorIntakeSurvey redirectTo={redirectTo} />
 
                 <p
                     className="caption"

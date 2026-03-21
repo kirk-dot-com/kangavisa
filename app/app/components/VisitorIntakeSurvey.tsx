@@ -148,7 +148,7 @@ function ProgressBar({ stage }: { stage: 1 | 2 | 3 }) {
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
-export default function VisitorIntakeSurvey() {
+export default function VisitorIntakeSurvey({ redirectTo = "/checklist/600" }: { redirectTo?: string }) {
     const router = useRouter();
     const uid = useId();
 
@@ -217,25 +217,25 @@ export default function VisitorIntakeSurvey() {
             localStorage.setItem("kv_visitor_intake", JSON.stringify({ ...s1, ...s2, ...s3, derived_signals: signals }));
         }
 
-        // Fire-and-forget persist — don't block navigation on failure
-        fetch("/api/intake", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                session_id: sessionId,
-                ...s1,
-                ...s2,
-                ...s3,
-                derived_signals: signals,
-            }),
-        }).catch(() => { /* safe to ignore */ });
+        // Await the persist so the Set-Cookie header is received before we navigate.
+        // The server sets kv_intake_done=1 which middleware checks to gate /checklist/600.
+        try {
+            await fetch("/api/intake", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    session_id: sessionId,
+                    ...s1,
+                    ...s2,
+                    ...s3,
+                    derived_signals: signals,
+                }),
+            });
+        } catch {
+            // Cookie may not be set, but allow navigation anyway
+        }
 
-        router.push("/checklist/600");
-    }
-
-    // ── Skip to checklist (no intake) ─────────────────────────────────────────
-    function handleSkip() {
-        router.push("/checklist/600");
+        router.push(redirectTo);
     }
 
     return (
@@ -300,10 +300,7 @@ export default function VisitorIntakeSurvey() {
                             onClick={handleStage1}
                             disabled={!stage1Complete}
                         >
-                            See my checklist →
-                        </button>
-                        <button className="btn btn--ghost" onClick={handleSkip}>
-                            Skip
+                            Continue →
                         </button>
                     </div>
                 </div>
@@ -364,9 +361,6 @@ export default function VisitorIntakeSurvey() {
                             disabled={!stage2Complete}
                         >
                             Continue →
-                        </button>
-                        <button className="btn btn--ghost" onClick={handleFinish} disabled={submitting}>
-                            Skip to checklist
                         </button>
                     </div>
                 </div>

@@ -38,7 +38,16 @@ export async function middleware(req: NextRequest) {
     const checklistMatch = pathname.match(/^\/checklist\/(\w+)/);
     if (checklistMatch) {
         const subclass = checklistMatch[1];
-        if (subclass !== "600" && !user) {
+        if (subclass === "600") {
+            // Intake gate: must complete /visitor survey before accessing 600 checklist
+            const intakeDone = req.cookies.get("kv_intake_done")?.value;
+            if (!intakeDone) {
+                const visitorUrl = new URL("/visitor", req.url);
+                visitorUrl.searchParams.set("next", pathname);
+                return NextResponse.redirect(visitorUrl);
+            }
+        } else if (!user) {
+            // Non-600 subclasses require auth
             const loginUrl = new URL("/auth/login", req.url);
             loginUrl.searchParams.set("next", pathname);
             return NextResponse.redirect(loginUrl);
