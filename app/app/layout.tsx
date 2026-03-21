@@ -1,5 +1,6 @@
 // US-A1 | Brand Guidelines §4–7
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import AppHeader from "./components/AppHeader";
 
@@ -73,6 +74,7 @@ export default function RootLayout({
             © {new Date().getFullYear()} KangaVisa
           </p>
         </footer>
+        <Analytics />
       </body>
     </html>
   );
