@@ -26,7 +26,7 @@ export default function StackedRiskChart({ data }: Props) {
                 <XAxis dataKey="name" tick={{ fontSize: 12, fill: "var(--color-slate)" }} />
                 <YAxis tick={{ fontSize: 11, fill: "var(--color-muted)" }} unit="%" domain={[0, 100]} />
                 <Tooltip
-                    formatter={(v: number) => `${v}%`}
+                    formatter={(v) => (v != null ? `${v}%` : "")}
                     contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid var(--color-border)" }}
                 />
                 <Bar dataKey="rate" radius={[4, 4, 0, 0]}>
