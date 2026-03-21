@@ -1332,3 +1332,48 @@ Commit:       b50ba3b → main
 - Add a pulsing "Thinking…" state between submit and first SSE token
 - The gap is currently silent, feels unresponsive
 
+
+---
+
+## Session: 2026-03-21 (afternoon)
+
+### What we achieved — Sprint 30
+
+#### P2 — PDF pagination: evidence checklist grouped by requirement (`0a867df`)
+
+- `ExportPDFDocument.tsx`: groups `item_states` by `requirement_id` via `evidence_items` lookup; renders each group as a titled section; `break={true}` on all groups after the first
+- Root cause: all items rendered in a single flat `<View>` — overflowed on visas with ≥10 evidence items
+
+#### P3 — AskBar "Thinking…" indicator (`0a867df`)
+
+- `AskBar.tsx`: added `thinking` boolean state; set on submit, cleared on first SSE token or error; chips hidden during thinking
+- `AskBar.module.css`: `.thinking_dots` 2-dot CSS bounce animation in teal; removed empty `.header {}` lint warning
+
+#### E2E verification ✅
+
+| Check | Result |
+|---|---|
+| `/checklist/500` AskBar answer streams | ✅ model badge `gpt-4o-mini · KB-grounded` shown |
+| `/checklist/189` console | ✅ No hydration errors |
+
+```
+tsc --noEmit: 0 errors
+Commit:       0a867df → main
+```
+
+---
+
+### Next session — Sprint 31 priorities
+
+**Priority 1 — Authenticated E2E: full notes + export download test**
+- Sign in, go to 189 checklist, type note, assess, download PDF/DOCX
+- Confirm: requirement group headings visible, NOTE column populated, AssessmentBadge persists after reload
+
+**Priority 2 — Thinking dots: add 3rd dot**
+- Current CSS uses `::before` + `::after` on `.thinking_dots` (2 dots only)
+- Add a middle `<span>` child with `animation-delay: 0.2s` for true 3-dot bounce
+
+**Priority 3 — PDF: column headers per requirement group**
+- STATUS / ITEM / NOTE headers currently only appear above first group
+- Repeat a lightweight mini-header at the top of each requirement group
+
