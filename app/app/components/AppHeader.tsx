@@ -59,6 +59,13 @@ export default async function AppHeader() {
                                 </Link>
                             </li>
                         )}
+                        {isAuthenticated && (
+                            <li>
+                                <Link href="/govdata" className={styles.nav__link}>
+                                    GovData
+                                </Link>
+                            </li>
+                        )}
                     </ul>
                 </nav>
 
