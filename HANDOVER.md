@@ -1276,19 +1276,59 @@ Commit:       a8d61a3 → main (pushed)
 
 ---
 
-### Next session — Sprint 29 priorities
+### Next session — Sprint 29 priorities (COMPLETED ✅)
 
-**Priority 1 — Authenticated E2E on production (189 + export + AskBar)**
-- Sign in on `kanga-visa.com`, create a 189 session, tick items, type notes, assess
-- Open `/export/189` — verify readiness score with draft credit
-- Download PDF + DOCX — check notes appear
-- AskBar on `/checklist/189` — KB-grounded badge
+---
 
-**Priority 2 — Home Affairs KB data** (rolled from Sprint 27/28)
-- Add `https://immi.homeaffairs.gov.au/check-twice-submit-once/visitor-visa` as tracked KB source
-- Validate/extend `visa_600` evidence items against the checklist
+## Session: 2026-03-21
 
-**Priority 3 — Export pack: include draft notes**
-- PDF/DOCX export currently doesn't include item notes — add a "Notes" column to the evidence table
+### What we achieved — Sprint 29
 
+#### P1+P2 — Export label bug fix + draft notes in PDF/DOCX (`b50ba3b`)
+
+| File | Change | Status |
+|---|---|---|
+| `app/components/ExportPDFDocument.tsx` | Pre-builds `Map<evidence_id, EvidenceItem>`; evidence column shows readable label (not UUID); NOTE column added (italic, slate) | ✅ |
+| `app/lib/export-docx.ts` | Same `evMap` lookup — evidence column now shows label; header renamed "Your draft notes" | ✅ |
+
+Root cause: both files rendered `s.evidence_id` (UUID) directly instead of looking up the label from `payload.evidence_items`.
+
+#### P3 — Home Affairs "Check Twice, Submit Once" KB source (`b50ba3b`)
+
+| File | Change | Status |
+|---|---|---|
+| `workers/run_watchers.py` | Added `ha_check_twice_visitor` entry to `HOMEAFFAIRS_TARGETS` | ✅ |
+
+URL: `https://immi.homeaffairs.gov.au/visas/help-and-support/check-twice-submit-once`
+
+#### E2E verification ✅
+
+| Check | Result |
+|---|---|
+| `/checklist/500` — console errors | None (hydration clean, no React warnings) |
+| `/checklist/500` — requirement cards | 5 loaded correctly |
+| `/export/500` — download buttons | ↓ PDF ↓ DOCX ↓ CSV all present |
+
+```
+tsc --noEmit: 0 errors
+Commit:       b50ba3b → main
+```
+
+---
+
+### Next session — Sprint 30 priorities
+
+**Priority 1 — Authenticated E2E: export notes end-to-end**
+- Sign in on `kanga-visa.com`, go to a 189 checklist
+- Type 20+ chars in an accordion, click "Assess my draft →", get a rating
+- Download PDF + DOCX — confirm: readable label (not UUID), note text visible
+- Hard-refresh checklist — confirm AssessmentBadge still shows
+
+**Priority 2 — Export PDF: pagination for large checklists**
+- Subclasses with 10+ evidence items overflow a single A4 page
+- Add page breaks between requirement groups
+
+**Priority 3 — AskBar UX: streaming indicator**
+- Add a pulsing "Thinking…" state between submit and first SSE token
+- The gap is currently silent, feels unresponsive
 
