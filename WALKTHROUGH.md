@@ -724,5 +724,501 @@ Browser preview: both templates render correctly (navy header, gold CTA, footer)
 
 ---
 
-*Next sprint walkthrough will be added here when Sprint 11 completes.*
+## Sprint 11 — Dashboard Scorecard + PDF Route Fix + PWA Manifest
+**Completed:** 2026-03-03  
+**Commits:** `2a2c607` on `main`
+
+### What was built
+
+| Item | File | Detail |
+|---|---|---|
+| Dashboard readiness scorecard | `app/dashboard/page.tsx` | Imports `ReadinessScorecard`; fetches done/total counts + open flag count for most-recently-updated session; renders scorecard above sessions grid |
+| Dashboard scorecard styles | `app/dashboard/dashboard.module.css` | `.scorecard_wrap` (bottom margin) |
+| PDF export route fix | `app/api/export/pdf/route.ts` | Fixed broken `renderToBuffer` import (named import, not default) |
+| PWA manifest | `app/manifest.ts` | `display: standalone`, `theme_color: #0B1F3B`, icon-192 + icon-512 + apple-icon |
+| Root metadata | `app/layout.tsx` | Added `manifest`, `themeColor`, `appleWebApp` fields |
+
+Scorecard shows evidence coverage %, items addressed, and open flags. Empty state unchanged. PDF route returns `200 application/pdf` with correct `Content-Disposition: attachment` header. Manifest served at `/manifest.webmanifest`.
+
+### Tests
+```
+tsc --noEmit:  0 errors
+Jest:         28 / 28
+```
+
+---
+
+## Sprint 12 — CI Green + FRL Watcher Live + RLS Performance Fix
+**Completed:** 2026-03-03  
+**Commits:** `run #64` on GitHub Actions
+
+### What was built
+
+| Item | Detail |
+|---|---|
+| 7 ESLint errors fixed | `api/ask/route.ts`, `api/export/csv/route.ts`, `auth/reset-request/page.tsx`, `ChecklistController.tsx`, `ExportPDFDocument.tsx` |
+| FRL watcher → Supabase live | `workers/.env` + `workers/run_frl_watch.py` — 3/3 FRL targets fetch + persist |
+| Enum bug fix | `kb_change_type` value `initial_snapshot` → `new_instrument` in `frl_watcher.py` + `test_db.py` |
+| RLS performance migration | `kb/migrations/rls_performance_fix.sql` — wraps all `auth.uid()` calls in scalar subqueries across `analytics_event`, `consent_event`, `consent_state`; drops duplicate policy |
+
+```
+CI:        run #64 ✅ (after 8 consecutive failures)
+pytest:    62 / 62
+Supabase:  0 performance issues
+```
+
+---
+
+## Sprint 13 — DOCX Export + Weighted Scorecard + RLS Fix
+**Completed:** 2026-03-04  
+**Commits:** `a88699f` on `main` (CI run #65/#74 ✅)
+
+### What was built
+
+| Item | File | Detail |
+|---|---|---|
+| DOCX export | `app/lib/export-docx.ts` | `buildDocx()` using `docx` npm package — branded cover, requirements/flags/evidence tables, disclaimer |
+| DOCX API route | `app/api/export/docx/route.ts` | `/api/export/docx` mirroring PDF pattern |
+| DOCX button | `app/export/[subclass]/page.tsx` | Added between PDF and CSV |
+| Enriched CSV | `app/lib/export-builder.ts` | `buildCsv()` now populates `label`, `what_it_proves`, `requirement` columns |
+| Weighted scorecard | `app/lib/export-builder.ts` | `computeWeightedCoverage()` — priority 1→3pts, 2→2pts, ≥3→1pt |
+| Weighted prop | `app/components/ReadinessScorecard.tsx` | Optional `weightedPct` renders "Priority-weighted" metric with tooltip |
+| RLS v2 migration | `kb/migrations/rls_analytics_event_fix_v2.sql` | Drops duplicate `analytics_event_insert_if_enabled` policy; Supabase Advisor: 0 issues |
+
+### Tests
+```
+tsc --noEmit:  0 errors
+Jest:         28 / 28
+CI:           run #74 ✅
+```
+
+---
+
+## Sprint 14 — MVP 5-Pathway Strategy + Subclass 600 Seed + Rules Engine + Case Schema
+**Completed:** 2026-03-09  
+**Commits:** `e163651` on `main`
+
+### What was built
+
+#### MVP Pathway strategy
+Locked in the 5 visa pathways covering ~80–90% of real usage: **600** (Visitor) · **500** (Student) · **485** (Temp Graduate) · **189/190/491** (Skilled) · **820/801** (Partner)
+
+#### Subclass 600 seed
+| File | Content |
+|---|---|
+| `kb/seed/visa_600_requirements.json` | 5 requirements (600.211, financial, identity, travel plan, host) |
+| `kb/seed/visa_600_evidence_items.json` | 7 evidence items |
+| `kb/seed/visa_600_flags.json` | 6 flags with legal citations |
+
+#### Rules Engine Triad
+| File | Content |
+|---|---|
+| `kb/seed/flag_templates.json` | 22 cross-visa reusable flags across 7 refusal categories |
+| `kb/seed/subclass_flag_mapping.json` | Priority + secondary categories per subclass (7 subclasses) |
+| `kb/rules/flag_detection_rules.json` | 32 deterministic rules (R001–R032) |
+| `kb/rules/readiness_scoring_model.json` | 4-component weighted score + bands + safety rules |
+
+**Scoring formula:** `(evidence_coverage × 0.35) + (timeline_completeness × 0.20) + (consistency × 0.20) + (risk_flags × 0.25)`
+
+#### Case Schema
+| File | Content |
+|---|---|
+| `kb/schema/case_schema.json` | Canonical case object (6 entities) |
+| `kb/migrations/case_schema_v1.sql` | 6 new tables + RLS policies (cases, documents, timeline_events, flag_events, case_scores, case_exports) |
+
+---
+
+## Sprint 15 — Case Schema Applied + Readiness Score + New Visa Seeds
+**Completed:** 2026-03-09  
+**Commits:** `e163651` on `main`
+
+### What was built
+
+| Item | Status |
+|---|---|
+| `case_schema_v1.sql` applied to Supabase | ✅ |
+| `computeReadinessScore()` — 4-component formula in `export-builder.ts` | ✅ |
+| `ReadinessScorecard.tsx` — displays readiness score band | ✅ |
+| `kb/seed/visa_820_flags.json` — 5 flags for Partner Visa (820) | ✅ |
+| `kb/seed/visa_485_flags.json` — 5 flags for Temporary Graduate (485) | ✅ |
+| `kb/seed/visa_190_491_seed.json` — delta seed for 190/491 | ✅ |
+| `PathwayQuiz.tsx` — Visitor (600) and Skilled Independent (189) tiles added | ✅ |
+| `VISA_NAMES` map updated across all 8 files (600, 189, 190, 491) | ✅ |
+
+---
+
+## Sprint 16 — MVP Visa Seed SQL + AskBar Chips + Export Wiring
+**Completed:** 2026-03-09  
+**Commits:** on `main`
+
+### What was built
+
+| Item | Detail |
+|---|---|
+| `kb/migrations/seed_mvp_visas_v1.sql` | Idempotent seed for 485, 189, 190, 491, 820 via `ON CONFLICT DO NOTHING` |
+| AskBar chips | Added 600 (3), 189 (3), 190 (3), 491 (3) prompt chips |
+| Export page | `computeReadinessScore()` wired; `ReadinessScorecard` receives `readinessScore` |
+
+```
+tsc --noEmit:  0 errors
+Seed applied: 189→6 reqs, 190→1, 485→3, 491→2, 820→4
+```
+
+---
+
+## Sprint 17 — Unique Constraint + Visitor 600 Full Seed + KB Staleness
+**Completed:** 2026-03-14  
+**Commits:** `b3c2d5f` on `main`
+
+### What was built
+
+| Item | File | Detail |
+|---|---|---|
+| Unique constraint | `kb/migrations/requirement_unique_title_v1.sql` | `CREATE UNIQUE INDEX requirement_visa_title_uk ON requirement (visa_id, title)` — prevents seed re-run duplicates |
+| Visitor 600 SQL seed | `kb/migrations/seed_visitor_600_v1.sql` | 5 requirements · 8 evidence items · 6 flag templates · 1 `kb_release` row |
+| KB staleness banner | Already built — `kb_release` row inserted by 600 seed resets the 30-day clock | ✅ |
+
+```
+tsc --noEmit:  0 errors
+Supabase:     requirement_unique_title_v1 ✅ · seed_visitor_600_v1 ✅
+```
+
+---
+
+## Sprint 18 — Watcher Bug Fixes + Home Affairs + data.gov.au Tests
+**Completed:** 2026-03-14  
+**Commits:** `8e72227` on `main`
+
+### What was built
+
+#### Bug fixes
+| File | Fix |
+|---|---|
+| `homeaffairs_watcher.py` | `"initial_snapshot"` → `"new_instrument"` enum |
+| `datagov_watcher.py` | Same enum fix + first-run uses `"new_instrument"`, changes use `"dataset_update"` |
+| `seed_loader.py` `load_flag_templates` | Handles both flat-list and `{"flags": [...]}` JSON formats |
+| `seed_loader.py` `_seed_files_matching` | Skips SQL-seeded visa files (600, 189, 190, 491) |
+
+#### New tests
+| File | Tests |
+|---|---|
+| `tests/test_homeaffairs_watcher.py` | 8 tests |
+| `tests/test_datagov_watcher.py` | 7 tests |
+
+```
+pytest (--ignore=tests/test_db.py):  73 passed · 0 failed
+tsc --noEmit:                        0 errors
+```
+
+---
+
+## Sprint 19 — test_db.py Isolation Fix + Partner 820 SQL Migration
+**Completed:** 2026-03-14  
+**Commits:** `947728c` on `main`
+
+### What was built
+
+#### `test_db.py` isolation
+Root cause: `test_seed_loader.py` set `SUPABASE_URL` at module scope before `db.py` was imported → pytest-httpx teardown conflict. Fix: `workers/tests/conftest.py` — `autouse` fixture refreshes `db.SUPABASE_URL` / `db.SERVICE_ROLE_KEY` from `os.environ` before each test.
+
+```
+Full suite: 79 passed · 0 failed
+```
+
+#### Partner 820 SQL migration
+`kb/migrations/seed_partner_820_v1.sql`:
+- 4 requirements: Genuine Relationship, Eligible Sponsor, Health, Character
+- 5 evidence items (joint bank statements, shared lease, photos, statutory declarations, sponsor citizenship)
+- 5 flag templates
+- `kb_release` tag: `kb-v20260314-partner-820`
+
+```
+Applied ✅ — 4 requirements · 11 evidence items · 8 flag templates
+```
+
+---
+
+## Sprint 20 — E2E Browser Tests + Partner 309 Offshore Visa
+**Completed:** 2026-03-14  
+**Commits:** `1740f43` on `main`
+
+### What was built
+
+#### E2E browser tests (all PASS)
+| Page | Result |
+|---|---|
+| `/` Home | ✅ |
+| `/checklist/189` | ✅ 6 requirements, readiness 0% |
+| `/checklist/600` | ✅ 5 requirements |
+| `/checklist/820` | ✅ 4 requirements, 11 evidence items, 8 flags |
+
+#### Partner 309 (offshore) migration
+`kb/migrations/seed_partner_309_v1.sql`:
+- 4 requirements · 6 evidence items (includes offshore-specific: ongoing contact records, boarding passes) · 5 flag templates (includes offshore ongoing contact, police clearance expiry, medical timing)
+- 309 prompt chips added to `AskBar.tsx`
+
+```
+Applied ✅: 4 requirements · 6 evidence items · 5 flag templates
+tsc: 0 errors | tests: 79 passed
+```
+
+---
+
+## Sprint 21 — E2E Export Tests + Working Holiday 417 Migration
+**Completed:** 2026-03-14  
+**Commits:** `98aef79` on `main`
+
+### What was built
+
+#### E2E browser tests
+| Page | Result |
+|---|---|
+| `/export/189` | ✅ PDF, DOCX, CSV buttons present |
+| `/export/820` | ✅ 4 requirements + 11 evidence items |
+| `/checklist/600` — AskBar | ✅ 3 prompt chips, KB-grounded response |
+| `/flags/820` | ✅ 8 flags active |
+
+#### Working Holiday 417 migration
+`kb/migrations/seed_working_holiday_417_v1.sql`:
+- 3 requirements · 4 evidence items · 4 flag templates (work days short, regional area ineligible, cash-in-hand, financial threshold)
+
+```
+Applied ✅: 3 requirements · 8 evidence items · 4 flag templates
+tsc: 0 errors | tests: 79 passed
+```
+
+---
+
+## Sprint 22 — Employer Sponsored 482 + Temporary Graduate 485 Migrations
+**Completed:** 2026-03-14  
+**Commits:** `805fbcb`, `5c787e5`, `b3a2674` on `main`
+
+### What was built
+
+#### 482 Employer Sponsored
+`kb/migrations/seed_employer_sponsored_482_v1.sql`:
+- 3 requirements: Approved Nomination, Standard Business Sponsor, Occupation on Eligible List
+- 4 evidence items + 4 flag templates (TSMIT salary, occupation not on list, SAF levy, employment conditions)
+
+#### 485 Temporary Graduate
+`kb/migrations/seed_temporary_graduate_485_v1.sql`:
+- 3 requirements: Genuine Temporary Entrant, Australian Qualification (6-month window), English
+- 4 evidence items + 5 flag templates (lodgement window, stream mismatch, police check, English expired, health exam)
+
+**AskBar chips** added for 482 (TSMIT focus) and 485 (stream/timing focus).
+
+```
+Applied 482 ✅: 3 requirements · 4 evidence items · 4 flag templates
+Applied 485 ✅: 3 requirements · 8 evidence items · 9 flag templates
+tsc: 0 errors | tests: 79 passed
+```
+
+---
+
+## Sprint 23 — Student 500 SQL Migration
+**Completed:** 2026-03-14  
+**Commits:** `37a0935` on `main`
+
+### What was built
+
+`kb/migrations/seed_student_500_v1.sql`:
+- 5 requirements: Genuine Student (balance-of-factors), English (LIN 19/051), Financial (LIN 18/036), Health (PIC 4005), Character (s.501)
+- 2 evidence items · 3 flag templates (weak home ties, course inconsistent, English score below threshold)
+
+```
+Applied ✅: 5 requirements · 4 evidence items · 6 flag templates
+tsc: 0 errors
+```
+
+---
+
+## Sprint 24 — Skilled 189/190/491 SQL Migrations + KB Coverage Audit
+**Completed:** 2026-03-14  
+**Commits:** `3506c0c` on `main`
+
+### What was built
+
+#### Skilled Independent 189
+- 6 requirements: Valid ITA, Positive Skills Assessment, Min Points (65+), English, Health (PIC 4005), Character (s.501)
+- 7 evidence items + 4 flag templates (points miscalculation, skills expired, employment gaps, English expired)
+
+#### Skilled Nominated 190
+- 1 additional requirement (State/Territory Nomination) +1 evidence +2 flags
+
+#### Skilled Work Regional 491
+- 2 additional requirements (Nomination/Sponsorship, Regional Living Commitment) +1 evidence +3 flags
+
+#### KB Coverage (all 10 subclasses seeded) ✅
+
+| Visa | Reqs | Evidence | Flags | Applied |
+|---|---|---|---|---|
+| 600 Visitor | SQL-seeded | | | ✅ |
+| 189 Skilled Ind. | 6 | 7 | 4 | ✅ |
+| 190 Skilled Nom. | 1* | 1* | 6* | ✅ |
+| 491 Skilled Reg. | 3* | 1* | 9* | ✅ |
+| 820 Partner | 4 | 11 | 8 | ✅ |
+| 309 Partner offshore | 4 | 6 | 5 | ✅ |
+| 417 Working Holiday | 3 | 8 | 4 | ✅ |
+| 482 Employer Sponsored | 3 | 4 | 4 | ✅ |
+| 485 Temp Graduate | 3 | 8 | 9 | ✅ |
+| 500 Student | 5 | 4 | 6 | ✅ |
+
+*Counts include pre-existing rows from `seed_mvp_visas_v1`.
+
+---
+
+## Sprint 25 — Production Launch on kanga-visa.com 🚀
+**Completed:** 2026-03-15
+
+### What was shipped
+
+| Item | Detail |
+|---|---|
+| Domain registered | `kanga-visa.com` |
+| Vercel project | Connected to `main` branch; Framework Preset → Next.js; Root Directory → `app` |
+| Env vars on Vercel | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `OPENAI_API_KEY` |
+| Site live | `https://kanga-visa.com` ✅ |
+| 189 seed applied | `seed_skilled_independent_189_v1.sql` — 6 requirements ✅ |
+| 190/491 seed applied | `seed_skilled_nominated_190_491_v1.sql` ✅ |
+| **Full KB live** | All 10 visa subclasses seeded in production ✅ |
+
+---
+
+## Sprint 26 — CI KB Watcher Fixed + Sprint 27 Architecture Designed
+**Completed:** 2026-03-16  
+**Commits:** `765c036` on `main`
+
+### What was built
+
+#### CI KB Watcher fixed
+Root cause: GitHub Actions secrets `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` were never added → `EnvironmentError` on every run, caught silently, all 13 targets failed.
+
+| Fix | Detail |
+|---|---|
+| `workers/run_watchers.py` | Pre-flight secrets check at startup — exits with clear message pointing to GitHub Settings |
+| `workers/run_watchers.py` | `EnvironmentError` → `fatal=True`; network/HTTP → `fatal=False` (no CI spam) |
+| `workers/run_watchers.py` | `sys.exit(1)` only on fatal errors or 100% failure rate |
+
+```
+pytest:  73 passed · 0 failed | tsc: 0 errors
+```
+
+#### Sprint 27 UX Architecture designed
+- Three evidence panel types: Narrative (AI-assessed), Documentary (rule-based), Quantitative (deterministic)
+- Quality-weighted scoring: Not started 0% → Draft 30% → Adequate 70% → Strong 100%
+- Phase 1: zero schema changes (uses existing `note` column)
+- Phase 2: `assessment_json`, `assessed_at` columns on `checklist_item_state`
+
+---
+
+## Sprint 27 — Evidence Drafting Accordion + AI Assessment + Auth Session Fix
+**Completed:** 2026-03-20  
+**Commits:** `987b852` (P1) · `84cbf63` (P2) · `54d84c6` · `5ca906b` · `211fd24` · `3e83de9` · `58179bc` on `main`
+
+### What was built
+
+#### P1 — Evidence Drafting Accordion (no schema change)
+| File | Change |
+|---|---|
+| `app/components/ChecklistItem.tsx` | Clickable label → accordion; `<textarea>` wired to `note`; auto-saves on blur; auto-advances `not_started → in_progress`; chevron indicator |
+| `app/components/ChecklistItem.module.css` | `label_btn`, `chevron`, `accordion` (max-height transition), `draft_textarea`, `draft_footer`, `char_count`, `assess_btn` |
+| `app/components/ChecklistBodyStandalone.tsx` | Loads `note` from GET items; passes `initialNote` + `onNoteChange` |
+| `app/lib/export-builder.ts` | `computeReadinessScore()`: `in_progress` items with non-empty note → 0.3× draft credit |
+
+#### P2 — AI Assessment Endpoint
+| File | Change |
+|---|---|
+| `kb/migrations/checklist_item_assessment_v1.sql` | `ALTER TABLE checklist_item_state ADD COLUMN draft_content, assessment_json, assessed_at` |
+| `app/api/sessions/[sessionId]/items/[evidenceId]/assess/route.ts` | `POST` — GPT-4o-mini structured assessment (Weak/Adequate/Strong + gaps list) |
+| `app/components/AssessmentBadge.tsx` + `.module.css` | Rating badge + summary + gap bullets rendered inline |
+| `app/components/ChecklistItem.tsx` | `[Assess my draft →]` button at ≥20 chars; calls assess; renders `<AssessmentBadge>` |
+
+#### Auth session fix
+Root cause: `supabase.ts` used localStorage-only `createClient` → Server Components using cookie-based SSR never saw the session.
+
+| Fix | File |
+|---|---|
+| `createBrowserClient` from `@supabase/ssr` | `lib/supabase.ts` |
+| Added `set`/`remove` cookie handlers | `lib/supabase-server.ts` |
+| Email confirmation callback route | `auth/callback/route.ts` |
+| Hard redirect after sign-in | `auth/login/page.tsx` |
+| Session refresh middleware | `middleware.ts` |
+
+**Verified on `kanga-visa.com`:** sign-in shows email initials · accordion saves on blur · "Assess my draft →" returns Weak/Adequate/Strong · Strong achieved with cross-referenced booking refs.
+
+```
+tsc: 0 errors | Commits: 987b852 · 84cbf63 → main
+```
+
+---
+
+## Sprint 28 — React Hydration Fix + AssessmentBadge Persistence
+**Completed:** 2026-03-21  
+**Commits:** `a8d61a3` on `main`
+
+### What was built
+
+#### P1 — Hydration fix
+Root cause: `expanded` state initialised as `useState(initialNote.length > 0)` — SSR renders `false` but client could differ after hydration.
+
+**Fix in `ChecklistItem.tsx`:** always initialise `expanded` to `false`, then `useEffect` opens accordion client-side if `initialNote` is non-empty.
+
+#### P2 — AssessmentBadge persistence on reload
+`assessment_json` was already written to `checklist_item_state` by the assess route but never read back on mount.
+
+**Fix:**
+- `ChecklistBodyStandalone.tsx`: parses `assessment_json` from items GET response into `assessmentsMap`
+- `ChecklistItem.tsx`: new `initialAssessment?: Assessment | null` prop; seeds `assessment` state from it
+
+No new API routes or schema changes.
+
+```
+tsc: 0 errors | Commit: a8d61a3 → main
+```
+
+---
+
+## Sprint 29 — Export Label Fix + Draft Notes in PDF + Home Affairs KB Source
+**Completed:** 2026-03-21  
+**Commits:** `b50ba3b` on `main`
+
+### What was built
+
+#### Export label bug fix
+Both `ExportPDFDocument.tsx` and `export-docx.ts` rendered raw UUIDs (`evidence_id`) in the evidence checklist instead of the readable label.
+
+**Fix:** pre-built `Map<evidence_id, EvidenceItem>` from `payload.evidence_items`; used `evMap.get(id)?.label ?? id` as a safe fallback in both files.
+
+#### Draft notes in PDF
+PDF checklist gained a **NOTE** column (italic, slate, `flex: 1`) showing the user's draft content. DOCX "Note" column header renamed to "Your draft notes".
+
+#### Home Affairs "Check Twice, Submit Once" KB source
+Added `ha_check_twice_visitor` to `HOMEAFFAIRS_TARGETS` in `workers/run_watchers.py`.  
+URL: `https://immi.homeaffairs.gov.au/visas/help-and-support/check-twice-submit-once`
+
+### E2E verification ✅
+| Check | Result |
+|---|---|
+| `/checklist/500` console | No React hydration errors |
+| 5 requirement cards | Loaded correctly |
+| Export page download buttons | ↓ PDF ↓ DOCX ↓ CSV all present |
+
+```
+tsc: 0 errors | Commits: b50ba3b · a28bf24 → main
+```
+
+---
+
+## Future Sprints
+
+*Each sprint walkthrough will be appended here on completion.*
+
+### Sprint 30 — Authenticated E2E + Export Pagination + AskBar Streaming Indicator
+**Status:** Planned
+
+| Priority | Item |
+|---|---|
+| P1 | Authenticated E2E: sign in → 189 checklist → notes + assess → export → verify readable labels and note content in downloaded PDF/DOCX |
+| P2 | PDF pagination: page breaks between requirement groups for large checklists (10+ items overflow single A4 page) |
+| P3 | AskBar streaming indicator: pulsing "Thinking…" state between submit and first SSE token |
 
