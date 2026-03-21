@@ -1377,3 +1377,64 @@ Commit:       0a867df → main
 - STATUS / ITEM / NOTE headers currently only appear above first group
 - Repeat a lightweight mini-header at the top of each requirement group
 
+
+---
+
+## Session: 2026-03-21 (afternoon, cont.)
+
+### What we achieved — Sprint 31
+
+#### P0 — Auth gate for non-600 checklists
+
+| File | Change |
+|---|---|
+| `app/middleware.ts` | Auth gate: `/checklist/[subclass]` (excl. 600) redirects unauthenticated visitors to `/auth/login?next=...` |
+| `app/auth/login/page.tsx` | Reads `?next=` param; redirects back to the protected page after sign-in |
+| `app/pathway/page.tsx` | 600 CTA now links to `/visitor`; all other visas show `🔒 Sign in to access` label |
+
+#### P1 — Visitor intake survey
+
+| File | Change |
+|---|---|
+| `kb/migrations/visitor_intake_v1.sql` | ⚠️ **Requires manual application in Supabase SQL Editor** |
+| `kb/schema/visitor_intake_schema.json` | Schema v1.0 committed to repo |
+| `app/components/VisitorIntakeSurvey.tsx` | 3-stage progressive form (demographics → risk signals → optional enrichment) |
+| `app/components/VisitorIntakeSurvey.module.css` | Radio card grid + progress bar + slide-in animation |
+| `app/visitor/page.tsx` | `/visitor` entry route — Server Component with SEO metadata |
+| `app/api/intake/route.ts` | `POST /api/intake` — anon insert to `visitor_intake` via admin client |
+
+#### P2 — Personalised 600 flags
+
+| File | Change |
+|---|---|
+| `app/components/VisitorIntakeBanner.tsx` | Reads `kv_visitor_intake` from localStorage; renders contextual FlagCards |
+| `app/checklist/[subclass]/page.tsx` | Renders `VisitorIntakeBanner` for subclass 600 only |
+
+```
+tsc --noEmit: 0 errors
+Commits: b8281dd · bbf8dd0 · 97c6e68 · 365e12e → main
+```
+
+### ⚠️ Outstanding manual action
+
+Apply migration in Supabase SQL Editor:
+```
+kb/migrations/visitor_intake_v1.sql
+```
+
+---
+
+### Next session — Sprint 32 priorities
+
+**Priority 1 — E2E browser test: full visitor funnel**
+- Open `/visitor` → complete all 3 stages → verify redirect to `/checklist/600`
+- Confirm personalised flags appear matching intake responses
+- Verify `visitor_intake` row in Supabase with correct `derived_signals`
+- Test auth gate: open `/checklist/500` incognito → confirm redirect to `/auth/login?next=/checklist/500`
+
+**Priority 2 — Visitor survey UX polish**
+- Add a "What's this for?" privacy tooltip to the Stage 1 form
+- Consider animated transition between stages (currently CSS only)
+
+**Priority 3 — Analytics: aggregate visitor intake reporting**
+- Dashboard view showing top source markets, financial risk rate, documentation gap rate
