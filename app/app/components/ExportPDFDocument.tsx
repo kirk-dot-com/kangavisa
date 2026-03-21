@@ -101,6 +101,17 @@ const s = StyleSheet.create({
     evidenceLabel: { flex: 1, fontSize: 8 },
     evidenceNote: { flex: 1, fontSize: 7, color: SLATE, fontStyle: "italic" },
     evidenceProves: { flex: 1, fontSize: 7, color: SLATE },
+    // Requirement group title (for paginated checklist)
+    reqGroupTitle: {
+        fontSize: 9,
+        fontFamily: "Helvetica-Bold",
+        color: NAVY,
+        borderBottomWidth: 1,
+        borderBottomColor: BORDER,
+        paddingBottom: 3,
+        marginBottom: 4,
+        marginTop: 8,
+    },
     // Disclaimer
     disclaimer: {
         marginTop: 16,
@@ -208,38 +219,66 @@ export function ExportPDFDocument({ payload }: { payload: ExportPayload }) {
                     </View>
                 )}
 
-                {/* Evidence checklist */}
+                {/* Evidence checklist — grouped by requirement with page breaks */}
                 <View style={s.section}>
                     <Text style={s.sectionTitle}>Evidence checklist</Text>
-                    {/* Build label lookup once */}
                     {(() => {
+                        // Build map: evidence_id → EvidenceItem
                         const evMap = new Map(
                             payload.evidence_items.map((e) => [e.evidence_id, e])
                         );
+
+                        // Build ordered groups: requirement_id → { reqTitle, items[] }
+                        // Uses order stability: evidence_items are returned ordered by requirement/priority
+                        const orderedGroups: Array<{ reqId: string; reqTitle: string; items: typeof payload.item_states }> = [];
+                        const groupIndex = new Map<string, number>();
+
+                        for (const item of payload.item_states) {
+                            const ev = evMap.get(item.evidence_id);
+                            const reqId = ev?.requirement_id ?? "__ungrouped__";
+                            if (!groupIndex.has(reqId)) {
+                                // Find a matching requirement title from requirements_summary
+                                // requirements_summary is ordered to match requirements, so use position
+                                const reqSummary = payload.requirements_summary[groupIndex.size];
+                                const reqTitle = reqSummary?.title ?? `Requirement ${groupIndex.size + 1}`;
+                                groupIndex.set(reqId, orderedGroups.length);
+                                orderedGroups.push({ reqId, reqTitle, items: [] });
+                            }
+                            orderedGroups[groupIndex.get(reqId)!].items.push(item);
+                        }
+
                         return (
                             <>
-                                {/* header row */}
-                                <View style={[s.evidenceRow, { borderBottomWidth: 0 }]}>
-                                    <Text style={[s.evidenceStatus, { color: SLATE }]}>STATUS</Text>
-                                    <Text style={[s.evidenceLabel, { fontFamily: "Helvetica-Bold" }]}>ITEM</Text>
-                                    <Text style={[s.evidenceNote, { fontFamily: "Helvetica-Bold", fontStyle: "normal" }]}>NOTE</Text>
-                                </View>
-                                {payload.item_states.map((item, i) => (
-                                    <View key={i} style={s.evidenceRow}>
-                                        <Text
-                                            style={[
-                                                s.evidenceStatus,
-                                                { color: item.status === "done" ? SUCCESS : item.status === "in_progress" ? TEAL : SLATE },
-                                            ]}
-                                        >
-                                            {item.status.replace("_", " ").toUpperCase()}
-                                        </Text>
-                                        <Text style={s.evidenceLabel}>
-                                            {evMap.get(item.evidence_id)?.label ?? item.evidence_id}
-                                        </Text>
-                                        <Text style={s.evidenceNote}>
-                                            {item.note ?? "—"}
-                                        </Text>
+                                {orderedGroups.map((group, groupIdx) => (
+                                    <View key={group.reqId} break={groupIdx > 0}>
+                                        {/* Requirement sub-heading */}
+                                        <Text style={s.reqGroupTitle}>{group.reqTitle}</Text>
+                                        {/* Column headers on first group only */}
+                                        {groupIdx === 0 && (
+                                            <View style={[s.evidenceRow, { borderBottomWidth: 0 }]}>
+                                                <Text style={[s.evidenceStatus, { color: SLATE }]}>STATUS</Text>
+                                                <Text style={[s.evidenceLabel, { fontFamily: "Helvetica-Bold" }]}>ITEM</Text>
+                                                <Text style={[s.evidenceNote, { fontFamily: "Helvetica-Bold", fontStyle: "normal" }]}>NOTE</Text>
+                                            </View>
+                                        )}
+                                        {group.items.map((item, i) => (
+                                            <View key={i} style={s.evidenceRow}>
+                                                <Text
+                                                    style={[
+                                                        s.evidenceStatus,
+                                                        { color: item.status === "done" ? SUCCESS : item.status === "in_progress" ? TEAL : SLATE },
+                                                    ]}
+                                                >
+                                                    {item.status.replace("_", " ").toUpperCase()}
+                                                </Text>
+                                                <Text style={s.evidenceLabel}>
+                                                    {evMap.get(item.evidence_id)?.label ?? item.evidence_id}
+                                                </Text>
+                                                <Text style={s.evidenceNote}>
+                                                    {item.note ?? "—"}
+                                                </Text>
+                                            </View>
+                                        ))}
                                     </View>
                                 ))}
                             </>

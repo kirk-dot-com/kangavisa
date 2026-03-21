@@ -77,6 +77,7 @@ export default function AskBar({ subclass, caseDate }: AskBarProps) {
     const [refusal, setRefusal] = useState<string | null>(null);
     const [violations, setViolations] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
+    const [thinking, setThinking] = useState(false);
     const [done, setDone] = useState(false);
     const [model, setModel] = useState<string | null>(null);
     const abortRef = useRef<AbortController | null>(null);
@@ -94,6 +95,7 @@ export default function AskBar({ subclass, caseDate }: AskBarProps) {
         setViolations([]);
         setDone(false);
         setLoading(true);
+        setThinking(true);
         setModel(null);
 
         abortRef.current = new AbortController();
@@ -120,7 +122,10 @@ export default function AskBar({ subclass, caseDate }: AskBarProps) {
                     if (!line.startsWith("data: ")) continue;
                     try {
                         const payload = JSON.parse(line.slice(6));
-                        if (payload.token) setAnswer((prev) => prev + payload.token);
+                        if (payload.token) {
+                                setThinking(false);
+                                setAnswer((prev) => prev + payload.token);
+                            }
                         if (payload.done) {
                             if (payload.refusal) setRefusal(payload.refusal);
                             if (payload.citations) setCitations(payload.citations);
@@ -140,6 +145,7 @@ export default function AskBar({ subclass, caseDate }: AskBarProps) {
             }
         } finally {
             setLoading(false);
+            setThinking(false);
         }
     }
 
@@ -160,8 +166,8 @@ export default function AskBar({ subclass, caseDate }: AskBarProps) {
 
             {/* Query form */}
             <form onSubmit={handleSubmit} className={styles.form}>
-                {/* Prompt chips */}
-                {!answer && !loading && (
+                {/* Prompt chips — hide while thinking or after first answer */}
+                {!answer && !loading && !thinking && (
                     <div className={styles.chips} aria-label="Suggested questions">
                         {chips.map((chip) => (
                             <button
@@ -210,6 +216,14 @@ export default function AskBar({ subclass, caseDate }: AskBarProps) {
                     )}
                 </div>
             </form>
+
+            {/* Thinking indicator — shown between submit and first token */}
+            {thinking && !answer && (
+                <div className={styles.thinking} aria-live="polite" aria-label="Thinking">
+                    <span className={styles.thinking_dots} aria-hidden="true" />
+                    <span className={`caption ${styles.thinking_text}`}>Thinking…</span>
+                </div>
+            )}
 
             {/* Refusal banner */}
             {refusal && (
