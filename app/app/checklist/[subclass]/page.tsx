@@ -99,6 +99,9 @@ export default async function ChecklistPage({ params, searchParams }: ChecklistP
                         </p>
                     </div>
 
+                    {/* Personalised risk signals (600 only — reads localStorage intake) */}
+                    {subclass === "600" && <VisitorIntakeBanner />}
+
                     {/* Warnings */}
                     {warnings.map((w, i) => (
                         <div key={i} className="alert alert--warning" style={{ marginBottom: "var(--sp-4)" }}>
