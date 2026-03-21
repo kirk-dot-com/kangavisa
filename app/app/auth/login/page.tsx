@@ -1,12 +1,13 @@
 "use client";
 // Login page — redirects to ?next or /pathway on success
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "../../../lib/supabase";
 import styles from "../auth.module.css";
 
-export default function LoginPage() {
+// Inner component — uses useSearchParams (must be inside Suspense)
+function LoginForm() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
@@ -34,6 +35,71 @@ export default function LoginPage() {
     }
 
     return (
+        <>
+            <form onSubmit={handleSubmit} className={styles.form} noValidate>
+                <div className={styles.field}>
+                    <label htmlFor="email" className="form-label">Email address</label>
+                    <input
+                        id="email"
+                        type="email"
+                        className="form-input"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        autoComplete="email"
+                        placeholder="you@example.com"
+                    />
+                </div>
+
+                <div className={styles.field}>
+                    <label htmlFor="password" className="form-label">Password</label>
+                    <input
+                        id="password"
+                        type="password"
+                        className="form-input"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        autoComplete="current-password"
+                        placeholder="Your password"
+                    />
+                </div>
+
+                {error && (
+                    <div className="alert alert--risk" role="alert">
+                        <span aria-hidden="true">⚠</span>
+                        <span className="body-sm">{error}</span>
+                    </div>
+                )}
+
+                <button
+                    type="submit"
+                    className="btn btn--primary"
+                    disabled={loading}
+                    style={{ width: "100%", justifyContent: "center" }}
+                >
+                    {loading ? "Signing in…" : "Sign in →"}
+                </button>
+            </form>
+
+            <p className={`caption ${styles.footer_link}`}>
+                No account yet?{" "}
+                <Link href="/auth/signup" style={{ color: "var(--color-teal)", fontWeight: 600 }}>
+                    Create one free
+                </Link>
+            </p>
+            <p className={`caption ${styles.footer_link}`}>
+                <Link href="/auth/reset-request" style={{ color: "var(--color-muted)" }}>
+                    Forgot password?
+                </Link>
+            </p>
+        </>
+    );
+}
+
+// Outer shell — wraps LoginForm in Suspense (required for useSearchParams in App Router)
+export default function LoginPage() {
+    return (
         <div className={styles.page}>
             <div className={`card ${styles.card}`}>
                 <div className={styles.header}>
@@ -44,63 +110,9 @@ export default function LoginPage() {
                     </p>
                 </div>
 
-                <form onSubmit={handleSubmit} className={styles.form} noValidate>
-                    <div className={styles.field}>
-                        <label htmlFor="email" className="form-label">Email address</label>
-                        <input
-                            id="email"
-                            type="email"
-                            className="form-input"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            autoComplete="email"
-                            placeholder="you@example.com"
-                        />
-                    </div>
-
-                    <div className={styles.field}>
-                        <label htmlFor="password" className="form-label">Password</label>
-                        <input
-                            id="password"
-                            type="password"
-                            className="form-input"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            autoComplete="current-password"
-                            placeholder="Your password"
-                        />
-                    </div>
-
-                    {error && (
-                        <div className="alert alert--risk" role="alert">
-                            <span aria-hidden="true">⚠</span>
-                            <span className="body-sm">{error}</span>
-                        </div>
-                    )}
-
-                    <button
-                        type="submit"
-                        className="btn btn--primary"
-                        disabled={loading}
-                        style={{ width: "100%", justifyContent: "center" }}
-                    >
-                        {loading ? "Signing in…" : "Sign in →"}
-                    </button>
-                </form>
-
-                <p className={`caption ${styles.footer_link}`}>
-                    No account yet?{" "}
-                    <Link href="/auth/signup" style={{ color: "var(--color-teal)", fontWeight: 600 }}>
-                        Create one free
-                    </Link>
-                </p>
-                <p className={`caption ${styles.footer_link}`}>
-                    <Link href="/auth/reset-request" style={{ color: "var(--color-muted)" }}>
-                        Forgot password?
-                    </Link>
-                </p>
+                <Suspense fallback={<p className="body-sm" style={{ color: "var(--color-muted)" }}>Loading…</p>}>
+                    <LoginForm />
+                </Suspense>
             </div>
         </div>
     );
