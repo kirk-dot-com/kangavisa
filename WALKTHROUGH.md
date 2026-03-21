@@ -1213,12 +1213,51 @@ tsc: 0 errors | Commits: b50ba3b · a28bf24 → main
 
 *Each sprint walkthrough will be appended here on completion.*
 
-### Sprint 30 — Authenticated E2E + Export Pagination + AskBar Streaming Indicator
-**Status:** Planned
+## Sprint 30 — PDF Requirement-Group Pagination + AskBar Thinking Indicator
+**Completed:** 2026-03-21  
+**Commits:** `0a867df` on `main`
+
+### What was built
+
+#### P2 — PDF pagination
+`ExportPDFDocument.tsx` now groups `item_states` by `requirement_id` (via `evidence_items` lookup) and renders each group as a titled section with a navy bold heading. `break={true}` is applied to all groups after the first, so each requirement section starts on a fresh page if the previous one overflowed.
+
+Column headers (STATUS / ITEM / NOTE) appear only above the first group to avoid repetition.
+
+Root cause: all items were previously in a single flat `<View>` with no pagination hint.
+
+#### P3 — AskBar "Thinking…" indicator
+New `thinking` boolean state in `AskBar.tsx`:
+- Set `true` on submit
+- Cleared on first `payload.token` received via SSE
+- Also clears in `finally` so errors never leave it stuck
+
+While `thinking && !answer`, a 2-dot teal bounce animation (`.thinking_dots` CSS `::before`/`::after`) and "Thinking…" italic caption are shown. Chips also hide during this state.
+
+Empty `.header {}` CSS lint warning also fixed.
+
+### E2E verification ✅
+
+| Check | Result |
+|---|---|
+| `/checklist/500` AskBar — answer streams | ✅ Answer received, `gpt-4o-mini · KB-grounded` badge shown |
+| `/checklist/189` console | ✅ No hydration errors |
+
+![AskBar streaming — production](/Users/kirkjohnstone/.gemini/antigravity/brain/3db12e73-0844-4939-ae6d-d816e25b0f1f/ask_thinking_moment_1774059761563.png)
+
+```
+tsc --noEmit: 0 errors
+Commit:       0a867df · f50041a → main
+```
+
+---
+
+### Sprint 31 — Planned
 
 | Priority | Item |
 |---|---|
-| P1 | Authenticated E2E: sign in → 189 checklist → notes + assess → export → verify readable labels and note content in downloaded PDF/DOCX |
-| P2 | PDF pagination: page breaks between requirement groups for large checklists (10+ items overflow single A4 page) |
-| P3 | AskBar streaming indicator: pulsing "Thinking…" state between submit and first SSE token |
+| P1 | Authenticated E2E: sign in → 189 → notes + assess → PDF/DOCX download verification |
+| P2 | Thinking dots: add 3rd dot (middle `<span>` with `animation-delay: 0.2s`) |
+| P3 | PDF: repeat column headers (STATUS / ITEM / NOTE) at top of each requirement group |
+
 
