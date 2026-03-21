@@ -12,7 +12,81 @@ These documents should be consulted when designing any new feature.
 
 ---
 
-## Session: 2026-02-23
+## Session: 2026-03-21
+
+### What we achieved
+
+#### 1. Sprint 32 — GovData Intelligence Dashboard (completed)
+
+| Area | Status |
+|---|---|
+| `recharts` installed | ✅ |
+| `kb/migrations/govdata_views_v1.sql` — 7 Supabase aggregation views | ✅ |
+| `kb/migrations/govdata_seed_demo_v1.sql` — 12 demo rows across 6 countries | ✅ |
+| `kb/migrations/govdata_views_fix_security_v1.sql` — recreated views with `security_invoker=on` (Supabase lint 0010 fix) | ✅ Applied |
+| `/api/govdata/summary` + `/api/govdata/country` — service-role API routes | ✅ |
+| `/govdata` — 4-screen dashboard: Executive Summary, Country Deep Dive, Risk Intelligence, Demand & Behaviour | ✅ |
+| `GovData` nav link added to `AppHeader` for authenticated users | ✅ |
+
+#### 2. Sprint 33 — Admin Console (completed, 3 of 7 screens)
+
+| Area | Status |
+|---|---|
+| `kb/migrations/admin_rbac_v1.sql` — `profiles`, `admin_roles`, `client_accounts`, `client_permissions`, `audit_logs` + RLS | ✅ Applied |
+| `lib/admin-check.ts` — `assertAdmin()` server helper (service role profile lookup) | ✅ |
+| `/admin/layout.tsx` — dark navy sidebar, role badge, layout-level auth gate | ✅ |
+| `/admin` — System Overview: KPIs, top countries chart, risk flags table | ✅ |
+| `/admin/govdata` — GovData Monitor: dataset volumes, cohort checks (n≥10), freshness | ✅ |
+| `/admin/clients` — Client Management: add/view GovData B2G clients | ✅ |
+| `/admin/users` — User Management: list all auth users, inline role dropdown + Save | ✅ |
+| `/api/admin/overview\|govdata\|clients\|users` — service-role API routes | ✅ |
+| `Admin` nav link added to `AppHeader` for authenticated users | ✅ |
+
+#### 3. Security fixes (Supabase lint)
+
+| Fix | File | Status |
+|---|---|---|
+| Lint 0010: `security_definer_view` on 7 GovData views | `govdata_views_fix_security_v1.sql` | ✅ Applied |
+| Lint 0024: `visitor_intake_anon_insert` scoped to `anon`+`authenticated` roles | `rls_policies_fix_v1.sql` | ✅ Applied |
+| Lint 0008: 9 KB/event tables missing RLS policies — public SELECT added | `rls_policies_fix_v1.sql` | ✅ Applied |
+
+#### 4. Visitor intake funnel gate
+
+| Area | Status |
+|---|---|
+| `middleware.ts` — `/checklist/600` now redirects to `/visitor?next=/checklist/600` if `kv_intake_done` cookie is absent | ✅ |
+| `/api/intake` — sets `kv_intake_done=1` cookie (90-day) on successful submission | ✅ |
+| `VisitorIntakeSurvey` — now `await`s the intake POST before navigating; accepts `redirectTo` prop; Skip buttons removed | ✅ |
+| `/visitor/page.tsx` — passes `?next=` query param as `redirectTo` to survey | ✅ |
+| `ChecklistItem` — anonymous users with draft ≥20 chars see "✨ Get a free AI assessment" → `/auth/signup` instead of hidden button | ✅ |
+
+### Commits this session
+
+| Commit | Description |
+|---|---|
+| `96116ad` | strategy: add admin_console_prd.md v1.0 |
+| `779ab6a` | feat(sprint-33): Admin Console — RBAC foundation + 3 screens |
+| `0600210` | fix: recreate govdata views with security_invoker=on |
+| `9e18ac2` | fix: RLS policy corrections (lint 0008 + 0024) |
+| `5cb2069` | fix(admin): use service role client for profiles role lookup |
+| `32ed130` | feat(admin): add User Management screen with inline role assignment |
+| `fe61627` | feat: gate /checklist/600 behind visitor intake survey |
+| `291e1b7` | feat: show sign-up conversion prompt for anonymous users |
+
+### Next session — Sprint 34
+
+**Admin Console remaining screens:**
+- Rules Engine Manager (`/admin/rules`) — edit `flag_configs`, enable/disable flags, adjust thresholds
+- Visa Config Manager (`/admin/visas`) — view/edit visa requirements and flag mappings
+- Case Monitor (`/admin/cases`) — de-identified case summaries for QA
+- Consent Manager (`/admin/consent`) — opt-in logs, data revocation
+
+**Infrastructure:**
+- Apply `admin_rbac_v1.sql` if not already done → then `INSERT INTO profiles(id, role) VALUES('<uuid>', 'super_admin')` for any pre-existing user accounts
+- Confirm Supabase lint is fully clear after applying `rls_policies_fix_v1.sql`
+
+---
+
 
 ### What we achieved
 
