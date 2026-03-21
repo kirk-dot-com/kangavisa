@@ -18,7 +18,7 @@ export default function VisitorPage() {
                 <div style={{ textAlign: "center", marginBottom: "var(--sp-10)" }}>
                     <h1 className="h1">Visitor visa readiness check</h1>
                     <p className="body-lg" style={{ color: "var(--color-slate)", marginTop: "var(--sp-3)", maxWidth: 560, margin: "var(--sp-3) auto 0" }}>
-                        Answer a few quick questions and we'll build you a tailored evidence checklist for your Australian{" "}
+                        Answer a few quick questions and we&apos;ll build you a tailored evidence checklist for your Australian{" "}
                         <strong>Visitor visa (subclass 600)</strong>. Free — no account needed.
                     </p>
                 </div>
