@@ -223,21 +223,22 @@ function buildFlagsTable(payload: ExportPayload): (Paragraph | Table)[] {
 function buildEvidenceTable(payload: ExportPayload): (Paragraph | Table)[] {
     if (payload.item_states.length === 0) return [];
 
-    // Build a lookup from the requirements_summary for labels
-    // (item_states carry evidence_id; we match via evidenceItems in payload)
+    // Build a lookup: evidence_id → readable label
+    const evMap = new Map(payload.evidence_items.map((e) => [e.evidence_id, e]));
+
     const rows = [
         new TableRow({
             children: [
                 headerCell("Evidence item"),
                 headerCell("Status"),
-                headerCell("Note"),
+                headerCell("Your draft notes"),
             ],
             tableHeader: true,
         }),
         ...payload.item_states.map((s, i) =>
             new TableRow({
                 children: [
-                    dataCell(s.evidence_id, i % 2 === 1),
+                    dataCell(evMap.get(s.evidence_id)?.label ?? s.evidence_id, i % 2 === 1),
                     dataCell(s.status.replace("_", " "), i % 2 === 1),
                     dataCell(s.note ?? "", i % 2 === 1),
                 ],

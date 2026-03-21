@@ -99,6 +99,7 @@ const s = StyleSheet.create({
     },
     evidenceStatus: { width: 48, fontSize: 7, fontFamily: "Helvetica-Bold" },
     evidenceLabel: { flex: 1, fontSize: 8 },
+    evidenceNote: { flex: 1, fontSize: 7, color: SLATE, fontStyle: "italic" },
     evidenceProves: { flex: 1, fontSize: 7, color: SLATE },
     // Disclaimer
     disclaimer: {
@@ -210,24 +211,40 @@ export function ExportPDFDocument({ payload }: { payload: ExportPayload }) {
                 {/* Evidence checklist */}
                 <View style={s.section}>
                     <Text style={s.sectionTitle}>Evidence checklist</Text>
-                    {/* header row */}
-                    <View style={[s.evidenceRow, { borderBottomWidth: 0 }]}>
-                        <Text style={[s.evidenceStatus, { color: SLATE }]}>STATUS</Text>
-                        <Text style={[s.evidenceLabel, { fontFamily: "Helvetica-Bold" }]}>ITEM</Text>
-                    </View>
-                    {payload.item_states.map((item, i) => (
-                        <View key={i} style={s.evidenceRow}>
-                            <Text
-                                style={[
-                                    s.evidenceStatus,
-                                    { color: item.status === "done" ? SUCCESS : item.status === "in_progress" ? TEAL : SLATE },
-                                ]}
-                            >
-                                {item.status.replace("_", " ").toUpperCase()}
-                            </Text>
-                            <Text style={s.evidenceLabel}>{item.evidence_id}</Text>
-                        </View>
-                    ))}
+                    {/* Build label lookup once */}
+                    {(() => {
+                        const evMap = new Map(
+                            payload.evidence_items.map((e) => [e.evidence_id, e])
+                        );
+                        return (
+                            <>
+                                {/* header row */}
+                                <View style={[s.evidenceRow, { borderBottomWidth: 0 }]}>
+                                    <Text style={[s.evidenceStatus, { color: SLATE }]}>STATUS</Text>
+                                    <Text style={[s.evidenceLabel, { fontFamily: "Helvetica-Bold" }]}>ITEM</Text>
+                                    <Text style={[s.evidenceNote, { fontFamily: "Helvetica-Bold", fontStyle: "normal" }]}>NOTE</Text>
+                                </View>
+                                {payload.item_states.map((item, i) => (
+                                    <View key={i} style={s.evidenceRow}>
+                                        <Text
+                                            style={[
+                                                s.evidenceStatus,
+                                                { color: item.status === "done" ? SUCCESS : item.status === "in_progress" ? TEAL : SLATE },
+                                            ]}
+                                        >
+                                            {item.status.replace("_", " ").toUpperCase()}
+                                        </Text>
+                                        <Text style={s.evidenceLabel}>
+                                            {evMap.get(item.evidence_id)?.label ?? item.evidence_id}
+                                        </Text>
+                                        <Text style={s.evidenceNote}>
+                                            {item.note ?? "—"}
+                                        </Text>
+                                    </View>
+                                ))}
+                            </>
+                        );
+                    })()}
                 </View>
 
                 {/* Disclaimer */}

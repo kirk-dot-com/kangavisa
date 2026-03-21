@@ -107,6 +107,12 @@ HOMEAFFAIRS_TARGETS = [
         "canonical_url": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/partner-820-801",
         "title": "Partner visa (subclass 820/801) — Home Affairs",
     },
+    {
+        "url": "https://immi.homeaffairs.gov.au/visas/help-and-support/check-twice-submit-once",
+        "source_id": "ha_check_twice_visitor",
+        "canonical_url": "https://immi.homeaffairs.gov.au/visas/help-and-support/check-twice-submit-once",
+        "title": "Check Twice, Submit Once — Home Affairs",
+    },
 ]
 
 # ---------------------------------------------------------------------------
