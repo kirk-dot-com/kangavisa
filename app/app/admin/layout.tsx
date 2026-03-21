@@ -9,6 +9,7 @@ const NAV = [
     { href: "/admin",          label: "System Overview", icon: "🧭" },
     { href: "/admin/govdata",  label: "GovData Monitor", icon: "📊" },
     { href: "/admin/clients",  label: "Clients",          icon: "🏛️" },
+    { href: "/admin/users",    label: "Users",            icon: "👤" },
     { href: "/admin/rules",    label: "Rules Engine",     icon: "⚙️",  badge: "Soon" },
     { href: "/admin/visas",    label: "Visa Config",      icon: "📁",  badge: "Soon" },
 ];
